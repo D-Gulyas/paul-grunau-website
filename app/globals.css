@@ -232,3 +232,163 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ============================================================
+   TAG-MODUS (Hell) – aktiv über <html data-theme="light">.
+   Ohne Attribut bleibt alles im Nacht-Modus (Original-Design).
+   Rein zentrale Farb-Umkehr der genutzten Utilities – die
+   Struktur/Klassen der Komponenten bleiben unangetastet.
+   ============================================================ */
+
+/* Sanfter Übergang beim Umschalten (reduced-motion überschreibt oben). */
+body {
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="light"] body {
+  background-color: #eef1f4;
+  color: #17181b;
+}
+:root[data-theme="light"] ::selection {
+  background: rgba(0, 0, 0, 0.14);
+  color: #000;
+}
+:root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #e3e6ea;
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: #e3e6ea;
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+/* --- Fließtext & Abstufungen → dunkle Tinte --- */
+[data-theme="light"] .text-white { color: #17181b; }
+[data-theme="light"] .text-white\/90 { color: rgba(23, 24, 27, 0.92); }
+[data-theme="light"] .text-white\/85 { color: rgba(23, 24, 27, 0.88); }
+[data-theme="light"] .text-white\/80 { color: rgba(23, 24, 27, 0.82); }
+[data-theme="light"] .text-white\/75 { color: rgba(23, 24, 27, 0.78); }
+[data-theme="light"] .text-white\/70 { color: rgba(23, 24, 27, 0.72); }
+[data-theme="light"] .text-white\/65 { color: rgba(23, 24, 27, 0.68); }
+[data-theme="light"] .text-white\/60 { color: rgba(23, 24, 27, 0.64); }
+[data-theme="light"] .text-white\/55 { color: rgba(23, 24, 27, 0.60); }
+[data-theme="light"] .text-white\/50 { color: rgba(23, 24, 27, 0.55); }
+[data-theme="light"] .text-white\/45 { color: rgba(23, 24, 27, 0.50); }
+[data-theme="light"] .text-white\/40 { color: rgba(23, 24, 27, 0.48); }
+[data-theme="light"] .text-white\/35 { color: rgba(23, 24, 27, 0.42); }
+[data-theme="light"] .placeholder\:text-white\/35::placeholder { color: rgba(23, 24, 27, 0.40); }
+
+/* Hover-/Fokus-Zustände */
+[data-theme="light"] .hover\:text-white:hover { color: #17181b; }
+[data-theme="light"] .group:hover .group-hover\:text-white { color: #17181b; }
+[data-theme="light"] .hover\:text-white\/80:hover { color: rgba(23, 24, 27, 0.82); }
+
+/* --- Invertierte Chips (weiße Fläche + schwarze Schrift) → dunkle Chips --- */
+[data-theme="light"] .bg-white { background-color: #17181b; }
+[data-theme="light"] .text-black { color: #ffffff; }
+[data-theme="light"] .accent-white { accent-color: #17181b; }
+
+/* --- Subtile Overlays --- */
+[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.06); }
+[data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04); }
+[data-theme="light"] .hover\:bg-white\/5:hover { background-color: rgba(0, 0, 0, 0.05); }
+[data-theme="light"] .bg-white\/\[0\.04\] { background-color: rgba(0, 0, 0, 0.035); }
+[data-theme="light"] .focus\:bg-white\/\[0\.07\]:focus { background-color: rgba(0, 0, 0, 0.06); }
+
+/* --- Rahmen --- */
+[data-theme="light"] .border-white\/45 { border-color: rgba(0, 0, 0, 0.28); }
+[data-theme="light"] .border-white\/30 { border-color: rgba(0, 0, 0, 0.22); }
+[data-theme="light"] .hover\:border-white\/30:hover { border-color: rgba(0, 0, 0, 0.28); }
+[data-theme="light"] .border-white\/15 { border-color: rgba(0, 0, 0, 0.14); }
+[data-theme="light"] .border-white\/12 { border-color: rgba(0, 0, 0, 0.12); }
+[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.10); }
+[data-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.07); }
+[data-theme="light"] .focus\:border-white\/45:focus { border-color: rgba(0, 0, 0, 0.32); }
+
+/* --- Glas → helle, dunkel umrandete Milchglas-Flächen auf hellem Grund --- */
+[data-theme="light"] .liquid-glass,
+[data-theme="light"] .glass,
+[data-theme="light"] .liquid-glass-strong,
+[data-theme="light"] .glass-strong {
+  background: rgba(255, 255, 255, 0.55);
+  background-blend-mode: normal;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+[data-theme="light"] .liquid-glass::before,
+[data-theme="light"] .glass::before,
+[data-theme="light"] .liquid-glass-strong::before,
+[data-theme="light"] .glass-strong::before {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.16) 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 0.05) 80%,
+    rgba(0, 0, 0, 0.16) 100%
+  );
+}
+
+/* --- Deko-Flächen --- */
+[data-theme="light"] .hairline {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.18) 50%, transparent);
+}
+[data-theme="light"] .brand-aura {
+  background: radial-gradient(60% 50% at 50% 0%, rgba(225, 29, 42, 0.05), transparent 70%);
+}
+[data-theme="light"] .grain {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+}
+
+/* --- Glas-Dropdown-Popover (arbiträre dunkle Fläche) --- */
+[data-theme="light"] .bg-\[\#0c0c0f\]\/90 {
+  background-color: rgba(255, 255, 255, 0.96);
+}
+
+/* ------------------------------------------------------------
+   Ausnahme: Bild-Hero-Bereiche bleiben cinematisch dunkel,
+   weil Text und Glas dort über einem Foto liegen.
+   ------------------------------------------------------------ */
+[data-theme="light"] [data-area="home-hero"] .text-white,
+[data-theme="light"] [data-area="blogartikel-kopf"] .text-white { color: #ffffff; }
+[data-theme="light"] [data-area="home-hero"] .text-white\/90 { color: rgba(255, 255, 255, 0.9); }
+[data-theme="light"] [data-area="blogartikel-kopf"] .text-white\/60 { color: rgba(255, 255, 255, 0.6); }
+[data-theme="light"] [data-area="blogartikel-kopf"] .bg-white { background-color: #ffffff; }
+[data-theme="light"] [data-area="blogartikel-kopf"] .text-black { color: #000000; }
+
+[data-theme="light"] [data-area="home-hero"] .liquid-glass,
+[data-theme="light"] [data-area="home-hero"] .liquid-glass-strong {
+  background: rgba(255, 255, 255, 0.01);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+[data-theme="light"] [data-area="home-hero"] .liquid-glass::before,
+[data-theme="light"] [data-area="home-hero"] .liquid-glass-strong::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.2) 80%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+
+/* ------------------------------------------------------------
+   Navbar: fixierte, helle Milchglas-Leiste mit dunklem Text –
+   funktioniert über hellem Inhalt UND über dem dunklen Hero.
+   ------------------------------------------------------------ */
+[data-theme="light"] [data-area="nav-hauptmenue"] .liquid-glass {
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+/* Markenzeichen-Text (außerhalb der Pille, über dem Hero) gut lesbar halten */
+[data-theme="light"] [data-area="nav-hauptmenue"] .text-white {
+  color: #17181b;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.55);
+}

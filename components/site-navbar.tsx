@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 import { BrandLockup } from "@/components/brand-logo";
 import { cx } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
   { href: "/leistungen", label: "Leistungen" },
@@ -48,6 +49,8 @@ export function SiteNavbar() {
               {l.label}
             </Link>
           ))}
+          {/* Tag-/Nacht-Umschalter zwischen den Links und dem Anfragen-Button */}
+          <ThemeToggle className="ml-1" />
           <LiquidMetalButton label="Anfragen" href="/kontakt#direkt-erreichbar" className="ml-1" />
         </nav>
 
@@ -88,7 +91,8 @@ export function SiteNavbar() {
                 {l.label}
               </Link>
             ))}
-            <div className="mt-1 flex justify-center">
+            <div className="mt-2 flex items-center justify-center gap-3">
+              <ThemeToggle />
               <LiquidMetalButton label="Jetzt anfragen" href="/kontakt#direkt-erreichbar" />
             </div>
           </motion.div>

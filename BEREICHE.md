@@ -25,6 +25,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | `nav-links-desktop` | Menü-Pille mit Links (Desktop) |
 | `nav-burger-button` | Burger-Button (Mobil) |
 | `nav-menue-mobil` | Aufgeklapptes Mobil-Menü (nur bei geöffnetem Menü) |
+| `theme-toggle` | Tag-/Nacht-Umschalter (Glühbirne) in der Navbar |
 | `footer` | Fußzeile gesamt |
 | `footer-firma` | Logo + Adresse/Kontakt (links) |
 | `footer-leistungen` | Spalte „Leistungen" |

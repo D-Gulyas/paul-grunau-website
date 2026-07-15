@@ -46,8 +46,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" data-scroll-behavior="smooth" className={`${barlow.variable} ${instrument.variable}`}>
+    <html
+      lang="de"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+      className={`${barlow.variable} ${instrument.variable}`}
+    >
       <body className="relative min-h-dvh antialiased">
+        {/* Tag-/Nacht-Modus vor dem ersten Paint setzen (kein Aufblitzen). Standard: Nacht. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(localStorage.getItem('pg-theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();",
+          }}
+        />
         {/* Ambient brand aura + Filmkorn über die ganze Seite */}
         <div className="pointer-events-none fixed inset-0 -z-10 brand-aura" aria-hidden />
         <div className="pointer-events-none fixed inset-0 -z-10 opacity-60 grain" aria-hidden />
