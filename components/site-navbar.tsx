@@ -72,7 +72,7 @@ export function SiteNavbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="glass-strong mt-3 flex flex-col gap-1 rounded-3xl p-3 md:hidden"
+            className="liquid-glass mt-3 flex flex-col gap-1 rounded-3xl p-3 md:hidden"
           >
             {links.map((l) => (
               <Link
