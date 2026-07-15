@@ -24,6 +24,7 @@ export default function KontaktPage() {
   return (
     <>
       <PageHero
+        area="kontakt-hero"
         eyebrow="Kontakt"
         title={
           <>
@@ -34,7 +35,7 @@ export default function KontaktPage() {
       />
 
       {/* Team */}
-      <Section className="pt-12">
+      <Section area="kontakt-team" className="pt-12">
         <Reveal>
           <SectionHeading eyebrow="Ihre Ansprechpartner" title="Persönlicher Kontakt steht bei uns im Mittelpunkt" />
         </Reveal>
@@ -55,10 +56,10 @@ export default function KontaktPage() {
       </Section>
 
       {/* Kontaktinfos + Formular */}
-      <Section id="direkt-erreichbar" className="pt-0">
+      <Section id="direkt-erreichbar" area="kontakt-direkt-erreichbar" className="pt-0">
         <div className="grid gap-8 lg:grid-cols-5">
           {/* Infos */}
-          <div className="lg:col-span-2">
+          <div data-area="kontakt-infos" className="lg:col-span-2">
             <Reveal>
               <h2 className="font-heading text-3xl italic tracking-[-1px] text-brand-gradient">Direkt erreichbar</h2>
               <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">

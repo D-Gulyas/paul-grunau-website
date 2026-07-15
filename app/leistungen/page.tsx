@@ -23,6 +23,7 @@ export default function LeistungenPage() {
   return (
     <>
       <PageHero
+        area="leistungen-hero"
         eyebrow="Unsere Expertise"
         title={
           <>
@@ -33,7 +34,7 @@ export default function LeistungenPage() {
       />
 
       {/* Detailblöcke je Leistung */}
-      <Section className="space-y-24 pt-12">
+      <Section area="leistungen-liste" className="space-y-24 pt-12">
         {services.map((s, i) => {
           const Icon = icons[s.id] ?? Zap;
           const reversed = i % 2 === 1;
@@ -41,6 +42,7 @@ export default function LeistungenPage() {
             <div
               key={s.id}
               id={s.id}
+              data-area={`leistung-${s.id}`}
               className="grid scroll-mt-28 items-center gap-10 lg:grid-cols-2 lg:gap-16"
             >
               <Reveal className={reversed ? "lg:order-2" : ""}>

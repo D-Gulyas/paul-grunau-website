@@ -36,7 +36,7 @@ const socials = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative mt-10 overflow-hidden">
+    <footer data-area="footer" className="relative mt-10 overflow-hidden">
       {/* Bewegter Lichtstrahl – dezenter Hintergrund (footer_design.md) */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-70 [mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_90%,transparent)]">
         <FooterBeam />
@@ -46,7 +46,7 @@ export function SiteFooter() {
         <div className="hairline" />
         <div className="mt-14 grid gap-12 md:mt-16 md:grid-cols-12">
           {/* Brand + Büro */}
-          <div className="md:col-span-5">
+          <div data-area="footer-firma" className="md:col-span-5">
             <Link href="/" className="flex items-center gap-2.5">
               <BrandMark className="h-9 w-9" />
               <span className="flex flex-col leading-tight">
@@ -92,7 +92,7 @@ export function SiteFooter() {
           </div>
 
           {/* Leistungen */}
-          <div className="md:col-span-3">
+          <div data-area="footer-leistungen" className="md:col-span-3">
             <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-white/40">Leistungen</h3>
             <ul className="mt-5 space-y-3 text-sm">
               {leistungen.map((l) => (
@@ -106,7 +106,7 @@ export function SiteFooter() {
           </div>
 
           {/* Rechtliches */}
-          <div className="md:col-span-2">
+          <div data-area="footer-links" className="md:col-span-2">
             <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-white/40">Links</h3>
             <ul className="mt-5 space-y-3 text-sm">
               {rechtliches.map((l) => (
@@ -120,7 +120,7 @@ export function SiteFooter() {
           </div>
 
           {/* Social */}
-          <div className="md:col-span-2">
+          <div data-area="footer-social" className="md:col-span-2">
             <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-white/40">Social Media</h3>
             <div className="-ml-3 mt-3 flex gap-1">
               {socials.map((s) => (
@@ -143,7 +143,7 @@ export function SiteFooter() {
 
         <div className="hairline my-10" />
 
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-white/40 sm:flex-row">
+        <div data-area="footer-copyright" className="flex flex-col items-center justify-between gap-3 text-xs text-white/40 sm:flex-row">
           <p>© {new Date().getFullYear()} Brandschutz &amp; Elektrotechnik Meisterbetrieb Paul Grunau</p>
           <p>Mit Erfahrung ans Ziel.</p>
         </div>

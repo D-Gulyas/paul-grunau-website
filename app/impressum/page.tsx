@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function ImpressumPage() {
   return (
     <>
-      <PageHero eyebrow="Rechtliches" title="Impressum" />
-      <Section className="max-w-3xl space-y-5 pt-12">
+      <PageHero area="impressum-hero" eyebrow="Rechtliches" title="Impressum" />
+      <Section area="impressum-inhalt" className="max-w-3xl space-y-5 pt-12">
         <LegalSection title="Angaben gemäß § 5 TMG">
           <p>
             <strong className="text-white">Brandschutz &amp; Elektrotechnik Meisterbetrieb Paul Grunau</strong>

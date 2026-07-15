@@ -15,8 +15,9 @@ export default function DatenschutzPage() {
         eyebrow="Rechtliches · Stand Juli 2025"
         title="Datenschutzerklärung"
         intro="Der Schutz Ihrer persönlichen Daten ist uns ein wichtiges Anliegen. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Vorschriften (DSGVO, BDSG)."
+        area="datenschutz-hero"
       />
-      <Section className="max-w-3xl space-y-5 pt-12">
+      <Section area="datenschutz-inhalt" className="max-w-3xl space-y-5 pt-12">
         <LegalSection title="1. Verantwortliche Stelle">
           <p>
             Verantwortlicher im Sinne der DSGVO ist:

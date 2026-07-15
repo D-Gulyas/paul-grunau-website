@@ -15,6 +15,7 @@ export function ApplicationForm() {
       method="post"
       encType="multipart/form-data"
       onSubmit={() => setSubmitting(true)}
+      data-area="karriere-bewerbungsformular"
       className="glass-strong rounded-[2rem] p-6 md:p-8"
     >
       <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-white/45">Ihre persönlichen Daten</h3>

@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <section className="grid min-h-dvh place-items-center px-5">
+    <section data-area="fehler-404" className="grid min-h-dvh place-items-center px-5">
       <div className="text-center">
         <BrandMark className="mx-auto h-16 w-16 text-white" />
         <p className="mt-8 font-heading text-8xl italic tracking-[-2px] text-white">404</p>

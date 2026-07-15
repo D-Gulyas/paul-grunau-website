@@ -27,7 +27,7 @@ export function SiteNavbar() {
 
   return (
     // Kein filter/transform auf der Leiste – sonst deaktiviert CSS den backdrop-filter der Pille.
-    <header className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16">
+    <header data-area="nav-hauptmenue" className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16">
       <div className="flex items-center justify-between">
         {/* Links: nur das Logo (Firmenname entfernt) */}
         <Link href="/" aria-label="Zur Startseite">
@@ -35,7 +35,7 @@ export function SiteNavbar() {
         </Link>
 
         {/* Mitte (nur Desktop): liquid-glass-Pille mit Links + weißem Button */}
-        <nav className="liquid-glass hidden items-center gap-1 rounded-full p-1.5 md:flex">
+        <nav data-area="nav-links-desktop" className="liquid-glass hidden items-center gap-1 rounded-full p-1.5 md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -55,6 +55,7 @@ export function SiteNavbar() {
         <div className="hidden w-12 md:block" />
         <button
           type="button"
+          data-area="nav-burger-button"
           aria-label={open ? "Menü schließen" : "Menü öffnen"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -72,6 +73,7 @@ export function SiteNavbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            data-area="nav-menue-mobil"
             className="liquid-glass mt-3 flex flex-col gap-1 rounded-3xl p-3 md:hidden"
           >
             {links.map((l) => (

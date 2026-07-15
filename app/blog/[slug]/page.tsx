@@ -96,9 +96,9 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 2);
 
   return (
-    <article>
+    <article data-area="blogartikel">
       {/* Header mit Titelbild */}
-      <header className="relative overflow-hidden pt-28">
+      <header data-area="blogartikel-kopf" className="relative overflow-hidden pt-28">
         <div className="absolute inset-0 -z-10 h-[46vh] sm:h-[54vh] md:h-[62vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={asset(post.image)} alt={post.title} className="h-full w-full object-cover" />
@@ -132,7 +132,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       </header>
 
       {/* Inhalt */}
-      <div className="mx-auto w-full max-w-3xl px-5 py-14 md:px-8">
+      <div data-area="blogartikel-inhalt" className="mx-auto w-full max-w-3xl px-5 py-14 md:px-8">
         <Reveal>
           <div className="space-y-6">
             {post.body.map((block, i) => (
@@ -145,7 +145,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
         {/* Mini-CTA */}
         <Reveal>
-          <div className="glass-strong flex flex-col items-start justify-between gap-5 rounded-3xl p-7 sm:flex-row sm:items-center">
+          <div data-area="blogartikel-cta" className="glass-strong flex flex-col items-start justify-between gap-5 rounded-3xl p-7 sm:flex-row sm:items-center">
             <div>
               <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">Fragen zu diesem Thema?</h3>
               <p className="mt-1 font-body text-sm font-light text-white/65">
@@ -158,7 +158,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       </div>
 
       {/* Weitere Artikel */}
-      <Section className="pt-0">
+      <Section area="blogartikel-weitere" className="pt-0">
         <h2 className="font-heading text-3xl italic tracking-[-1px] text-brand-gradient">Weitere Artikel</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           {related.map((p) => (

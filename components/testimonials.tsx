@@ -170,7 +170,7 @@ export function Testimonials() {
   return (
     <div className="mt-12">
       {/* Echte Google-Gesamtbewertung */}
-      <div className="mb-12 flex flex-col items-center gap-2 text-center">
+      <div data-area="kundenstimmen-bewertung" className="mb-12 flex flex-col items-center gap-2 text-center">
         <div className="flex items-center gap-3">
           <span className="font-heading text-5xl italic leading-none text-white">{rating.average}</span>
           <span className="flex text-[#f5b301]">
@@ -189,6 +189,7 @@ export function Testimonials() {
       {/* Spalten-Marquee – keine Maus-/Hover-Interaktion (pointer-events-none),
           versetzte Laufrichtungen + unterschiedliche Geschwindigkeiten. */}
       <div
+        data-area="kundenstimmen-marquee"
         className={
           reduce
             ? "flex flex-wrap justify-center gap-x-6"

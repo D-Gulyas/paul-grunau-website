@@ -34,6 +34,7 @@ export default function KarrierePage() {
   return (
     <>
       <PageHero
+        area="karriere-hero"
         eyebrow="Karriere bei Paul Grunau"
         title={
           <>
@@ -44,7 +45,7 @@ export default function KarrierePage() {
       />
 
       {/* Infoblöcke */}
-      <Section className="pt-12">
+      <Section area="karriere-infobloecke" className="pt-12">
         <StaggerGroup className="grid gap-6 md:grid-cols-3">
           {blocks.map((b, i) => (
             <StaggerItem key={b.title}>
@@ -61,7 +62,7 @@ export default function KarrierePage() {
       </Section>
 
       {/* Bewerbungsformular */}
-      <Section className="pt-0">
+      <Section area="karriere-bewerbung" className="pt-0">
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Reveal>

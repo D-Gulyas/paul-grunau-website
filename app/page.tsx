@@ -32,7 +32,7 @@ export default function HomePage() {
       <HomeHero />
 
       {/* Unsere Philosophie */}
-      <Section>
+      <Section area="home-philosophie">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <SectionHeading title="Unsere Philosophie" />
@@ -53,7 +53,7 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          <StaggerGroup className="grid gap-4">
+          <StaggerGroup area="home-philosophie-highlights" className="grid gap-4">
             {highlights.map((h, i) => (
               <StaggerItem key={h.title}>
                 <div className="glass glass-glow flex gap-5 rounded-3xl p-6">
@@ -72,7 +72,7 @@ export default function HomePage() {
       </Section>
 
       {/* Stats – Kennzahlen zählen beim Sichtbarwerden hoch */}
-      <Section className="py-10 md:py-12">
+      <Section area="home-kennzahlen" className="py-10 md:py-12">
         <StaggerGroup className="grid auto-rows-fr grid-cols-2 gap-4 md:grid-cols-4">
           {stats.map((s) => (
             <StaggerItem key={s.label} className="h-full">
@@ -88,7 +88,7 @@ export default function HomePage() {
       </Section>
 
       {/* Kundenstimmen – Google-Rezensionen als Diashow */}
-      <Section>
+      <Section area="home-kundenstimmen">
         <Reveal>
           <h2 className="font-heading text-4xl italic leading-[0.95] tracking-[-2px] text-brand-gradient sm:text-5xl md:text-6xl lg:text-7xl">
             Kundenstimmen

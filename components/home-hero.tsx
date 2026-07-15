@@ -89,9 +89,9 @@ export function HomeHero() {
   }, [reduce, front, reset, nachtOpacity]);
 
   return (
-    <section className="relative flex min-h-dvh flex-col overflow-hidden">
+    <section data-area="home-hero" className="relative flex min-h-dvh flex-col overflow-hidden">
       {/* Slideshow Hintergrund: Baufortschritts-Übergang */}
-      <div className="absolute inset-0 z-0">
+      <div data-area="home-hero-slideshow" className="absolute inset-0 z-0">
         <motion.div
           className="absolute inset-0"
           animate={reduce ? undefined : { scale: [1, 1.06] }}
@@ -146,7 +146,7 @@ export function HomeHero() {
       {/* Inhalt */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pt-28 text-center">
         {/* Headline – Firmenname, Wort-für-Wort Blur-In */}
-        <div className="flex flex-col items-center">
+        <div data-area="home-hero-headline" className="flex flex-col items-center">
           {/* Zeile 1: obere Headline – immer größer als Zeile 2 (gleiche vw-Skala, höhere Werte) */}
           <BlurText
             text="Brandschutz & Elektrotechnik"
@@ -162,7 +162,7 @@ export function HomeHero() {
         </div>
 
         {/* CTAs: Mehr erfahren + Telefonnummer – auf Mobil bewusst dezent, damit der Firmenname dominiert */}
-        <motion.div {...fade(0.6, reduce)} className="mt-5 flex items-center gap-3 sm:mt-8 sm:gap-6">
+        <motion.div {...fade(0.6, reduce)} data-area="home-hero-cta" className="mt-5 flex items-center gap-3 sm:mt-8 sm:gap-6">
           <Link
             href="/leistungen"
             className="liquid-glass-strong group inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-body text-xs font-medium text-white transition-transform duration-300 hover:-translate-y-0.5 sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm"
@@ -181,7 +181,7 @@ export function HomeHero() {
       </div>
 
       {/* Partner */}
-      <motion.div {...fade(0.9, reduce)} className="relative z-10 flex flex-col items-center gap-4 px-4 pb-8">
+      <motion.div {...fade(0.9, reduce)} data-area="home-hero-partner" className="relative z-10 flex flex-col items-center gap-4 px-4 pb-8">
         <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">
           Wir arbeiten mit führenden Herstellern
         </span>

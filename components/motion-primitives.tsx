@@ -41,10 +41,19 @@ const item: Variants = {
   show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export function StaggerGroup({ children, className }: { children: ReactNode; className?: string }) {
+export function StaggerGroup({
+  children,
+  className,
+  area,
+}: {
+  children: ReactNode;
+  className?: string;
+  area?: string;
+}) {
   const reduce = useReducedMotion();
   return (
     <motion.div
+      data-area={area}
       className={className}
       variants={reduce ? undefined : stagger}
       initial={reduce ? undefined : "hidden"}

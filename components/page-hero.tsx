@@ -6,13 +6,15 @@ export function PageHero({
   eyebrow,
   title,
   intro,
+  area,
 }: {
   eyebrow: string;
   title: ReactNode;
   intro?: ReactNode;
+  area?: string;
 }) {
   return (
-    <section className="relative overflow-hidden px-5 pb-8 pt-36 md:px-8 md:pt-44">
+    <section data-area={area} className="relative overflow-hidden px-5 pb-8 pt-36 md:px-8 md:pt-44">
       {/* dezenter Markenglow im Kopfbereich */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[60%] opacity-80 brand-aura"

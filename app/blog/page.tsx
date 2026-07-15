@@ -19,6 +19,7 @@ export default function BlogPage() {
   return (
     <>
       <PageHero
+        area="blog-hero"
         eyebrow="Fachwissen & Aktuelles"
         title={
           <>
@@ -28,9 +29,9 @@ export default function BlogPage() {
         intro="Hier finden Sie wertvolle Informationen, Tipps und Neuigkeiten rund um die Themen Brandschutz und Elektrotechnik."
       />
 
-      <Section className="pt-12">
+      <Section area="blog-liste" className="pt-12">
         {/* Featured Artikel */}
-        <StaggerGroup>
+        <StaggerGroup area="blog-artikel-featured">
           <StaggerItem>
             <Link
               href={`/blog/${featured.slug}`}
@@ -70,7 +71,7 @@ export default function BlogPage() {
         </StaggerGroup>
 
         {/* Weitere Artikel */}
-        <StaggerGroup className="mt-6 grid gap-6 md:grid-cols-2">
+        <StaggerGroup area="blog-artikel-liste" className="mt-6 grid gap-6 md:grid-cols-2">
           {rest.map((post) => (
             <StaggerItem key={post.slug}>
               <Link

@@ -99,18 +99,25 @@ export function SectionHeading({
   );
 }
 
-/* --- Section wrapper mit konsistentem Spacing --- */
+/* --- Section wrapper mit konsistentem Spacing ---
+   `area`: sprechender Bereichsname für Fehlermeldungen/Updates (data-area). */
 export function Section({
   children,
   className,
   id,
+  area,
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
+  area?: string;
 }) {
   return (
-    <section id={id} className={cx("mx-auto w-full max-w-6xl px-5 py-20 md:px-8 md:py-28", className)}>
+    <section
+      id={id}
+      data-area={area}
+      className={cx("mx-auto w-full max-w-6xl px-5 py-20 md:px-8 md:py-28", className)}
+    >
       {children}
     </section>
   );

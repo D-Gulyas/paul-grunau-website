@@ -14,6 +14,7 @@ export function ContactForm() {
       action="/kontakt.php"
       method="post"
       onSubmit={() => setSubmitting(true)}
+      data-area="kontakt-formular"
       className="glass-strong rounded-[2rem] p-6 md:p-8"
     >
       <div className="grid gap-5 sm:grid-cols-2">
