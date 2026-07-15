@@ -2,7 +2,11 @@
 
 Unternehmenswebseite des Meisterbetriebs **Brandschutz & Elektrotechnik Paul Grunau** (Waldbröl) –
 ein cinematisches **Liquid-Glass-Design** auf tiefschwarzem Grund, überwiegend monochrom, mit
-**Marken-Farbverlauf (Rot → Orange → Gelb)** auf den Überschriften.
+Überschriften im **Marken-Rot**.
+
+> 💡 **Idee (festgehalten):** Die Überschriften waren ursprünglich als Marken-Farbverlauf
+> (Rot → Orange → Gelb) angedacht. Aktuell sind sie einfarbig rot; der Verlauf bleibt als
+> mögliche Design-Variante notiert.
 
 ![Status](https://img.shields.io/badge/Status-Im%20Aufbau-orange) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![React](https://img.shields.io/badge/React-19-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8)
 
