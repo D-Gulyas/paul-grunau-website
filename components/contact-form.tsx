@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { FieldHint, Input, Label, Textarea } from "@/components/form-fields";
 import { GlassSelect } from "@/components/glass-select";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
@@ -80,7 +81,7 @@ export function ContactForm() {
       <label className="mt-5 flex items-start gap-3 text-sm text-white/60">
         <input type="checkbox" name="privacy" required className="mt-1 h-4 w-4 shrink-0 accent-white" />
         <span>
-          Ich habe die <a href="/datenschutz" className="text-white underline underline-offset-2 hover:text-white/80">Datenschutzerklärung</a> gelesen und stimme der
+          Ich habe die <Link href="/datenschutz" className="text-white underline underline-offset-2 hover:text-white/80">Datenschutzerklärung</Link> gelesen und stimme der
           Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu.
           <span className="text-white"> *</span>
         </span>

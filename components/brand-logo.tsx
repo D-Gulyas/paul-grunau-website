@@ -1,3 +1,5 @@
+import { asset } from "@/lib/base-path";
+
 /**
  * Paul Grunau Firmenlogo – Flamme (Brandschutz) + Blitz (Elektrotechnik)
  * in den Firmenfarben. Neues PNG mit transparentem Hintergrund.
@@ -5,7 +7,7 @@
 export function BrandMark({ title = "Paul Grunau Logo", className }: { title?: string; className?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/images/logo-neu.png" alt={title} className={className} />
+    <img src={asset("/images/logo-neu.png")} alt={title} className={className} />
   );
 }
 

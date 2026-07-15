@@ -12,12 +12,13 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Phone } from "lucide-react";
 import { BlurText } from "@/components/blur-text";
+import { asset } from "@/lib/base-path";
 
 // Hero-Diashow: identisch gerahmte Vorher/Nachher/Nacht-Aufnahme desselben Hauses.
 // hausBau = Rohbau mit Gerüst, hausFertig = fertig montierte PV-Anlage, hausNacht = selbes Haus bei Nacht mit Licht an.
-const hausBau = "/images/hero-haus-1.webp";
-const hausFertig = "/images/hero-haus-2.webp";
-const hausNacht = "/images/hero-haus-3.webp";
+const hausBau = asset("/images/hero-haus-1.webp");
+const hausFertig = asset("/images/hero-haus-2.webp");
+const hausNacht = asset("/images/hero-haus-3.webp");
 
 // Weiche Übergangskante (Federbreite in %) der Baufortschritts-Front.
 const FEATHER = 14;

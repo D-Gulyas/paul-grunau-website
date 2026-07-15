@@ -5,6 +5,7 @@ import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/motion-primitives";
 import { Eyebrow, Section } from "@/components/ui";
 import { services } from "@/lib/content";
+import { asset } from "@/lib/base-path";
 
 export const metadata: Metadata = {
   title: "Leistungen",
@@ -46,7 +47,7 @@ export default function LeistungenPage() {
                 <div className="glass glass-glow overflow-hidden rounded-[2rem]">
                   <div className="relative h-72 md:h-96">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.image} alt={s.title} className="h-full w-full object-cover" />
+                    <img src={asset(s.image)} alt={s.title} className="h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
                   </div>
                 </div>

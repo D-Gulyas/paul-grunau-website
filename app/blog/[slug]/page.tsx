@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import { ButtonLink, Section } from "@/components/ui";
 import { blogPosts, type BlogBlock } from "@/lib/content";
+import { asset } from "@/lib/base-path";
 
 export function generateStaticParams() {
   return blogPosts.map((p) => ({ slug: p.slug }));
@@ -100,7 +101,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       <header className="relative overflow-hidden pt-28">
         <div className="absolute inset-0 -z-10 h-[46vh] sm:h-[54vh] md:h-[62vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+          <img src={asset(post.image)} alt={post.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/55" />
         </div>
         <div className="mx-auto w-full max-w-3xl px-5 pb-4 pt-24 md:px-8 md:pt-36">
@@ -168,7 +169,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             >
               <div className="h-20 w-24 shrink-0 overflow-hidden rounded-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
+                <img src={asset(p.image)} alt={p.title} className="h-full w-full object-cover" />
               </div>
               <div className="min-w-0 flex-1 pr-2">
                 <span className="font-body text-xs text-white/55">{p.category}</span>

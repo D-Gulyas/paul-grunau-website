@@ -19,7 +19,12 @@ ein cinematisches **Liquid-Glass-Design** auf tiefschwarzem Grund, überwiegend 
 
 ## 🚀 Live Demo
 
-🌐 **https://grunau.mobi**
+Die neue Webseite ist als Vorschau live über GitHub Pages verfügbar:
+🌐 **https://d-gulyas.github.io/paul-grunau-website/**
+
+> ℹ️ Reine Design-/Inhalts-Vorschau. Die Kontakt- und Bewerbungsformulare senden
+> keine Mails (GitHub Pages hat kein PHP) – das funktioniert erst auf dem finalen
+> PHP-Hosting.
 
 ## 🛠️ Tech-Stack
 

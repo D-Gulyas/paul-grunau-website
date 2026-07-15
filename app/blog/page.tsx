@@ -5,6 +5,7 @@ import { PageHero } from "@/components/page-hero";
 import { StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section } from "@/components/ui";
 import { blogPosts } from "@/lib/content";
+import { asset } from "@/lib/base-path";
 
 export const metadata: Metadata = {
   title: "Blog – Fachwissen & Aktuelles",
@@ -38,7 +39,7 @@ export default function BlogPage() {
               <div className="relative h-64 overflow-hidden lg:h-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={featured.image}
+                  src={asset(featured.image)}
                   alt={featured.title}
                   className="h-full w-full transform-gpu object-cover transition-transform duration-500 ease-out [will-change:transform] group-hover:scale-105"
                 />
@@ -79,7 +80,7 @@ export default function BlogPage() {
                 <div className="relative h-48 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={post.image}
+                    src={asset(post.image)}
                     alt={post.title}
                     className="h-full w-full transform-gpu object-cover transition-transform duration-500 ease-out [will-change:transform] group-hover:scale-105"
                   />

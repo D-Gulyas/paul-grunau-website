@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { FieldHint, Input, Label, Textarea } from "@/components/form-fields";
 import { GlassSelect } from "@/components/glass-select";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
@@ -95,9 +96,9 @@ export function ApplicationForm() {
         <input type="checkbox" name="privacy" required className="mt-1 h-4 w-4 shrink-0 accent-white" />
         <span>
           Ich stimme der Verarbeitung meiner Bewerbungsdaten gemäß{" "}
-          <a href="/datenschutz" className="text-white underline underline-offset-2 hover:text-white/80">
+          <Link href="/datenschutz" className="text-white underline underline-offset-2 hover:text-white/80">
             Datenschutzerklärung
-          </a>{" "}
+          </Link>{" "}
           zu.<span className="text-white"> *</span>
         </span>
       </label>
