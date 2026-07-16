@@ -29,6 +29,9 @@
      Bewusst KEIN background-clip:text mehr – das hätte die kursiven Glyphen an den Rändern
      (links/rechts) abgeschnitten. Solide `color` rendert die Schrift vollständig. */
   color: #e11d2a;
+  /* Alle Bereichs-Überschriften fett – in beiden Modi (wie der Firmenname im Hero).
+     Instrument Serif hat nur Gewicht 400 → der Browser synthetisiert die Fettung. */
+  font-weight: 700;
   /* GESPEICHERT – Original-Marken-Verlauf (siehe HEADINGS-COLOR-BACKUP.md). Zum Wiederherstellen
      die folgenden Zeilen aktivieren und `color: #e11d2a;` oben entfernen:
      background-image: linear-gradient(105deg, #e11d2a 0%, #f26619 50%, #f5b301 100%);
@@ -203,6 +206,12 @@
   }
   .glass-glow:hover {
     transform: translateY(-4px);
+  }
+
+  /* Glas ohne die helle Rand-Kante (::before) – für Elemente, bei denen der
+     zusätzliche Glasrand stört (z. B. Theme-Toggle, Logo-Kreis). */
+  .no-glass-edge::before {
+    display: none;
   }
 
   /* Dezenter monochromer Glow (Hero-Aura, CTA-Flächen) */
@@ -386,24 +395,32 @@ body {
 }
 
 /* ------------------------------------------------------------
-   Navbar: fixierte, helle Milchglas-Leiste mit dunklem Text –
-   funktioniert über hellem Inhalt UND über dem dunklen Hero.
+   Navbar im Tag-Modus.
+   - Links-Pille: identisch zum Dunkel-Modus (transparentes Glas + helle Kante).
+   - Burger-Button (mobil): behält eine helle Fläche, damit er über dem
+     dunklen Hero lesbar bleibt.
+   - Text bleibt dunkel + heller Schimmer für Lesbarkeit über Inhalt UND Hero.
    ------------------------------------------------------------ */
-[data-theme="light"] [data-area="nav-hauptmenue"] .liquid-glass {
+[data-theme="light"] [data-area="nav-links-desktop"] {
+  background: rgba(255, 255, 255, 0.01);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+[data-theme="light"] [data-area="nav-links-desktop"]::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+}
+[data-theme="light"] [data-area="nav-burger-button"] {
   background: rgba(255, 255, 255, 0.55);
   box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.75);
 }
-/* Markenzeichen-Text (außerhalb der Pille, über dem Hero) gut lesbar halten */
 [data-theme="light"] [data-area="nav-hauptmenue"] .text-white {
   color: #000;
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.55);
-}
-
-/* ------------------------------------------------------------
-   Überschriften im Tag-Modus fett darstellen (mehr Kontrast) –
-   wie der fette Firmenname im Hero. Instrument Serif hat nur
-   Gewicht 400 → der Browser synthetisiert Fettung (wie im Hero).
-   ------------------------------------------------------------ */
-[data-theme="light"] .text-brand-gradient {
-  font-weight: 700;
 }

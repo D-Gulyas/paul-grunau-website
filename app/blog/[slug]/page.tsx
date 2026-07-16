@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
-import { ButtonLink, Section } from "@/components/ui";
+import { Section } from "@/components/ui";
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { blogPosts, type BlogBlock } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -152,7 +153,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                 Unser Meisterteam berät Sie gerne persönlich.
               </p>
             </div>
-            <ButtonLink href="/kontakt">Kontakt aufnehmen</ButtonLink>
+            <LiquidMetalButton label="Kontakt aufnehmen" href="/kontakt" />
           </div>
         </Reveal>
       </div>

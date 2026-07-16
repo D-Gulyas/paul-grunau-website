@@ -28,9 +28,10 @@ Marken-Farbverlauf (Rot → Orange → Gelb) auf Überschriften. Alles ruhig, ho
 | Textauswahl | `rgba(255,255,255,0.22)` |
 | Scrollbar-Thumb | `rgba(255,255,255,0.18)` |
 
-- Der Marken-Verlauf wird über `@utility text-brand-gradient` gesetzt (`background-clip:text`,
-  `width:fit-content`, damit der Verlauf über den **ganzen** Text läuft und nicht kurze Texte nur im
-  roten Bereich landen).
+- Alle Bereichs-Überschriften laufen über `@utility text-brand-gradient`: aktuell **solides Markenrot
+  `#e11d2a`**, `text-transform:uppercase`, `width:fit-content` und **`font-weight:700` (fett, in beiden
+  Modi – wie der Firmenname im Hero)**. Der ursprüngliche Rot→Orange→Gelb-Verlauf ist als Kommentar in
+  `globals.css` archiviert (siehe `HEADINGS-COLOR-BACKUP.md`).
 - **Keine** flächigen Farbverläufe im Hintergrund, kein Grün. Farbe erscheint ausschließlich als
   Text-Verlauf und als Hover-Akzent.
 
@@ -70,6 +71,8 @@ position: relative; overflow: hidden;
 ```
 - `::before` erzeugt die **Gradient-Kante** (1.4px, `mask-composite: exclude`): heller oben/unten,
   transparent in der Mitte. Bei `-strong` kräftiger (Stops 0.5 / 0.2 / 0).
+- **`.no-glass-edge`** schaltet genau diese `::before`-Kante ab (`display:none`) – für Elemente ohne
+  zusätzlichen Glasrand (Theme-Toggle, Logo-Kreis).
 - **Hilfsklassen:** `.glass-glow` (Hover: `translateY(-4px)`), `.brand-aura`
   (`radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,0.06), transparent 70%)`, global im Layout),
   `.hairline`, `.grain` (Filmkorn, global im Layout).
@@ -147,9 +150,12 @@ Kernstück des Looks. Drei identisch gerahmte Aufnahmen desselben Hauses (lokal,
 
 ## 8. Layout & Sektionen
 
-- **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`); Mitte
-  `liquid-glass`-Pille mit Links (Leistungen · Blog · Karriere · Kontakt) + weißem Pill-Button
-  „Anfragen" + ArrowUpRight; mobil Hamburger → `glass-strong`-Dropdown.
+- **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`, Kreis mit
+  `no-glass-edge`); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
+  (Leistungen · Blog · Karriere · Kontakt), **Theme-Toggle** (`theme-toggle.tsx`, Glühbirne, zwischen
+  Kontakt und Anfragen) und `LiquidMetalButton` „Anfragen"; mobil Hamburger → `liquid-glass`-Dropdown.
+  Im **Tag-Modus** ist die Links-Pille per CSS **identisch** zum Dunkel-Modus gestylt (transparentes
+  Glas + helle Kante); nur der Burger behält eine helle Fläche für Lesbarkeit über dem Hero.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   TracedIcon) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
   Google-Rezensionen, 4,6 ★ (20)).
