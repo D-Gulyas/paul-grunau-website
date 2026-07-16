@@ -93,7 +93,13 @@ position: relative; overflow: hidden;
 - **Entrance-Konvention:** `initial { filter: blur(10px), opacity: 0, y: 20 }` → sichtbar, `easeOut`
   bzw. `ease [0.22, 1, 0.36, 1]`, gestaffelte `delay`s.
 - **`BlurText`** (`blur-text.tsx`): Wort-für-Wort-Blur-In der Headlines (Stagger pro Wort).
-- **`Reveal` / `StaggerGroup` / `StaggerItem`** (`motion-primitives.tsx`): Scroll-Reveal & Staffelung.
+- **`Reveal` / `StaggerGroup` / `StaggerItem`** (`motion-primitives.tsx`): Scroll-Reveal & Staffelung
+  (`whileInView`, `once`).
+- **`app/template.tsx`** (Passthrough): erzwingt bei **jeder** Navigation einen frischen Mount des
+  Seiteninhalts. Sonst verwendet React auf strukturgleichen Unterseiten (alle `PageHero` + `Section`)
+  die `motion`-Instanzen wieder → Einblendungen laufen uneinheitlich. Dadurch erscheinen die Elemente
+  auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
+  bleiben unberührt; Scroll-Reveal unterhalb des Folds bleibt erhalten.)
 - **`stat-value`**: Count-up der Kennzahlen beim Sichtbarwerden.
 - **`TracedIcon`** (`ui/traced-icon.tsx`): Icons „zeichnen" sich per Stroke-Animation.
 - **Kundenstimmen:** vertikales Spalten-Marquee (versetzte Richtungen/Tempi, nahtlose Endlosschleife).
