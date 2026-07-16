@@ -155,6 +155,11 @@ Kernstück des Looks. Drei identisch gerahmte Aufnahmen desselben Hauses (lokal,
   `liquid-glass`-Dropdown.
   Im **Tag-Modus** ist die Links-Pille per CSS **identisch** zum Dunkel-Modus gestylt (transparentes
   Glas + helle Kante); nur der Burger behält eine helle Fläche für Lesbarkeit über dem Hero.
+  **Scroll-Farbe im Tag-Modus:** Links + Glühbirne der Pille sind **weiß**, solange die Navbar über
+  einem dunklen Bild-Hero liegt, und **schwarz**, sobald heller Inhalt darunter scrollt. Umschaltung
+  per JS: `site-navbar.tsx` setzt `data-over-hero` (Scroll-Listener, prüft `home-hero`/`blogartikel-kopf`),
+  CSS reagiert darauf. Der Burger bleibt (eigene helle Fläche) immer schwarz. Das Logo (`BrandMark`,
+  h-12) ist ein farbiges PNG → von der Farbumschaltung unberührt.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   TracedIcon) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
   Google-Rezensionen, 4,6 ★ (20)).

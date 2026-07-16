@@ -295,6 +295,10 @@ body {
 [data-theme="light"] .hover\:text-\[\#e11d2a\]:hover { color: #e11d2a; }
 [data-theme="light"] .group:hover .group-hover\:text-\[\#e11d2a\] { color: #e11d2a; }
 
+/* Kennzahlen fett – im Dunkel-Modus wirken sie (weiß auf schwarz) optisch fetter;
+   im Tag-Modus wird das per font-weight nachgezogen (nur die Zahlen = font-heading). */
+[data-theme="light"] [data-area="home-kennzahlen"] .font-heading { font-weight: 700; }
+
 /* --- Invertierte Chips (weiße Fläche + schwarze Schrift) → dunkle Chips --- */
 [data-theme="light"] .bg-white { background-color: #17181b; }
 [data-theme="light"] .text-black { color: #ffffff; }
@@ -416,5 +420,11 @@ body {
 }
 [data-theme="light"] [data-area="nav-hauptmenue"] .text-white {
   color: #000;
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.55);
+}
+/* Über dem dunklen Hero: Links + Glühbirne der Desktop-Pille weiß. Der Burger
+   behält seine helle Fläche und bleibt deshalb schwarz. Umschaltung per JS
+   (`data-over-hero`), sobald heller Inhalt unter die Navbar scrollt. */
+[data-theme="light"] [data-area="nav-hauptmenue"][data-over-hero="true"] [data-area="nav-links-desktop"] .text-white,
+[data-theme="light"] [data-area="nav-hauptmenue"][data-over-hero="true"] [data-area="nav-links-desktop"] .text-white\/90 {
+  color: #fff;
 }

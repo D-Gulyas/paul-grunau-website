@@ -20,15 +20,40 @@ const links = [
 export function SiteNavbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  // Liegt die Navbar über einem dunklen Bild-Hero? (nur diese Routen haben einen)
+  const [overHero, setOverHero] = useState(() => pathname === "/" || /^\/blog\/[^/]+/.test(pathname));
 
   // Menü bei Routenwechsel schließen
   useEffect(() => setOpen(false), [pathname]);
+
+  // Tag-Modus: Links + Glühbirne sollen über dem dunklen Hero weiß sein und
+  // schwarz, sobald heller Inhalt (z. B. „Unsere Philosophie") unter die Navbar scrollt.
+  useEffect(() => {
+    const hero = document.querySelector('[data-area="home-hero"], [data-area="blogartikel-kopf"]');
+    if (!hero) {
+      setOverHero(false);
+      return;
+    }
+    // Navbar reicht (top-4 + Höhe) bis ~72px – solange der Hero dort noch liegt, ist sie „über Hero".
+    const update = () => setOverHero(hero.getBoundingClientRect().bottom > 72);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [pathname]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
     // Kein filter/transform auf der Leiste – sonst deaktiviert CSS den backdrop-filter der Pille.
-    <header data-area="nav-hauptmenue" className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16">
+    <header
+      data-area="nav-hauptmenue"
+      data-over-hero={overHero ? "true" : "false"}
+      className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16"
+    >
       <div className="flex items-center justify-between">
         {/* Links: nur das Logo (Firmenname entfernt) */}
         <Link href="/" aria-label="Zur Startseite">

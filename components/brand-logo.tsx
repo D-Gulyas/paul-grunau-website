@@ -16,7 +16,7 @@ export function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
     <span className="flex items-center gap-2.5 text-white">
       <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full">
-        <BrandMark className="h-9 w-9 text-white" />
+        <BrandMark className="h-12 w-12 text-white" />
       </span>
       {!compact && (
         <span className="flex flex-col leading-tight">
