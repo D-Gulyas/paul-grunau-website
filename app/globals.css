@@ -250,7 +250,7 @@ body {
 }
 :root[data-theme="light"] body {
   background-color: #eef1f4;
-  color: #17181b;
+  color: #000;
 }
 :root[data-theme="light"] ::selection {
   background: rgba(0, 0, 0, 0.14);
@@ -267,26 +267,30 @@ body {
   background: rgba(0, 0, 0, 0.32);
 }
 
-/* --- Fließtext & Abstufungen → dunkle Tinte --- */
-[data-theme="light"] .text-white { color: #17181b; }
-[data-theme="light"] .text-white\/90 { color: rgba(23, 24, 27, 0.92); }
-[data-theme="light"] .text-white\/85 { color: rgba(23, 24, 27, 0.88); }
-[data-theme="light"] .text-white\/80 { color: rgba(23, 24, 27, 0.82); }
-[data-theme="light"] .text-white\/75 { color: rgba(23, 24, 27, 0.78); }
-[data-theme="light"] .text-white\/70 { color: rgba(23, 24, 27, 0.72); }
-[data-theme="light"] .text-white\/65 { color: rgba(23, 24, 27, 0.68); }
-[data-theme="light"] .text-white\/60 { color: rgba(23, 24, 27, 0.64); }
-[data-theme="light"] .text-white\/55 { color: rgba(23, 24, 27, 0.60); }
-[data-theme="light"] .text-white\/50 { color: rgba(23, 24, 27, 0.55); }
-[data-theme="light"] .text-white\/45 { color: rgba(23, 24, 27, 0.50); }
-[data-theme="light"] .text-white\/40 { color: rgba(23, 24, 27, 0.48); }
-[data-theme="light"] .text-white\/35 { color: rgba(23, 24, 27, 0.42); }
-[data-theme="light"] .placeholder\:text-white\/35::placeholder { color: rgba(23, 24, 27, 0.40); }
+/* --- Fließtext & Abstufungen → kräftiges Schwarz für beste Lesbarkeit --- */
+[data-theme="light"] .text-white { color: #000; }
+[data-theme="light"] .text-white\/90 { color: rgba(0, 0, 0, 0.96); }
+[data-theme="light"] .text-white\/85 { color: rgba(0, 0, 0, 0.94); }
+[data-theme="light"] .text-white\/80 { color: rgba(0, 0, 0, 0.92); }
+[data-theme="light"] .text-white\/75 { color: rgba(0, 0, 0, 0.90); }
+[data-theme="light"] .text-white\/70 { color: rgba(0, 0, 0, 0.88); }
+[data-theme="light"] .text-white\/65 { color: rgba(0, 0, 0, 0.86); }
+[data-theme="light"] .text-white\/60 { color: rgba(0, 0, 0, 0.84); }
+[data-theme="light"] .text-white\/55 { color: rgba(0, 0, 0, 0.82); }
+[data-theme="light"] .text-white\/50 { color: rgba(0, 0, 0, 0.78); }
+[data-theme="light"] .text-white\/45 { color: rgba(0, 0, 0, 0.74); }
+[data-theme="light"] .text-white\/40 { color: rgba(0, 0, 0, 0.70); }
+[data-theme="light"] .text-white\/35 { color: rgba(0, 0, 0, 0.64); }
+[data-theme="light"] .placeholder\:text-white\/35::placeholder { color: rgba(0, 0, 0, 0.5); }
 
-/* Hover-/Fokus-Zustände */
-[data-theme="light"] .hover\:text-white:hover { color: #17181b; }
-[data-theme="light"] .group:hover .group-hover\:text-white { color: #17181b; }
-[data-theme="light"] .hover\:text-white\/80:hover { color: rgba(23, 24, 27, 0.82); }
+/* Hover-/Fokus-Zustände (neutral) */
+[data-theme="light"] .hover\:text-white:hover { color: #000; }
+[data-theme="light"] .group:hover .group-hover\:text-white { color: #000; }
+[data-theme="light"] .hover\:text-white\/80:hover { color: rgba(0, 0, 0, 0.92); }
+
+/* Marken-Hover (rot) muss die Textfarben-Umkehr oben überstimmen – höhere Spezifität. */
+[data-theme="light"] .hover\:text-\[\#e11d2a\]:hover { color: #e11d2a; }
+[data-theme="light"] .group:hover .group-hover\:text-\[\#e11d2a\] { color: #e11d2a; }
 
 /* --- Invertierte Chips (weiße Fläche + schwarze Schrift) → dunkle Chips --- */
 [data-theme="light"] .bg-white { background-color: #17181b; }
@@ -391,6 +395,15 @@ body {
 }
 /* Markenzeichen-Text (außerhalb der Pille, über dem Hero) gut lesbar halten */
 [data-theme="light"] [data-area="nav-hauptmenue"] .text-white {
-  color: #17181b;
+  color: #000;
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.55);
+}
+
+/* ------------------------------------------------------------
+   Überschriften im Tag-Modus fett darstellen (mehr Kontrast) –
+   wie der fette Firmenname im Hero. Instrument Serif hat nur
+   Gewicht 400 → der Browser synthetisiert Fettung (wie im Hero).
+   ------------------------------------------------------------ */
+[data-theme="light"] .text-brand-gradient {
+  font-weight: 700;
 }
