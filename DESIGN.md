@@ -71,8 +71,6 @@ position: relative; overflow: hidden;
 ```
 - `::before` erzeugt die **Gradient-Kante** (1.4px, `mask-composite: exclude`): heller oben/unten,
   transparent in der Mitte. Bei `-strong` kräftiger (Stops 0.5 / 0.2 / 0).
-- **`.no-glass-edge`** schaltet genau diese `::before`-Kante ab (`display:none`) – für Elemente ohne
-  zusätzlichen Glasrand (Theme-Toggle, Logo-Kreis).
 - **Hilfsklassen:** `.glass-glow` (Hover: `translateY(-4px)`), `.brand-aura`
   (`radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,0.06), transparent 70%)`, global im Layout),
   `.hairline`, `.grain` (Filmkorn, global im Layout).
@@ -150,10 +148,11 @@ Kernstück des Looks. Drei identisch gerahmte Aufnahmen desselben Hauses (lokal,
 
 ## 8. Layout & Sektionen
 
-- **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`, Kreis mit
-  `no-glass-edge`); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
-  (Leistungen · Blog · Karriere · Kontakt), **Theme-Toggle** (`theme-toggle.tsx`, Glühbirne, zwischen
-  Kontakt und Anfragen) und `LiquidMetalButton` „Anfragen"; mobil Hamburger → `liquid-glass`-Dropdown.
+- **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`, **ohne Glas** –
+  nur das Logo, kein Kreis); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
+  (Leistungen · Blog · Karriere · Kontakt), **Theme-Toggle** (`theme-toggle.tsx`, Glühbirne **ohne
+  Glas**, zwischen Kontakt und Anfragen) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
+  `liquid-glass`-Dropdown.
   Im **Tag-Modus** ist die Links-Pille per CSS **identisch** zum Dunkel-Modus gestylt (transparentes
   Glas + helle Kante); nur der Burger behält eine helle Fläche für Lesbarkeit über dem Hero.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit

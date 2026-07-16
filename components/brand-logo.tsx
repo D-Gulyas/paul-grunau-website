@@ -15,7 +15,7 @@ export function BrandMark({ title = "Paul Grunau Logo", className }: { title?: s
 export function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
     <span className="flex items-center gap-2.5 text-white">
-      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full liquid-glass no-glass-edge">
+      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full">
         <BrandMark className="h-9 w-9 text-white" />
       </span>
       {!compact && (

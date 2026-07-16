@@ -41,7 +41,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-pressed={isLight}
       title={isLight ? "Tagmodus aktiv – zum Nachtmodus wechseln" : "Nachtmodus aktiv – zum Tagmodus wechseln"}
       className={cx(
-        "liquid-glass no-glass-edge grid h-9 w-9 shrink-0 place-items-center rounded-full text-white transition-transform duration-300 hover:-translate-y-0.5",
+        "grid h-9 w-9 shrink-0 place-items-center rounded-full text-white transition-transform duration-300 hover:-translate-y-0.5",
         className,
       )}
     >

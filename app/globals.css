@@ -208,12 +208,6 @@
     transform: translateY(-4px);
   }
 
-  /* Glas ohne die helle Rand-Kante (::before) – für Elemente, bei denen der
-     zusätzliche Glasrand stört (z. B. Theme-Toggle, Logo-Kreis). */
-  .no-glass-edge::before {
-    display: none;
-  }
-
   /* Dezenter monochromer Glow (Hero-Aura, CTA-Flächen) */
   .brand-aura {
     background: radial-gradient(60% 50% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%);
