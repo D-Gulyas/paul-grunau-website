@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { Renderer, Program, Triangle, Mesh } from "ogl";
 import "./side-rays.css";
 
@@ -61,32 +61,12 @@ export default function SideRays({
   const animationIdRef = useRef<number | null>(null);
   const meshRef = useRef<Mesh | null>(null);
   const cleanupFunctionRef = useRef<(() => void) | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // Bewusst KEIN IntersectionObserver-Lazy-Load: Der Effekt wird sofort beim
+  // Mounten initialisiert, damit er beim Betreten der Startseite direkt läuft
+  // und nicht erst beim Herunterscrollen „anspringt".
   useEffect(() => {
     if (!containerRef.current) return;
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 },
-    );
-
-    observerRef.current.observe(containerRef.current);
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible || !containerRef.current) return;
 
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current();
@@ -259,7 +239,7 @@ void main() {
         cleanupFunctionRef.current = null;
       }
     };
-  }, [isVisible, speed, rayColor1, rayColor2, intensity, spread, origin, tilt, saturation, blend, falloff, opacity]);
+  }, [speed, rayColor1, rayColor2, intensity, spread, origin, tilt, saturation, blend, falloff, opacity]);
 
   useEffect(() => {
     if (!uniformsRef.current) return;
