@@ -37,6 +37,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 
 | Name | Bereich |
 |---|---|
+| `home-lichtstrahlen` | Dekorative Lichtstrahlen (WebGL) hinter dem Inhalt – zwischen Hero und Footer |
 | `home-hero` | Hero gesamt |
 | `home-hero-slideshow` | Hintergrund-Bilderslideshow |
 | `home-hero-headline` | Firmenname / Überschrift |
