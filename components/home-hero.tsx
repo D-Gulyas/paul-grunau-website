@@ -19,15 +19,16 @@ export function HomeHero() {
 
   return (
     <section data-area="home-hero" className="relative flex min-h-dvh flex-col overflow-hidden">
-      {/* Hintergrund-Video: läuft stumm in Dauerschleife (bei reduced-motion bleibt das erste Bild stehen) */}
-      <div data-area="home-hero-slideshow" className="absolute inset-0 z-0">
+      {/* Hintergrund-Video: läuft stumm in Dauerschleife (bei reduced-motion bleibt das Poster stehen).
+          Das Poster ist exakt das erste Videobild – es füllt den Hero sofort, der Wechsel ist unsichtbar. */}
+      <div data-area="home-hero-video" className="absolute inset-0 z-0">
         <video
           src={asset("/videos/hero.mp4")}
+          poster={asset("/images/hero-poster.webp")}
           autoPlay={!reduce}
           loop
           muted
           playsInline
-          preload="auto"
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -46,9 +47,11 @@ export function HomeHero() {
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pt-28 text-center">
         {/* Headline – Firmenname, Wort-für-Wort Blur-In */}
         <div data-area="home-hero-headline" className="flex flex-col items-center">
-          {/* Zeile 1: obere Headline – immer größer als Zeile 2 (gleiche vw-Skala, höhere Werte) */}
+          {/* Zeile 1: obere Headline – immer größer als Zeile 2 (gleiche vw-Skala, höhere Werte).
+              Zugleich das <h1> der Startseite (Google/Screenreader), Optik unverändert. */}
           <BlurText
             text="Brandschutz & Elektrotechnik"
+            as="h1"
             nowrap
             className="justify-center font-heading text-[clamp(1.2rem,6vw,5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px] text-[#e11d2a]"
           />

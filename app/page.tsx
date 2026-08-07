@@ -87,7 +87,7 @@ export default function HomePage() {
         </StaggerGroup>
       </Section>
 
-      {/* Kundenstimmen – Google-Rezensionen als Diashow */}
+      {/* Kundenstimmen – Google-Rezensionen als laufendes Spalten-Marquee */}
       <Section area="home-kundenstimmen">
         <Reveal>
           <h2 className="font-heading text-4xl italic leading-[0.95] tracking-[-2px] text-brand-gradient sm:text-5xl md:text-6xl lg:text-7xl">

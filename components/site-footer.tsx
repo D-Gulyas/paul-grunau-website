@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { BrandMark } from "@/components/brand-logo";
-import { FooterBeam } from "@/components/footer-beam";
+import { FooterBeamLazy } from "@/components/footer-beam-lazy";
 
 const leistungen = [
   { href: "/leistungen#elektrotechnik", label: "Elektrotechnik" },
@@ -39,7 +39,7 @@ export function SiteFooter() {
     <footer data-area="footer" className="relative mt-10 overflow-hidden">
       {/* Bewegter Lichtstrahl – dezenter Hintergrund (footer_design.md) */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-70 [mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_90%,transparent)]">
-        <FooterBeam />
+        <FooterBeamLazy />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 md:px-8">

@@ -114,16 +114,22 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 
 **Aufbau:** ein natives `<video>` in `home-hero.tsx` mit `autoPlay loop muted playsInline`
 (`muted` + `playsInline` sind Pflicht, sonst blockieren Browser den Autostart), `object-cover`
-über die volle Herofläche. Kein Crossfade, kein Interval – die Bewegung kommt aus dem Video selbst.
+über die volle Herofläche. Die Bewegung kommt allein aus dem Video – kein Motion-Wrapper, kein Timer.
 
 **Weitere Hero-Details:**
 - **Statischer schwarzer Blur-Rand:** `box-shadow: inset 0 0 110px 26px rgba(0,0,0,0.72)` – rahmt das Bild,
   Motiv bleibt scharf. (Kein Lade-/Erscheinen-Effekt – bewusst entfernt, siehe §11.)
 - **Scrim für Lesbarkeit:** `bg-gradient-to-b from-black/70 via-black/45 to-black` +
   radiale Vignette `radial-gradient(80% 60% at 50% 40%, transparent, rgba(0,0,0,0.65))`.
-- **reduced-motion:** kein `autoPlay`, das Video bleibt beim ersten Bild stehen.
+- **Poster:** `images/hero-poster.webp` (1,7 kB) ist exakt Frame 0 des Videos → der Hero ist sofort
+  gefüllt, der Wechsel auf das Video ist unsichtbar.
+- **reduced-motion:** kein `autoPlay`, das Poster bleibt stehen.
+- **Kodierung (wichtig beim Austausch des Videos):** H.264 CRF 26, `preset slow`, **ohne Tonspur**
+  (`-an`, das Video ist stumm) und mit `-movflags +faststart`, damit die Wiedergabe startet, bevor
+  die Datei komplett geladen ist. So wiegt der Clip 3,4 MB statt 23,9 MB.
 - **Inhalt:** zweizeilige BlurText-Headline („Brandschutz & Elektrotechnik" größer, „Meisterbetrieb Paul
-  Grunau" ~70 %), CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
+  Grunau" ~70 %). Zeile 1 ist per `as="h1"` das **einzige `<h1>` der Startseite** – nicht auf `p`
+  zurückdrehen, sonst hat die Startseite keine Hauptüberschrift mehr. CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
   Hersteller-Pille + Namen (KNX · Gira · Hager · SMA · Busch-Jaeger) in Serif-Italic.
 
 ---
@@ -141,7 +147,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   einem dunklen Bild-Hero liegt, und **schwarz**, sobald heller Inhalt darunter scrollt. Umschaltung
   per JS: `site-navbar.tsx` setzt `data-over-hero` (Scroll-Listener, prüft `home-hero`/`blogartikel-kopf`),
   CSS reagiert darauf. Der Burger bleibt (eigene helle Fläche) immer schwarz. Das Logo (`BrandMark`,
-  h-12) ist ein farbiges PNG → von der Farbumschaltung unberührt.
+  h-12) ist ein farbiges WebP → von der Farbumschaltung unberührt.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   TracedIcon) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
   Google-Rezensionen, 4,6 ★ (20)).
@@ -150,7 +156,9 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   `/impressum`, `/datenschutz`, markenkonforme 404.
 - **Footer** (`site-footer.tsx`): enthält **`footer-beam.tsx`** – bewegter WebGL-Lichtstrahl (three.js
   Fragment-Shader, „Chrome look" mit minimaler RGB-Aufspaltung; läuft nur im Viewport,
-  reduced-motion-fest).
+  reduced-motion-fest). Eingebunden über **`footer-beam-lazy.tsx`**: three.js (~460 kB) wird erst
+  gut eine Sekunde nach dem Seitenaufbau geladen, damit der Startbundle klein bleibt. **Nicht** wieder
+  direkt importieren – das schiebt three.js zurück in den kritischen Ladepfad jeder Seite.
 
 ---
 
@@ -158,7 +166,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 
 ```
 home-hero · page-hero · blur-text · motion-primitives
-site-navbar · site-footer · footer-beam (WebGL)
+site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee) · stat-value (Count-up)
 brand-logo · ui (Section, SectionHeading, ButtonLink, cx) · ui/traced-icon
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)

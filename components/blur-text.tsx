@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
@@ -12,45 +13,53 @@ export function BlurText({
   className,
   delay = 0,
   nowrap = false,
+  as: Tag = "p",
 }: {
   text: string;
   className?: string;
   delay?: number;
   nowrap?: boolean;
+  /** Semantisches Element – für die Haupt-Überschrift einer Seite `h1`. Ändert die Optik nicht. */
+  as?: "p" | "h1" | "h2";
 }) {
   const reduce = useReducedMotion();
   const words = text.split(" ");
 
   return (
-    <p
+    <Tag
       className={className}
       style={{ display: "flex", flexWrap: nowrap ? "nowrap" : "wrap", justifyContent: "center", rowGap: "0.1em" }}
     >
       {words.map((word, i) => (
-        <motion.span
-          key={`${word}-${i}`}
-          style={{ display: "inline-block", marginRight: "0.28em" }}
-          initial={reduce ? { opacity: 0 } : { filter: "blur(10px)", opacity: 0, y: 50 }}
-          whileInView={
-            reduce
-              ? { opacity: 1 }
-              : {
-                  filter: ["blur(10px)", "blur(5px)", "blur(0px)"],
-                  opacity: [0, 0.5, 1],
-                  y: [50, -5, 0],
-                }
-          }
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{
-            duration: 0.7,
-            times: [0, 0.5, 1],
-            ease: "easeOut",
-            delay: delay + (i * 100) / 1000,
-          }}
-        >
-          {word}
-        </motion.span>
+        // Echtes Leerzeichen zwischen den Wörtern, damit der Text als "Brandschutz & Elektrotechnik"
+        // ausgelesen wird und nicht zusammengeklebt. Im Flex-Container werden reine Leerzeichen
+        // nicht dargestellt – die Optik bleibt exakt gleich, den Abstand macht weiterhin marginRight.
+        <Fragment key={`${word}-${i}`}>
+          {i > 0 && " "}
+          <motion.span
+            style={{ display: "inline-block", marginRight: "0.28em" }}
+            initial={reduce ? { opacity: 0 } : { filter: "blur(10px)", opacity: 0, y: 50 }}
+            whileInView={
+              reduce
+                ? { opacity: 1 }
+                : {
+                    filter: ["blur(10px)", "blur(5px)", "blur(0px)"],
+                    opacity: [0, 0.5, 1],
+                    y: [50, -5, 0],
+                  }
+            }
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{
+              duration: 0.7,
+              times: [0, 0.5, 1],
+              ease: "easeOut",
+              delay: delay + (i * 100) / 1000,
+            }}
+          >
+            {word}
+          </motion.span>
+        </Fragment>
       ))}
-    </p>
+    </Tag>
   );
 }
