@@ -11,23 +11,24 @@ import { asset } from "@/lib/base-path";
 // Die Reihenfolge hier ist die Reihenfolge im Lauf: Schneider Merten steht bewusst
 // an erster Stelle. Neue Hersteller: SVG nach public/logos/ legen und eine Zeile ergänzen.
 //
-// Die Logos behalten ihre Originalfarben. Nur die schwarzen bekommen
-// `logoloop__img--invert` (siehe logo-loop.css), sonst wären sie auf dem
-// schwarzen Hero unsichtbar.
-const INVERT = "logoloop__img--invert";
+// Alle Logos laufen in ihren Originalfarben – möglich durch den hellen Streifen
+// hinter der Schleife. Einzige Ausnahme ist Hager: ein rein weißes Logo, das auf
+// Hell unsichtbar wäre und deshalb schwarz dargestellt wird (siehe logo-loop.css).
+const LOGO_GRUND = "#f4f5f7";
+const DARKEN = "logoloop__img--darken";
 
 const partners = [
   { src: asset("/logos/schneider-merten.svg"), alt: "Schneider Electric – Merten" },
   { src: asset("/logos/knx.svg"), alt: "KNX" },
-  { src: asset("/logos/gira.svg"), alt: "Gira", className: INVERT },
-  { src: asset("/logos/hager.svg"), alt: "Hager" },
+  { src: asset("/logos/gira.svg"), alt: "Gira" },
+  { src: asset("/logos/hager.svg"), alt: "Hager", className: DARKEN },
   { src: asset("/logos/sma.svg"), alt: "SMA" },
-  { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger", className: INVERT },
+  { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger" },
   { src: asset("/logos/kostal.svg"), alt: "Kostal" },
   { src: asset("/logos/qcells.svg"), alt: "Qcells" },
   { src: asset("/logos/sigenergy.svg"), alt: "Sigenergy" },
   { src: asset("/logos/e3.svg"), alt: "E3/DC" },
-  { src: asset("/logos/easee.svg"), alt: "Easee", className: INVERT },
+  { src: asset("/logos/easee.svg"), alt: "Easee" },
   { src: asset("/logos/keba.svg"), alt: "KEBA" },
 ];
 
@@ -111,8 +112,13 @@ export function HomeHero() {
           Wir arbeiten mit führenden Herstellern
         </span>
         {/* Endlos-Schleife: Logos laufen von rechts nach links, an beiden Rändern ausgeblendet.
-            Breite begrenzt, damit etwa fünf Logos gleichzeitig zu sehen sind. */}
-        <div className="w-full max-w-3xl">
+            Breite begrenzt, damit etwa fünf Logos gleichzeitig zu sehen sind.
+            Heller Streifen dahinter: erst dadurch sind die Logos in Originalfarben lesbar.
+            fadeOutColor muss exakt der Streifenfarbe entsprechen, sonst sieht man die Kante. */}
+        <div
+          className="w-full max-w-3xl rounded-full px-4 py-3 sm:px-8"
+          style={{ backgroundColor: LOGO_GRUND }}
+        >
           <LogoLoop
             logos={partners}
             speed={55}
@@ -120,7 +126,7 @@ export function HomeHero() {
             logoHeight={32}
             gap={56}
             fadeOut
-            fadeOutColor="#000000"
+            fadeOutColor={LOGO_GRUND}
             ariaLabel="Hersteller, mit denen wir arbeiten"
           />
         </div>

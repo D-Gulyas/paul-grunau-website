@@ -147,10 +147,16 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
   beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
   sichtbar (Desktop), drei auf dem Handy.
-  - **Originalfarben**, mit drei Ausnahmen: **Gira, Busch-Jaeger und Easee** sind schwarze Logos und
-    bekommen `logoloop__img--invert` (`filter: brightness(0) invert(1)`). Gemessen am Anteil auf
-    Schwarz praktisch unsichtbarer Pixel: Gira 100 %, Easee 100 %, Busch-Jaeger 76 % (dessen
-    Schriftzug hat gar keine `fill`-Angabe und rendert deshalb schwarz). Alle übrigen liegen bei 0 %.
+  - **Heller Streifen** (`#f4f5f7`, Pillenform) hinter der Schleife – **er ist die Voraussetzung
+    dafür, dass die Logos in Originalfarben laufen können**. Auf dem schwarzen Hero waren Gira,
+    Easee und Busch-Jaeger zu 100 / 100 / 76 % unsichtbar; auf dem hellen Streifen liegen sie bei 0 %.
+    `fadeOutColor` **muss exakt** dieselbe Farbe sein, sonst wird die Kante des Verlaufs sichtbar.
+  - **Originalfarben**, eine Ausnahme: **Hager** ist ein rein weißes Logo (auf Hell zu 100 %
+    unsichtbar) und bekommt `logoloop__img--darken` (`filter: brightness(0)`) – als schwarzer
+    Schriftzug entspricht das dem Original auf hellem Grund.
+  - Bekannt: **Kostal** verliert seinen weißen Anteil (39 % der Logo-Pixel) im Streifen; der dunkelblaue
+    Rest trägt das Logo weiterhin. Bei SMA sind es 2–7 % feine weiße Details. Falls störend, hilft ein
+    Logo-SVG in der Dunkel-Variante oder `className: DARKEN`.
   - **Reihenfolge = Array-Reihenfolge.** Schneider Merten steht bewusst an erster Stelle.
   - **Neuer Hersteller:** SVG nach `public/logos/` (Kleinbuchstaben) und eine Zeile im
     `partners`-Array in `home-hero.tsx`. Ist das Logo schwarz, zusätzlich `className: INVERT`.

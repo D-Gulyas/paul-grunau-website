@@ -99,14 +99,19 @@
 }
 
 /* ---------------------------------------------------------------
-   Projekt-Ergänzung: einzelne Logos weiß darstellen.
-   Die Logos laufen in ihren Originalfarben. Ausnahme sind die
-   schwarzen: gemessen am Anteil praktisch unsichtbarer Pixel auf
-   Schwarz sind das Gira (100 %), Easee (100 %) und Busch-Jaeger
-   (76 % – der Schriftzug hat gar keine Farbangabe und rendert
-   deshalb schwarz). `brightness(0) invert(1)` macht sie rein weiß.
+   Projekt-Ergänzung: einzelne Logos anpassen.
+   Die Logos laufen in ihren Originalfarben auf hellem Grund.
+   Gemessen (Anteil zu kontrastarmer Logo-Pixel auf #f4f5f7) klappt
+   das bei zehn von zwölf ohne Eingriff. Ausnahme ist Hager: ein rein
+   weißes Logo, zu 100 % unsichtbar auf Hell → `brightness(0)` macht
+   den Schriftzug schwarz, was dem Original auf hellem Grund entspricht.
    Gesetzt wird die Klasse pro Logo im `partners`-Array.
    --------------------------------------------------------------- */
+.logoloop__item img.logoloop__img--darken {
+  filter: brightness(0);
+}
+
+/* Gegenstück für den umgekehrten Fall (schwarzes Logo auf dunklem Grund). */
 .logoloop__item img.logoloop__img--invert {
   filter: brightness(0) invert(1);
 }
