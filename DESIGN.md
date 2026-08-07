@@ -238,22 +238,12 @@ das Space-Icon-Set.
   `[data-theme="light"]`-Block in `globals.css` (~195 Zeilen) und der `data-over-hero`-Scroll-Listener
   in `site-navbar.tsx`, der ausschließlich den Tag-Modus bediente. Die Firmenfarben sind **Schwarz,
   Rot (`#e11d2a`) und Gelb (`#f5b301`)**; ein heller Modus verfälscht sie. **Nicht wieder einführen.**
-- **Molten-Metal-Hintergrund der Startseite** (`ui/molten-metal.tsx`, eingebunden über
-  `molten-metal-background.tsx`) – **ausdrücklich gewünscht**. Shader unverändert aus
-  `Molten-Metal.md` (React Bits), angebunden über das vorhandene **three.js** statt über `ogl`, damit
-  keine dritte WebGL-Bibliothek dazukommt (so abgestimmt). Farben `#000000` / `#f5b301` / `#f5b301`
-  (Marken-Gelb, identisch zu den Icons).
-  - **Ein einziges durchgehendes Feld** vom Hero-Ende bis zum Seitenende – Inhalt **und Footer**
-    laufen über denselben Canvas, damit die Bereiche miteinander verschmelzen. Deshalb sitzt der
-    Hintergrund im **Layout** (`app/layout.tsx`) und nicht in `page.tsx`: der Footer ist dort ein
-    Geschwister von `<main>`. **Nicht** wieder in `page.tsx` verschieben – zwei getrennte Canvas
-    hätten je eine eigene Zeitbasis und wirkten wie zwei verschiedene Hintergründe.
-  - `top-[100dvh]` überspringt den Hero (`min-h-dvh`). Zusätzlich liegt `<main>` auf `z-10` über dem
-    Feld (`z-0`), der Hero bleibt also in jedem Fall unberührt.
-  - Auf der Startseite entfällt dafür der **Footer-Lichtstrahl** (`footer-beam-lazy.tsx`), sonst
-    würden sich zwei Effekte überlagern. Auf allen anderen Seiten bleibt er.
-  Ein früheres, anderes WebGL-**Eck-Lichtfeld** (`home-light-field.tsx`) wurde dagegen verworfen –
-  das bitte nicht wieder hinzufügen.
+- **Inhaltssektionen-Hintergrund = reines Schwarz.** Zwei WebGL-Flächenhintergründe wurden getestet
+  und **wieder vollständig entfernt**: ein **Eck-Lichtfeld** (`home-light-field.tsx`) und der
+  **Molten-Metal-Hintergrund** (`ui/molten-metal.tsx` + `molten-metal-background.tsx`, Shader aus
+  `Molten-Metal.md`). **Nicht erneut hinzufügen**, außer ausdrücklich gewünscht.
+  Der einzige verbliebene WebGL-Effekt ist der **Footer-Lichtstrahl** (`footer-beam.tsx`), der auf
+  allen Seiten läuft.
 - **Hero ohne „Erscheinen"-Effekt:** kein Blur-/Fade-/Zoom-Einschwung beim Laden. Der Hintergrund ist
   sofort da; nur das Loop-Video selbst bewegt sich. Der schwarze Rand ist **statisch**.
 - **Kein `filter`/`transform` auf Glas-Vorfahren** (sonst bricht `backdrop-filter`).

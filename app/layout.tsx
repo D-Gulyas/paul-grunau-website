@@ -3,7 +3,6 @@ import { Barlow, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteNavbar } from "@/components/site-navbar";
 import { SiteFooter } from "@/components/site-footer";
-import { MoltenMetalBackground } from "@/components/molten-metal-background";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -54,14 +53,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="pointer-events-none fixed inset-0 -z-10 opacity-60 grain" aria-hidden />
 
         <SiteNavbar />
-        {/* Inhalt und Footer teilen sich einen Bezugsrahmen, damit der
-            Molten-Metal-Hintergrund der Startseite als EIN durchgehendes Feld
-            über beide laufen kann (er liegt darin auf z-0, alles andere auf z-10). */}
-        <div className="relative">
-          <MoltenMetalBackground />
-          <main className="relative z-10">{children}</main>
-          <SiteFooter />
-        </div>
+        <main>{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );
