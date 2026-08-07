@@ -16,11 +16,9 @@
   --color-ink: #000000;
 
   /* Marken-Gelb der lucide-Icons – derselbe Ton wie die Bewertungssterne und das
-     Gelb-Ende des Marken-Verlaufs. Zentral hier: eine Stelle färbt alle Icons um. */
+     Gelb-Ende des Marken-Verlaufs. Zentral hier: eine Stelle färbt alle Icons um.
+     Gilt bewusst in BEIDEN Modi – die Unternehmensfarbe wird nicht abgewandelt. */
   --color-brand-yellow: #f5b301;
-  /* Tag-Modus-Variante: #f5b301 käme auf dem hellen Grund (#eef1f4) nur auf 1,63:1
-     und wäre praktisch unsichtbar. Dieses abgedunkelte Gold erreicht 4,2:1. */
-  --color-brand-yellow-ink: #9a6a00;
 
   --radius-pill: 9999px;
 }
@@ -443,16 +441,5 @@ body {
   color: #fff;
 }
 
-/* --- lucide-Icons im Tag-Modus --- */
-/* Auf hellem Grund ein abgedunkeltes Gold, sonst waeren die Icons unlesbar. */
-:root[data-theme="light"] svg.lucide {
-  color: var(--color-brand-yellow-ink);
-}
-/* Ausnahme: Bereiche, die im Tag-Modus dunkel bleiben (Hero, Blog-Kopf, Navbar-Pille
-   ueber dem Hero) – dort bleibt das helle Marken-Gelb richtig. Muss NACH der Regel
-   darueber stehen, beide haben dieselbe Spezifitaet. */
-[data-theme="light"] [data-area="home-hero"] svg.lucide,
-[data-theme="light"] [data-area="blogartikel-kopf"] svg.lucide,
-[data-theme="light"] [data-area="nav-hauptmenue"][data-over-hero="true"] [data-area="nav-links-desktop"] svg.lucide {
-  color: var(--color-brand-yellow);
-}
+/* lucide-Icons: KEINE Tag-Modus-Sonderregel. Das Marken-Gelb gilt in beiden Modi,
+   damit die Unternehmensfarbe unverfälscht bleibt (bewusste Entscheidung). */

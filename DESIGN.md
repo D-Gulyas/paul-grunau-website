@@ -105,10 +105,12 @@ position: relative; overflow: hidden;
   `:root svg.lucide { color: var(--color-brand-yellow) }` in `globals.css`, nicht über Klassen an den
   Icons. Zum Umfärben genügt die Variable `--color-brand-yellow` (`#f5b301`, derselbe Ton wie die
   Bewertungssterne und das Gelb-Ende des Marken-Verlaufs).
-  - **Tag-Modus:** `--color-brand-yellow-ink` (`#9a6a00`). `#f5b301` käme auf dem hellen Grund
-    (`#eef1f4`) nur auf **1,63:1** und wäre unlesbar; das abgedunkelte Gold erreicht **4,2:1**.
-    Ausnahme: Bereiche, die im Tag-Modus dunkel bleiben (Hero, Blog-Kopf, Navbar-Pille über dem Hero)
-    behalten das helle `#f5b301` – diese Regel muss **nach** der Tag-Modus-Regel stehen (gleiche Spezifität).
+  - **Ein Ton in beiden Modi.** Der Tag-Modus hat **bewusst keine** Sonderregel: die Unternehmensfarbe
+    soll nicht abgewandelt werden (Entscheidung des Auftraggebers). Zur Einordnung – auf dem hellen
+    Grund (`#eef1f4`) liegt `#f5b301` bei **1,63:1**, auf Schwarz bei **11,33:1**. Falls im Tag-Modus
+    doch einmal nachgeschärft werden soll, ist die richtige Stelle eine
+    `:root[data-theme="light"] svg.lucide`-Regel – **nicht** die Variable selbst ändern, sonst kippt
+    auch der Nacht-Modus.
   - **Inline-Styles schlagen die Regel:** der Pfeil im `LiquidMetalButton` setzt seine Farbe inline und
     referenziert deshalb selbst `var(--color-brand-yellow)`.
   - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
