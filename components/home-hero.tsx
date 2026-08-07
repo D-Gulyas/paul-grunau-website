@@ -11,17 +11,12 @@ import { asset } from "@/lib/base-path";
 // Die Reihenfolge hier ist die Reihenfolge im Lauf: Schneider Merten steht bewusst
 // an erster Stelle. Neue Hersteller: SVG nach public/logos/ legen und eine Zeile ergänzen.
 //
-// Alle Logos laufen in ihren Originalfarben – möglich durch den hellen Streifen
-// hinter der Schleife. Einzige Ausnahme ist Hager: ein rein weißes Logo, das auf
-// Hell unsichtbar wäre und deshalb schwarz dargestellt wird (siehe logo-loop.css).
-const LOGO_GRUND = "#f4f5f7";
-const DARKEN = "logoloop__img--darken";
-
+// Alle Logos werden einheitlich weiß dargestellt (Maske, siehe logo-loop.css).
 const partners = [
   { src: asset("/logos/schneider-merten.svg"), alt: "Schneider Electric – Merten" },
   { src: asset("/logos/knx.svg"), alt: "KNX" },
   { src: asset("/logos/gira.svg"), alt: "Gira" },
-  { src: asset("/logos/hager.svg"), alt: "Hager", className: DARKEN },
+  { src: asset("/logos/hager.svg"), alt: "Hager" },
   { src: asset("/logos/sma.svg"), alt: "SMA" },
   { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger" },
   { src: asset("/logos/kostal.svg"), alt: "Kostal" },
@@ -97,11 +92,11 @@ export function HomeHero() {
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 sm:h-5 sm:w-5" />
           </Link>
           <a
-            href="tel:+4915121069600"
+            href="tel:+4915152516244"
             className="group inline-flex items-center gap-1.5 font-body text-xs font-medium text-white/90 sm:gap-2 sm:text-sm"
           >
             <Phone className="h-3.5 w-3.5 text-white/90 sm:h-4 sm:w-4" />
-            <span className="transition-colors group-hover:text-[#e11d2a]">+49 151 21069600</span>
+            <span className="transition-colors group-hover:text-[#f5b301]">+49 151 525 162 44</span>
           </a>
         </motion.div>
       </div>
@@ -113,20 +108,17 @@ export function HomeHero() {
         </span>
         {/* Endlos-Schleife: Logos laufen von rechts nach links, an beiden Rändern ausgeblendet.
             Breite begrenzt, damit etwa fünf Logos gleichzeitig zu sehen sind.
-            Heller Streifen dahinter: erst dadurch sind die Logos in Originalfarben lesbar.
-            fadeOutColor muss exakt der Streifenfarbe entsprechen, sonst sieht man die Kante. */}
-        <div
-          className="w-full max-w-3xl rounded-full px-4 py-3 sm:px-8"
-          style={{ backgroundColor: LOGO_GRUND }}
-        >
+            hoverSpeed={0}: beim Zeigen auf ein Logo hält der Lauf an. */}
+        <div className="w-full max-w-3xl">
           <LogoLoop
             logos={partners}
             speed={55}
             direction="left"
             logoHeight={32}
             gap={56}
+            hoverSpeed={0}
             fadeOut
-            fadeOutColor={LOGO_GRUND}
+            fadeOutColor="#000000"
             ariaLabel="Hersteller, mit denen wir arbeiten"
           />
         </div>

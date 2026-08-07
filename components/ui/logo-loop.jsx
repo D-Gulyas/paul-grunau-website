@@ -66,19 +66,35 @@ const useImageLoader = (seqRef, onLoad, dependencies) => {
   }, [onLoad, seqRef, dependencies]);
 };
 
-const useAnimationLoop = (trackRef, targetVelocity, seqWidth, isHovered, hoverSpeed) => {
+const useAnimationLoop = (trackRef, targetVelocity, seqWidth, containerWidth, isHovered, hoverSpeed) => {
   const rafRef = useRef(null);
   const lastTimestampRef = useRef(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(0);
+  const eingelaufenRef = useRef(false);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
 
-    if (seqWidth > 0) {
-      offsetRef.current = ((offsetRef.current % seqWidth) + seqWidth) % seqWidth;
+    // Einlauf nach dem Laden: Der Offset startet negativ (= Track um die Containerbreite
+    // nach rechts geschoben), damit zuerst nichts zu sehen ist und die Logos von rechts
+    // hereinlaufen – beginnend mit dem ersten Eintrag der Liste. Erst ab Offset 0 greift
+    // der normale Umlauf per Modulo.
+    if (!eingelaufenRef.current && seqWidth > 0 && containerWidth > 0) {
+      offsetRef.current = -containerWidth;
+      eingelaufenRef.current = true;
+    }
+
+    const setzeTransform = () => {
       track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
+    };
+
+    if (seqWidth > 0) {
+      if (offsetRef.current >= 0) {
+        offsetRef.current = ((offsetRef.current % seqWidth) + seqWidth) % seqWidth;
+      }
+      setzeTransform();
     }
 
     const animate = (timestamp) => {
@@ -94,9 +110,9 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, isHovered, hoverSp
 
       if (seqWidth > 0) {
         let nextOffset = offsetRef.current + velocityRef.current * deltaTime;
-        nextOffset = ((nextOffset % seqWidth) + seqWidth) % seqWidth;
+        if (nextOffset >= 0) nextOffset = ((nextOffset % seqWidth) + seqWidth) % seqWidth;
         offsetRef.current = nextOffset;
-        track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
+        setzeTransform();
       }
 
       rafRef.current = requestAnimationFrame(animate);
@@ -111,7 +127,7 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, isHovered, hoverSp
       }
       lastTimestampRef.current = null;
     };
-  }, [targetVelocity, seqWidth, isHovered, hoverSpeed, trackRef]);
+  }, [targetVelocity, seqWidth, containerWidth, isHovered, hoverSpeed, trackRef]);
 };
 
 /* Props sind in logo-loop.d.ts typisiert – die Implementierung bleibt JavaScript. */
@@ -135,6 +151,7 @@ export const LogoLoop = memo(function LogoLoop({
   const seqRef = useRef(null);
 
   const [seqWidth, setSeqWidth] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const [copyCount, setCopyCount] = useState(ANIMATION_CONFIG.MIN_COPIES);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -146,18 +163,19 @@ export const LogoLoop = memo(function LogoLoop({
   }, [speed, direction]);
 
   const updateDimensions = useCallback(() => {
-    const containerWidth = containerRef.current?.clientWidth ?? 0;
+    const breite = containerRef.current?.clientWidth ?? 0;
     const sequenceWidth = seqRef.current?.getBoundingClientRect?.().width ?? 0;
+    if (breite > 0) setContainerWidth(Math.ceil(breite));
     if (sequenceWidth > 0) {
       setSeqWidth(Math.ceil(sequenceWidth));
-      const copiesNeeded = Math.ceil(containerWidth / sequenceWidth) + ANIMATION_CONFIG.COPY_HEADROOM;
+      const copiesNeeded = Math.ceil(breite / sequenceWidth) + ANIMATION_CONFIG.COPY_HEADROOM;
       setCopyCount(Math.max(ANIMATION_CONFIG.MIN_COPIES, copiesNeeded));
     }
   }, []);
 
   useResizeObserver(updateDimensions, [containerRef, seqRef], [logos, gap, logoHeight]);
   useImageLoader(seqRef, updateDimensions, [logos, gap, logoHeight]);
-  useAnimationLoop(trackRef, targetVelocity, seqWidth, isHovered, hoverSpeed);
+  useAnimationLoop(trackRef, targetVelocity, seqWidth, containerWidth, isHovered, hoverSpeed);
 
   const cssVariables = useMemo(
     () => ({
@@ -195,15 +213,24 @@ export const LogoLoop = memo(function LogoLoop({
         >
           {logos.map((item, itemIndex) => (
             <li className="logoloop__item" key={`${copyIndex}-${itemIndex}`} role="listitem">
-              <img
-                src={item.src}
-                alt={item.alt ?? ""}
-                title={item.title}
-                className={item.className}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-              />
+              {/* Das Logo wird als Maske gefüllt – die Farbe kommt aus `background-color`
+                  (weiß, beim Hover gelb) und ist dadurch exakt. Das <img> darunter ist
+                  unsichtbar und liefert nur die richtige Breite zur Logo-Höhe. */}
+              <span
+                className={`logoloop__logo ${item.className ?? ""}`.trim()}
+                style={{ maskImage: `url(${item.src})`, WebkitMaskImage: `url(${item.src})` }}
+              >
+                {/* Bewusst kein loading="lazy": die Logos starten außerhalb des Sichtfelds,
+                    lazy würde das Laden verhindern – und ohne geladenes SVG gibt es keine
+                    Breite, womit die Schleife gar nicht erst anliefe. */}
+                <img
+                  src={item.src}
+                  alt={item.alt ?? ""}
+                  title={item.title}
+                  decoding="async"
+                  draggable={false}
+                />
+              </span>
             </li>
           ))}
         </ul>
@@ -218,7 +245,15 @@ export const LogoLoop = memo(function LogoLoop({
 
   return (
     <div ref={containerRef} className={rootClassName} style={containerStyle} role="region" aria-label={ariaLabel}>
-      <div className="logoloop__track" ref={trackRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      {/* Start rechts außerhalb: die rAF-Schleife setzt den exakten Wert, dieser Inline-Wert
+          verhindert nur, dass im allerersten Frame kurz Logos aufblitzen. */}
+      <div
+        className="logoloop__track"
+        ref={trackRef}
+        style={{ transform: "translate3d(100%, 0, 0)" }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {logoLists}
       </div>
     </div>

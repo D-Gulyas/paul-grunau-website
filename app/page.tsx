@@ -1,10 +1,11 @@
-import { Flame, ShieldCheck, Zap } from "lucide-react";
+import { Factory, Flame, ShieldCheck, Zap } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { TextReveal } from "@/components/ui/cascade-text";
 import { Testimonials } from "@/components/testimonials";
+import { MoltenMetalBackground } from "@/components/molten-metal-background";
 import { stats } from "@/lib/content";
 
 /**
@@ -27,13 +28,18 @@ const highlights = [
   },
   {
     icon: ShieldCheck,
-    title: "Sicherheit nach VDE",
+    title: "Sicherheit nach VDE & DGUV",
     text: "Wir arbeiten mit höchster Präzision nach neuesten Standards für maximale Sicherheit Ihrer Anlagen.",
   },
   {
     icon: Zap,
     title: "Moderne Elektrotechnik",
     text: "Von komplexen Elektroinstallationen über Smart Home bis zur E-Mobilität – effizient und zukunftssicher.",
+  },
+  {
+    icon: Factory,
+    title: "Industriebetreuung Installation & Reparatur",
+    text: "Wir betreuen Gewerbe- und Industriebetriebe dauerhaft – von der Installation neuer Anlagen über schnelle Reparaturen im laufenden Betrieb bis zur wiederkehrenden Prüfung. Kurze Wege, planbare Termine, möglichst wenig Stillstand.",
   },
 ];
 
@@ -42,8 +48,14 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      {/* Unsere Philosophie */}
-      <Section area="home-philosophie">
+      {/* Molten-Metal-Hintergrund – bewusst nur um diesen Block gelegt, damit er
+          ab „Unsere Philosophie" bis einschließlich „Kundenstimmen" liegt und
+          weder den Hero mit dem Video noch den Footer berührt. */}
+      <div className="relative">
+        <MoltenMetalBackground />
+        <div className="relative z-10">
+          {/* Unsere Philosophie */}
+          <Section area="home-philosophie">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <SectionHeading title="Unsere Philosophie" />
@@ -110,7 +122,9 @@ export default function HomePage() {
         <Reveal delay={0.2} area="kundenstimmen-cta" className="mt-12 flex justify-center">
           <LiquidMetalButton label="Rezension schreiben" href={REZENSION_URL} target="_blank" />
         </Reveal>
-      </Section>
+          </Section>
+        </div>
+      </div>
     </>
   );
 }

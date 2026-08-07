@@ -147,16 +147,16 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
   beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
   sichtbar (Desktop), drei auf dem Handy.
-  - **Heller Streifen** (`#f4f5f7`, Pillenform) hinter der Schleife – **er ist die Voraussetzung
-    dafür, dass die Logos in Originalfarben laufen können**. Auf dem schwarzen Hero waren Gira,
-    Easee und Busch-Jaeger zu 100 / 100 / 76 % unsichtbar; auf dem hellen Streifen liegen sie bei 0 %.
-    `fadeOutColor` **muss exakt** dieselbe Farbe sein, sonst wird die Kante des Verlaufs sichtbar.
-  - **Originalfarben**, eine Ausnahme: **Hager** ist ein rein weißes Logo (auf Hell zu 100 %
-    unsichtbar) und bekommt `logoloop__img--darken` (`filter: brightness(0)`) – als schwarzer
-    Schriftzug entspricht das dem Original auf hellem Grund.
-  - Bekannt: **Kostal** verliert seinen weißen Anteil (39 % der Logo-Pixel) im Streifen; der dunkelblaue
-    Rest trägt das Logo weiterhin. Bei SMA sind es 2–7 % feine weiße Details. Falls störend, hilft ein
-    Logo-SVG in der Dunkel-Variante oder `className: DARKEN`.
+  - **Alle Logos einheitlich weiß, kein Hintergrund-Streifen.** Umgesetzt über eine **CSS-Maske**
+    (`.logoloop__logo`): die Farbe kommt aus `background-color`, das `<img>` darunter ist unsichtbar
+    und liefert nur die Breite. Grund: ein CSS-`filter` kann das Marken-Gelb nicht exakt treffen.
+  - **Hover auf einem Logo:** Lauf hält an (`hoverSpeed={0}`), Logo zoomt auf `scale(1.12)` und
+    wechselt auf `#f5b301`. Beim Verlassen läuft alles normal weiter.
+  - **Einlauf nach dem Laden:** Der Offset startet bei `-containerWidth`, der Track steht also rechts
+    außerhalb; die Logos laufen von rechts herein, beginnend mit **Schneider Merten** (erster Eintrag
+    im `partners`-Array). Erst ab Offset 0 greift der Modulo-Umlauf.
+  - **Kein `loading="lazy"`** an den Logo-Bildern: sie starten außerhalb des Sichtfelds, lazy würde
+    das Laden verhindern – ohne geladenes SVG gibt es keine Breite und die Schleife liefe nicht an.
   - **Reihenfolge = Array-Reihenfolge.** Schneider Merten steht bewusst an erster Stelle.
   - **Neuer Hersteller:** SVG nach `public/logos/` (Kleinbuchstaben) und eine Zeile im
     `partners`-Array in `home-hero.tsx`. Ist das Logo schwarz, zusätzlich `className: INVERT`.
@@ -238,9 +238,14 @@ das Space-Icon-Set.
   `[data-theme="light"]`-Block in `globals.css` (~195 Zeilen) und der `data-over-hero`-Scroll-Listener
   in `site-navbar.tsx`, der ausschließlich den Tag-Modus bediente. Die Firmenfarben sind **Schwarz,
   Rot (`#e11d2a`) und Gelb (`#f5b301`)**; ein heller Modus verfälscht sie. **Nicht wieder einführen.**
-- **Inhaltssektionen-Hintergrund = reines Schwarz.** Ein experimentelles WebGL-**Eck-Lichtfeld**
-  (ab „Philosophie") wurde getestet und **vollständig entfernt** (Komponente `home-light-field.tsx`,
-  Einbindung in `page.tsx`, Shader). **Nicht erneut hinzufügen**, außer ausdrücklich gewünscht.
+- **Inhaltssektionen-Hintergrund:** seit dem Molten-Metal-Auftrag liegt dort der WebGL-Hintergrund
+  (`ui/molten-metal.tsx`, eingebunden über `molten-metal-background.tsx`) – **ausdrücklich gewünscht**
+  und bewusst begrenzt auf „Unsere Philosophie" bis einschließlich „Kundenstimmen"; **nicht** im Hero
+  und **nicht** im Footer. Der Shader stammt aus `Molten-Metal.md` (React Bits) und ist unverändert;
+  angebunden über das vorhandene **three.js** statt über `ogl`, damit keine dritte WebGL-Bibliothek
+  dazukommt (so abgestimmt). Farben: `#000000` / `#EAB308` / `#EAB308`.
+  Ein früheres, anderes WebGL-**Eck-Lichtfeld** (`home-light-field.tsx`) wurde dagegen verworfen –
+  das bitte nicht wieder hinzufügen.
 - **Hero ohne „Erscheinen"-Effekt:** kein Blur-/Fade-/Zoom-Einschwung beim Laden. Der Hintergrund ist
   sofort da; nur das Loop-Video selbst bewegt sich. Der schwarze Rand ist **statisch**.
 - **Kein `filter`/`transform` auf Glas-Vorfahren** (sonst bricht `backdrop-filter`).

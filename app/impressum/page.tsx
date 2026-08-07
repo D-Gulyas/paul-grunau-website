@@ -28,16 +28,19 @@ export default function ImpressumPage() {
         <LegalSection title="Kontakt">
           <p>
             E-Mail:{" "}
-            <a href="mailto:paul@grunau.mobi" className="text-white underline-offset-2 hover:underline">
-              Paul@grunau.mobi
+            <a href="mailto:a.bauer@grunau.mobi" className="text-white underline-offset-2 hover:underline">
+              a.bauer@grunau.mobi
             </a>
             <br />
             Telefon:{" "}
-            <a href="tel:+4915121069600" className="text-white underline-offset-2 hover:underline">
-              +49 151 21069600
+            <a href="tel:+4922919159239" className="text-white underline-offset-2 hover:underline">
+              +49 2291 9159239
             </a>
             <br />
-            Telefax: {"{Faxnummer, falls vorhanden}"}
+            Mobil:{" "}
+            <a href="tel:+4915152516244" className="text-white underline-offset-2 hover:underline">
+              +49 151 525 162 44
+            </a>
           </p>
         </LegalSection>
 
@@ -56,7 +59,7 @@ export default function ImpressumPage() {
           <p>
             Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:
             <br />
-            {"{USt-IdNr.}"}
+            DE258301194
           </p>
         </LegalSection>
 

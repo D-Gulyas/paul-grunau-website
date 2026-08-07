@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Clock, Mail, MapPin, Phone, User } from "lucide-react";
+import { Clock, Mail, MapPin, Phone, Smartphone, User } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
@@ -14,8 +14,9 @@ export const metadata: Metadata = {
 
 const contactInfo = [
   { icon: MapPin, label: "Adresse", value: "Homburger Straße 48\n51545 Waldbröl", href: undefined },
-  { icon: Phone, label: "Telefon", value: "+49 151 21069600", href: "tel:+4915121069600" },
-  { icon: Mail, label: "E-Mail", value: "paul@grunau.mobi", href: "mailto:paul@grunau.mobi" },
+  { icon: Phone, label: "Telefon", value: "+49 2291 9159239", href: "tel:+4922919159239" },
+  { icon: Smartphone, label: "Mobil", value: "+49 151 525 162 44", href: "tel:+4915152516244" },
+  { icon: Mail, label: "E-Mail", value: "a.bauer@grunau.mobi", href: "mailto:a.bauer@grunau.mobi" },
   { icon: Clock, label: "Öffnungszeiten", value: "Mo–Do 08:00–16:00\nFr 08:00–14:00", href: undefined },
 ];
 
@@ -68,7 +69,8 @@ export default function KontaktPage() {
               {contactInfo.map((c) => (
                 <StaggerItem key={c.label}>
                   <div className="glass group flex items-start gap-4 rounded-2xl p-4">
-                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-brand-yellow" aria-hidden />
+                    {/* Icon-Grau wie die Pfeile auf den Buttons (#e6e6e6) */}
+                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-[#e6e6e6]" aria-hidden />
                     <div>
                       <div className="font-body text-xs font-medium uppercase tracking-wider text-white/50">
                         {c.label}
@@ -76,12 +78,12 @@ export default function KontaktPage() {
                       {c.href ? (
                         <a
                           href={c.href}
-                          className="font-body text-sm text-white transition-colors group-hover:text-[#e11d2a]"
+                          className="font-body text-sm text-white transition-colors group-hover:text-[#f5b301]"
                         >
                           {c.value}
                         </a>
                       ) : (
-                        <div className="whitespace-pre-line font-body text-sm font-light text-white/80 transition-colors group-hover:text-[#e11d2a]">
+                        <div className="whitespace-pre-line font-body text-sm font-light text-white/80 transition-colors group-hover:text-[#f5b301]">
                           {c.value}
                         </div>
                       )}

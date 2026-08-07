@@ -45,24 +45,38 @@
   margin-right: var(--logoloop-gap);
 }
 
-.logoloop__item img {
+/* Logo = Maskenfläche. Die Farbe kommt aus background-color, dadurch exakt
+   Weiß bzw. Marken-Gelb beim Hover – ein CSS-Filter träfe den Ton nicht. */
+.logoloop__logo {
+  display: block;
+  background-color: #ffffff;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transform-origin: center center;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Das <img> liefert nur die Breite passend zur Logo-Höhe und bleibt unsichtbar. */
+.logoloop__logo img {
+  display: block;
   height: var(--logoloop-logoHeight);
   width: auto;
-  display: block;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
+  opacity: 0;
   -webkit-user-drag: none;
   pointer-events: none;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.logoloop--scale-hover .logoloop__item {
-  overflow: visible;
-}
-
-.logoloop--scale-hover .logoloop__item:hover img {
-  transform: scale(1.2);
-  transform-origin: center center;
+/* Hover auf einem einzelnen Logo: leichter Zoom + Wechsel auf Marken-Gelb.
+   Das Pausieren des Laufs macht die Komponente über hoverSpeed={0}. */
+.logoloop__item:hover .logoloop__logo {
+  background-color: #f5b301;
+  transform: scale(1.12);
 }
 
 .logoloop--fade::before,
@@ -89,29 +103,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Kein Lauf und kein Einlauf – die Logos stehen still, beginnend beim ersten Eintrag. */
   .logoloop__track {
     transform: translate3d(0, 0, 0) !important;
   }
 
-  .logoloop__item img {
+  .logoloop__logo {
     transition: none !important;
   }
-}
 
-/* ---------------------------------------------------------------
-   Projekt-Ergänzung: einzelne Logos anpassen.
-   Die Logos laufen in ihren Originalfarben auf hellem Grund.
-   Gemessen (Anteil zu kontrastarmer Logo-Pixel auf #f4f5f7) klappt
-   das bei zehn von zwölf ohne Eingriff. Ausnahme ist Hager: ein rein
-   weißes Logo, zu 100 % unsichtbar auf Hell → `brightness(0)` macht
-   den Schriftzug schwarz, was dem Original auf hellem Grund entspricht.
-   Gesetzt wird die Klasse pro Logo im `partners`-Array.
-   --------------------------------------------------------------- */
-.logoloop__item img.logoloop__img--darken {
-  filter: brightness(0);
-}
-
-/* Gegenstück für den umgekehrten Fall (schwarzes Logo auf dunklem Grund). */
-.logoloop__item img.logoloop__img--invert {
-  filter: brightness(0) invert(1);
+  .logoloop__item:hover .logoloop__logo {
+    transform: none;
+  }
 }

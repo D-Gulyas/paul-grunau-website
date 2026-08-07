@@ -21,6 +21,7 @@ export const services: Service[] = [
       "Smart Home und Gebäudeautomation",
       "Beleuchtungstechnik und Energieeffizienz",
       "E-Ladesäulen für Elektromobilität",
+      "Blitz- und Überspannungsschutz",
       "Wartung und Prüfung nach VDE",
     ],
     image: "/images/leistung-elektrotechnik.webp",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Phone, Smartphone } from "lucide-react";
 import { BrandMark } from "@/components/brand-logo";
 import { FooterBeamLazy } from "@/components/footer-beam-lazy";
 
@@ -70,14 +70,20 @@ export function SiteFooter() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-white/60" />
-                <a href="tel:+4915121069600" className="transition-colors hover:text-[#f5b301]">
-                  +49 151 21069600
+                <a href="tel:+4922919159239" className="transition-colors hover:text-[#f5b301]">
+                  +49 2291 9159239
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Smartphone className="h-4 w-4 shrink-0 text-white/60" />
+                <a href="tel:+4915152516244" className="transition-colors hover:text-[#f5b301]">
+                  +49 151 525 162 44
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-white/60" />
-                <a href="mailto:paul@grunau.mobi" className="transition-colors hover:text-[#f5b301]">
-                  paul@grunau.mobi
+                <a href="mailto:a.bauer@grunau.mobi" className="transition-colors hover:text-[#f5b301]">
+                  a.bauer@grunau.mobi
                 </a>
               </li>
               <li className="flex items-start gap-3">

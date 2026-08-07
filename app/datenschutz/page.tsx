@@ -26,7 +26,7 @@ export default function DatenschutzPage() {
             <br />
             Homburger Str. 48, 51545 Waldbröl
             <br />
-            E-Mail: paul@grunau.mobi · Telefon: +49 151 21069600
+            E-Mail: a.bauer@grunau.mobi · Telefon: +49 2291 9159239
           </p>
         </LegalSection>
 
