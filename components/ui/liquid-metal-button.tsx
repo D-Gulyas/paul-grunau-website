@@ -11,6 +11,8 @@ interface LiquidMetalButtonProps {
   label: string;
   /** Link-Modus: rendert einen Next-Link (inkl. Hash-Anker). */
   href?: string;
+  /** Für externe Ziele: `_blank` öffnet einen neuen Tab (setzt rel automatisch). */
+  target?: "_blank";
   /** Button-Modus (z. B. Formular-Absenden), wenn kein href gesetzt ist. */
   type?: "button" | "submit";
   onClick?: () => void;
@@ -25,7 +27,7 @@ interface LiquidMetalButtonProps {
  * Größe bereits im ersten Frame (kein Nachjustieren / kein Größensprung).
  * Rendert einen Next-Link (href) oder einen <button> (Formular-Submit).
  */
-export function LiquidMetalButton({ label, href, type = "button", onClick, disabled, className }: LiquidMetalButtonProps) {
+export function LiquidMetalButton({ label, href, target, type = "button", onClick, disabled, className }: LiquidMetalButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -118,9 +120,6 @@ export function LiquidMetalButton({ label, href, type = "button", onClick, disab
   };
 
   const textColor = "#e6e6e6";
-  // Der Pfeil ist ein lucide-Icon und folgt darum dem Marken-Gelb wie alle anderen.
-  // Inline nötig, weil die globale svg.lucide-Regel gegen Inline-Styles nicht ankommt.
-  const iconColor = "var(--color-brand-yellow)";
   const pressTransform = isPressed ? "translateY(1px) scale(0.98)" : "translateY(0) scale(1)";
 
   // Alle Ebenen liegen absolut über dem Vordergrund (inset: 0) und übernehmen
@@ -197,7 +196,7 @@ export function LiquidMetalButton({ label, href, type = "button", onClick, disab
             <ArrowUpRight
               size={16}
               style={{
-                color: iconColor,
+                color: textColor,
                 filter: "drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.6))",
                 transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 transform: isHovered ? "translate(2px, -2px)" : "translate(0, 0)",
@@ -257,6 +256,8 @@ export function LiquidMetalButton({ label, href, type = "button", onClick, disab
                 interactiveRef.current = el;
               }}
               href={href}
+              target={target}
+              rel={target === "_blank" ? "noopener noreferrer" : undefined}
               onClick={handleClick}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}

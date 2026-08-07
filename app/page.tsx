@@ -7,6 +7,18 @@ import { TextReveal } from "@/components/ui/cascade-text";
 import { Testimonials } from "@/components/testimonials";
 import { stats } from "@/lib/content";
 
+/**
+ * Ziel des „Rezension schreiben"-Buttons.
+ *
+ * VORLÄUFIG: Google-Maps-Suche auf den Betrieb – funktioniert, führt aber erst
+ * auf den Eintrag, von dem aus bewertet wird. Sobald der direkte Bewertungslink
+ * des Google-Unternehmensprofils vorliegt (Profil → „Rezensionen" → „Mehr
+ * Rezensionen erhalten", Form `https://g.page/r/…/review`), nur diese eine
+ * Konstante ersetzen – sonst ändert sich nichts.
+ */
+const REZENSION_URL =
+  "https://www.google.com/maps/search/?api=1&query=Paul+Grunau+Brandschutz+Elektrotechnik+Homburger+Stra%C3%9Fe+48+51545+Waldbr%C3%B6l";
+
 const highlights = [
   {
     icon: Flame,
@@ -56,7 +68,7 @@ export default function HomePage() {
             {highlights.map((h) => (
               <StaggerItem key={h.title}>
                 <div className="glass glass-glow flex gap-5 rounded-3xl p-6">
-                  <h.icon strokeWidth={1.5} className="h-8 w-8 shrink-0" aria-hidden />
+                  <h.icon strokeWidth={1.5} className="h-8 w-8 shrink-0 text-brand-yellow" aria-hidden />
                   <div>
                     <h3 className="font-heading text-xl italic tracking-[-0.5px] text-brand-gradient">{h.title}</h3>
                     <p className="mt-1.5 font-body text-sm font-light leading-relaxed text-white/65">{h.text}</p>
@@ -74,8 +86,8 @@ export default function HomePage() {
           {stats.map((s) => (
             <StaggerItem key={s.label} className="h-full">
               <div className="glass flex h-full flex-col items-center justify-center rounded-3xl px-6 py-8 text-center">
-                <div className="font-heading text-4xl italic leading-none tracking-[-1px] text-white md:text-5xl">
-                  <TextReveal as="span" text={s.value} fontSize="inherit" hoverColor="#e11d2a" />
+                <div className="font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl">
+                  <TextReveal as="span" text={s.value} fontSize="inherit" hoverColor="#f5b301" />
                 </div>
                 <div className="mt-3 font-body text-sm font-light text-white/70">{s.label}</div>
               </div>
@@ -93,6 +105,10 @@ export default function HomePage() {
         </Reveal>
         <Reveal delay={0.1}>
           <Testimonials />
+        </Reveal>
+        {/* Aufruf zur eigenen Bewertung – blendet wie die übrigen Blöcke per Blur ein */}
+        <Reveal delay={0.2} area="kundenstimmen-cta" className="mt-12 flex justify-center">
+          <LiquidMetalButton label="Rezension schreiben" href={REZENSION_URL} target="_blank" />
         </Reveal>
       </Section>
     </>

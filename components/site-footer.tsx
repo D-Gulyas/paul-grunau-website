@@ -70,13 +70,13 @@ export function SiteFooter() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-white/60" />
-                <a href="tel:+4915121069600" className="transition-colors hover:text-[#e11d2a]">
+                <a href="tel:+4915121069600" className="transition-colors hover:text-[#f5b301]">
                   +49 151 21069600
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-white/60" />
-                <a href="mailto:paul@grunau.mobi" className="transition-colors hover:text-[#e11d2a]">
+                <a href="mailto:paul@grunau.mobi" className="transition-colors hover:text-[#f5b301]">
                   paul@grunau.mobi
                 </a>
               </li>
@@ -97,7 +97,7 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-3 text-sm">
               {leistungen.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-white/60 transition-colors hover:text-[#e11d2a]">
+                  <Link href={l.href} className="text-white/60 transition-colors hover:text-[#f5b301]">
                     {l.label}
                   </Link>
                 </li>
@@ -111,7 +111,7 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-3 text-sm">
               {rechtliches.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-white/60 transition-colors hover:text-[#e11d2a]">
+                  <Link href={l.href} className="text-white/60 transition-colors hover:text-[#f5b301]">
                     {l.label}
                   </Link>
                 </li>
@@ -130,7 +130,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="grid h-11 w-11 place-items-center rounded-full text-white/70 transition-colors hover:text-[#e11d2a]"
+                  className="grid h-11 w-11 place-items-center rounded-full text-white/70 transition-colors hover:text-[#f5b301]"
                 >
                   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
                     <path d={s.path} />

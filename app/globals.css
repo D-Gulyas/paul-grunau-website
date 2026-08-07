@@ -15,8 +15,9 @@
   /* Surfaces */
   --color-ink: #000000;
 
-  /* Marken-Gelb der lucide-Icons – derselbe Ton wie die Bewertungssterne und das
-     Gelb-Ende des Marken-Verlaufs. Zentral hier: eine Stelle färbt alle Icons um. */
+  /* Marken-Gelb – derselbe Ton wie die Bewertungssterne und das Gelb-Ende des
+     Marken-Verlaufs. Genutzt als `text-brand-yellow` an den Inhalts-Icons
+     (Philosophie, Leistungen, Team, Kontaktdaten) und für Hover-Zustaende. */
   --color-brand-yellow: #f5b301;
 
   --radius-pill: 9999px;
@@ -226,13 +227,6 @@
     background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 3px 3px;
   }
-}
-
-/* Alle lucide-Icons einheitlich in Marken-Gelb – zentral statt Klasse für Klasse.
-   `:root` hebt die Spezifität gerade so weit an, dass die Regel auch Icons erreicht,
-   die selbst eine `text-*`-Klasse tragen. */
-:root svg.lucide {
-  color: var(--color-brand-yellow);
 }
 
 @media (prefers-reduced-motion: reduce) {

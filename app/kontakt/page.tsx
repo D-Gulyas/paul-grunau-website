@@ -42,7 +42,7 @@ export default function KontaktPage() {
           {team.map((m) => (
             <StaggerItem key={m.name}>
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
-                <User strokeWidth={1.5} className="h-9 w-9" aria-hidden />
+                <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{m.name}</h3>
                 <p className="font-body text-sm font-normal text-white/70">{m.role}</p>
                 <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{m.bio}</p>
@@ -68,7 +68,7 @@ export default function KontaktPage() {
               {contactInfo.map((c) => (
                 <StaggerItem key={c.label}>
                   <div className="glass group flex items-start gap-4 rounded-2xl p-4">
-                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0" aria-hidden />
+                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-brand-yellow" aria-hidden />
                     <div>
                       <div className="font-body text-xs font-medium uppercase tracking-wider text-white/50">
                         {c.label}

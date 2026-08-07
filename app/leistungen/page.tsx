@@ -56,7 +56,7 @@ export default function LeistungenPage() {
 
               <Reveal delay={0.1} className={reversed ? "lg:order-1" : ""}>
                 <div className="flex items-center gap-3">
-                  <Icon strokeWidth={1.5} className="h-8 w-8 shrink-0" aria-hidden />
+                  <Icon strokeWidth={1.5} className="h-8 w-8 shrink-0 text-brand-yellow" aria-hidden />
                   <Eyebrow>{s.tag}</Eyebrow>
                 </div>
                 <h2 className="mt-5 font-heading text-4xl italic tracking-[-1px] text-brand-gradient md:text-5xl">{s.title}</h2>

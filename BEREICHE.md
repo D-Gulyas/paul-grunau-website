@@ -47,6 +47,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | `home-kundenstimmen` | Sektion Kundenstimmen |
 | `kundenstimmen-bewertung` | Google-Gesamtbewertung (4,6 ★) |
 | `kundenstimmen-marquee` | Laufende Rezensions-Spalten |
+| `kundenstimmen-cta` | Button „Rezension schreiben" unter den Kundenstimmen |
 
 ## 🔧 Leistungen (`/leistungen`)
 

@@ -9,16 +9,19 @@ export function Reveal({
   delay = 0,
   y = 20,
   className,
+  area,
 }: {
   children: ReactNode;
   delay?: number;
   y?: number;
   className?: string;
+  area?: string;
 }) {
   const reduce = useReducedMotion();
 
   return (
     <motion.div
+      data-area={area}
       className={className}
       initial={reduce ? { opacity: 0 } : { opacity: 0, y, filter: "blur(10px)" }}
       whileInView={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}

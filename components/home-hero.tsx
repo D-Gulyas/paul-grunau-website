@@ -76,7 +76,7 @@ export function HomeHero() {
             href="tel:+4915121069600"
             className="group inline-flex items-center gap-1.5 font-body text-xs font-medium text-white/90 sm:gap-2 sm:text-sm"
           >
-            <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <Phone className="h-3.5 w-3.5 text-white/90 sm:h-4 sm:w-4" />
             <span className="transition-colors group-hover:text-[#e11d2a]">+49 151 21069600</span>
           </a>
         </motion.div>

@@ -101,13 +101,13 @@ position: relative; overflow: hidden;
   auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
   bleiben unberührt; Scroll-Reveal unterhalb des Folds bleibt erhalten.)
 - **`stat-value`**: Count-up der Kennzahlen beim Sichtbarwerden.
-- **Icons:** **alle** lucide-Icons stehen **statisch** in Marken-Gelb – zentral über eine einzige Regel
-  `:root svg.lucide { color: var(--color-brand-yellow) }` in `globals.css`, nicht über Klassen an den
-  Icons. Zum Umfärben genügt die Variable `--color-brand-yellow` (`#f5b301`, derselbe Ton wie die
-  Bewertungssterne und das Gelb-Ende des Marken-Verlaufs).
-    Auf dem schwarzen Grund liegt der Ton bei **11,33:1** Kontrast.
-  - **Inline-Styles schlagen die Regel:** der Pfeil im `LiquidMetalButton` setzt seine Farbe inline und
-    referenziert deshalb selbst `var(--color-brand-yellow)`.
+- **Icons:** lucide-Icons sind **statisch** (keine Animation). Gelb (`text-brand-yellow` = `#f5b301`,
+  11,33:1 auf Schwarz) sind **nur die Inhalts-Icons**, per Klasse am Icon gesetzt:
+  Philosophie-Karten, Leistungs-Blöcke, Team-Karten und Kontaktdaten – dazu die Bewertungssterne, die
+  denselben Ton schon immer hatten. **Alle übrigen Icons bleiben weiß**: Burger-Menü, Footer-Kontakt,
+  Button-Pfeile, Blog-Uhren, Formular-Haken. Bewusste Entscheidung – flächendeckendes Gelb wurde
+  getestet und wieder verworfen. **Keine globale `svg.lucide`-Regel einführen**, sie würde genau das
+  wiederherstellen.
   - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
     lief pro Icon als Endlos-Animation mit zwei `drop-shadow`-Filtern und machte auf dem Handy Probleme.
     **Nicht wieder einführen.**
@@ -150,8 +150,13 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   (Leistungen · Blog · Karriere · Kontakt) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
   `liquid-glass`-Dropdown. Das Logo (`BrandMark`, h-12) ist ein farbiges WebP.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
-  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
-  Google-Rezensionen, 4,6 ★ (20)).
+  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards, Count-up; Zahlen **fett**, Hover-Farbe
+  Marken-Gelb) → **Kundenstimmen** (Spalten-Marquee, echte Google-Rezensionen, 4,6 ★ (20)) →
+  **`kundenstimmen-cta`**: `LiquidMetalButton` „Rezension schreiben" (blendet per `Reveal` ein,
+  öffnet im neuen Tab). Ziel steht als Konstante `REZENSION_URL` oben in `app/page.tsx` – vorläufig
+  eine Google-Maps-Suche auf den Betrieb, ersetzbar durch den direkten `g.page/r/…/review`-Link.
+- **Hover-Farben:** im **Footer** (Links, Telefon/Mail, Social-Icons) und bei den **Kennzahlen** ist der
+  Hover **Marken-Gelb**. Auf der Kontaktseite und beim Hero-Telefon bleibt er bewusst **rot** (`#e11d2a`).
 - **Weitere Seiten:** `/leistungen` (Hero + Elektrotechnik · KNX/Smarthome · Photovoltaik), `/blog` +
   `/blog/[slug]` (5 Artikel), `/karriere` (+ Bewerbungsformular), `/kontakt` (Team + Formular),
   `/impressum`, `/datenschutz`, markenkonforme 404.
