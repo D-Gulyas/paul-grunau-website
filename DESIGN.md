@@ -101,7 +101,19 @@ position: relative; overflow: hidden;
   auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
   bleiben unberührt; Scroll-Reveal unterhalb des Folds bleibt erhalten.)
 - **`stat-value`**: Count-up der Kennzahlen beim Sichtbarwerden.
-- **`TracedIcon`** (`ui/traced-icon.tsx`): Icons „zeichnen" sich per Stroke-Animation.
+- **Icons:** **alle** lucide-Icons stehen **statisch** in Marken-Gelb – zentral über eine einzige Regel
+  `:root svg.lucide { color: var(--color-brand-yellow) }` in `globals.css`, nicht über Klassen an den
+  Icons. Zum Umfärben genügt die Variable `--color-brand-yellow` (`#f5b301`, derselbe Ton wie die
+  Bewertungssterne und das Gelb-Ende des Marken-Verlaufs).
+  - **Tag-Modus:** `--color-brand-yellow-ink` (`#9a6a00`). `#f5b301` käme auf dem hellen Grund
+    (`#eef1f4`) nur auf **1,63:1** und wäre unlesbar; das abgedunkelte Gold erreicht **4,2:1**.
+    Ausnahme: Bereiche, die im Tag-Modus dunkel bleiben (Hero, Blog-Kopf, Navbar-Pille über dem Hero)
+    behalten das helle `#f5b301` – diese Regel muss **nach** der Tag-Modus-Regel stehen (gleiche Spezifität).
+  - **Inline-Styles schlagen die Regel:** der Pfeil im `LiquidMetalButton` setzt seine Farbe inline und
+    referenziert deshalb selbst `var(--color-brand-yellow)`.
+  - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
+    lief pro Icon als Endlos-Animation mit zwei `drop-shadow`-Filtern und machte auf dem Handy Probleme.
+    **Nicht wieder einführen.**
 - **Kundenstimmen:** vertikales Spalten-Marquee (versetzte Richtungen/Tempi, nahtlose Endlosschleife).
 - **`prefers-reduced-motion`** wird **durchgängig** respektiert: global via CSS (Animationsdauern → ~0)
   und in Komponenten via `useReducedMotion()` (statische Endzustände statt Animation).
@@ -149,7 +161,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   CSS reagiert darauf. Der Burger bleibt (eigene helle Fläche) immer schwarz. Das Logo (`BrandMark`,
   h-12) ist ein farbiges WebP → von der Farbumschaltung unberührt.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
-  TracedIcon) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
+  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
   Google-Rezensionen, 4,6 ★ (20)).
 - **Weitere Seiten:** `/leistungen` (Hero + Elektrotechnik · KNX/Smarthome · Photovoltaik), `/blog` +
   `/blog/[slug]` (5 Artikel), `/karriere` (+ Bewerbungsformular), `/kontakt` (Team + Formular),
@@ -168,7 +180,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 home-hero · page-hero · blur-text · motion-primitives
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee) · stat-value (Count-up)
-brand-logo · ui (Section, SectionHeading, ButtonLink, cx) · ui/traced-icon
+brand-logo · ui (Section, SectionHeading, ButtonLink, cx)
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)
 legal
 lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Team, Kennzahlen, Bildpfade)

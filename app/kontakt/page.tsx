@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone, User } from "lucide-react";
-import { TracedIcon } from "@/components/ui/traced-icon";
 import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
@@ -40,12 +39,10 @@ export default function KontaktPage() {
           <SectionHeading eyebrow="Ihre Ansprechpartner" title="Persönlicher Kontakt steht bei uns im Mittelpunkt" />
         </Reveal>
         <StaggerGroup className="mt-12 grid gap-6 md:grid-cols-3">
-          {team.map((m, i) => (
+          {team.map((m) => (
             <StaggerItem key={m.name}>
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
-                <TracedIcon className="h-9 w-9 text-white" delay={i * 0.4}>
-                  <User strokeWidth={1.5} />
-                </TracedIcon>
+                <User strokeWidth={1.5} className="h-9 w-9" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{m.name}</h3>
                 <p className="font-body text-sm font-normal text-white/70">{m.role}</p>
                 <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{m.bio}</p>
@@ -68,12 +65,10 @@ export default function KontaktPage() {
               </p>
             </Reveal>
             <StaggerGroup className="mt-7 space-y-3">
-              {contactInfo.map((c, i) => (
+              {contactInfo.map((c) => (
                 <StaggerItem key={c.label}>
                   <div className="glass group flex items-start gap-4 rounded-2xl p-4">
-                    <TracedIcon className="mt-0.5 h-6 w-6 shrink-0 text-white" delay={i * 0.3}>
-                      <c.icon strokeWidth={1.5} />
-                    </TracedIcon>
+                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0" aria-hidden />
                     <div>
                       <div className="font-body text-xs font-medium uppercase tracking-wider text-white/50">
                         {c.label}

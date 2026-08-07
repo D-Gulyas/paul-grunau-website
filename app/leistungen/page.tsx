@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Check, Cpu, Sun, Zap } from "lucide-react";
-import { TracedIcon } from "@/components/ui/traced-icon";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/motion-primitives";
 import { Eyebrow, Section } from "@/components/ui";
@@ -57,9 +56,7 @@ export default function LeistungenPage() {
 
               <Reveal delay={0.1} className={reversed ? "lg:order-1" : ""}>
                 <div className="flex items-center gap-3">
-                  <TracedIcon className="h-8 w-8 shrink-0 text-white" delay={i * 0.4}>
-                    <Icon strokeWidth={1.5} />
-                  </TracedIcon>
+                  <Icon strokeWidth={1.5} className="h-8 w-8 shrink-0" aria-hidden />
                   <Eyebrow>{s.tag}</Eyebrow>
                 </div>
                 <h2 className="mt-5 font-heading text-4xl italic tracking-[-1px] text-brand-gradient md:text-5xl">{s.title}</h2>

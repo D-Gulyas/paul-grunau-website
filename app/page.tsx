@@ -1,6 +1,5 @@
 import { Flame, ShieldCheck, Zap } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
-import { TracedIcon } from "@/components/ui/traced-icon";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
@@ -54,12 +53,10 @@ export default function HomePage() {
           </Reveal>
 
           <StaggerGroup area="home-philosophie-highlights" className="grid gap-4">
-            {highlights.map((h, i) => (
+            {highlights.map((h) => (
               <StaggerItem key={h.title}>
                 <div className="glass glass-glow flex gap-5 rounded-3xl p-6">
-                  <TracedIcon className="h-8 w-8 shrink-0 text-white" delay={i * 0.4}>
-                    <h.icon strokeWidth={1.5} />
-                  </TracedIcon>
+                  <h.icon strokeWidth={1.5} className="h-8 w-8 shrink-0" aria-hidden />
                   <div>
                     <h3 className="font-heading text-xl italic tracking-[-0.5px] text-brand-gradient">{h.title}</h3>
                     <p className="mt-1.5 font-body text-sm font-light leading-relaxed text-white/65">{h.text}</p>

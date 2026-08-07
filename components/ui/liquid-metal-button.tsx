@@ -118,6 +118,9 @@ export function LiquidMetalButton({ label, href, type = "button", onClick, disab
   };
 
   const textColor = "#e6e6e6";
+  // Der Pfeil ist ein lucide-Icon und folgt darum dem Marken-Gelb wie alle anderen.
+  // Inline nötig, weil die globale svg.lucide-Regel gegen Inline-Styles nicht ankommt.
+  const iconColor = "var(--color-brand-yellow)";
   const pressTransform = isPressed ? "translateY(1px) scale(0.98)" : "translateY(0) scale(1)";
 
   // Alle Ebenen liegen absolut über dem Vordergrund (inset: 0) und übernehmen
@@ -194,7 +197,7 @@ export function LiquidMetalButton({ label, href, type = "button", onClick, disab
             <ArrowUpRight
               size={16}
               style={{
-                color: textColor,
+                color: iconColor,
                 filter: "drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.6))",
                 transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 transform: isHovered ? "translate(2px, -2px)" : "translate(0, 0)",

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Building2, GraduationCap, Briefcase } from "lucide-react";
-import { TracedIcon } from "@/components/ui/traced-icon";
 import { PageHero } from "@/components/page-hero";
 import { ApplicationForm } from "@/components/application-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
@@ -47,12 +46,10 @@ export default function KarrierePage() {
       {/* Infoblöcke */}
       <Section area="karriere-infobloecke" className="pt-12">
         <StaggerGroup className="grid gap-6 md:grid-cols-3">
-          {blocks.map((b, i) => (
+          {blocks.map((b) => (
             <StaggerItem key={b.title}>
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
-                <TracedIcon className="h-8 w-8 text-white" delay={i * 0.4}>
-                  <b.icon strokeWidth={1.5} />
-                </TracedIcon>
+                <b.icon strokeWidth={1.5} className="h-8 w-8" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{b.title}</h3>
                 <p className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65">{b.text}</p>
               </div>
