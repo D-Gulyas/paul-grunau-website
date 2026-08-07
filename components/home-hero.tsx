@@ -8,19 +8,26 @@ import { LogoLoop } from "@/components/ui/logo-loop";
 import { asset } from "@/lib/base-path";
 
 // Hersteller, mit denen der Betrieb arbeitet – laufen als Endlos-Schleife durch.
-// Neue Hersteller: SVG nach public/logos/ legen und hier eine Zeile ergänzen.
+// Die Reihenfolge hier ist die Reihenfolge im Lauf: Schneider Merten steht bewusst
+// an erster Stelle. Neue Hersteller: SVG nach public/logos/ legen und eine Zeile ergänzen.
+//
+// Die Logos behalten ihre Originalfarben. Nur die schwarzen bekommen
+// `logoloop__img--invert` (siehe logo-loop.css), sonst wären sie auf dem
+// schwarzen Hero unsichtbar.
+const INVERT = "logoloop__img--invert";
+
 const partners = [
+  { src: asset("/logos/schneider-merten.svg"), alt: "Schneider Electric – Merten" },
   { src: asset("/logos/knx.svg"), alt: "KNX" },
-  { src: asset("/logos/gira.svg"), alt: "Gira" },
+  { src: asset("/logos/gira.svg"), alt: "Gira", className: INVERT },
   { src: asset("/logos/hager.svg"), alt: "Hager" },
   { src: asset("/logos/sma.svg"), alt: "SMA" },
-  { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger" },
-  { src: asset("/logos/schneider-merten.svg"), alt: "Schneider Electric – Merten" },
+  { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger", className: INVERT },
   { src: asset("/logos/kostal.svg"), alt: "Kostal" },
   { src: asset("/logos/qcells.svg"), alt: "Qcells" },
   { src: asset("/logos/sigenergy.svg"), alt: "Sigenergy" },
   { src: asset("/logos/e3.svg"), alt: "E3/DC" },
-  { src: asset("/logos/easee.svg"), alt: "Easee" },
+  { src: asset("/logos/easee.svg"), alt: "Easee", className: INVERT },
   { src: asset("/logos/keba.svg"), alt: "KEBA" },
 ];
 
@@ -114,7 +121,6 @@ export function HomeHero() {
             gap={56}
             fadeOut
             fadeOutColor="#000000"
-            className="logoloop--monochrome"
             ariaLabel="Hersteller, mit denen wir arbeiten"
           />
         </div>

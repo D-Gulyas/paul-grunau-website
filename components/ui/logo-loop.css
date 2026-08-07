@@ -99,14 +99,14 @@
 }
 
 /* ---------------------------------------------------------------
-   Projekt-Ergänzung: Hersteller-Logos einfarbig weiß.
-   Die Original-SVGs reichen von Weiß bis Fast-Schwarz (Gira #040404,
-   Easee #1A1A1A, Sigenergy #1d080c) – auf dem schwarzen Hero wären
-   mehrere davon unsichtbar. `brightness(0) invert(1)` macht jedes
-   Logo unabhängig von seiner Ausgangsfarbe rein weiß, passend zu den
-   weißen Herstellernamen, die hier vorher standen.
+   Projekt-Ergänzung: einzelne Logos weiß darstellen.
+   Die Logos laufen in ihren Originalfarben. Ausnahme sind die
+   schwarzen: gemessen am Anteil praktisch unsichtbarer Pixel auf
+   Schwarz sind das Gira (100 %), Easee (100 %) und Busch-Jaeger
+   (76 % – der Schriftzug hat gar keine Farbangabe und rendert
+   deshalb schwarz). `brightness(0) invert(1)` macht sie rein weiß.
+   Gesetzt wird die Klasse pro Logo im `partners`-Array.
    --------------------------------------------------------------- */
-.logoloop--monochrome .logoloop__item img {
+.logoloop__item img.logoloop__img--invert {
   filter: brightness(0) invert(1);
-  opacity: 0.85;
 }

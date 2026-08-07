@@ -147,11 +147,13 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
   beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
   sichtbar (Desktop), drei auf dem Handy.
-  - **Logos einfarbig weiß** (`.logoloop--monochrome`, `filter: brightness(0) invert(1)`): die
-    Original-SVGs reichen von Weiß bis Fast-Schwarz (Gira `#040404`, Easee `#1A1A1A`,
-    Sigenergy `#1d080c`) und wären teilweise unsichtbar. Ersetzt die früheren weißen Serif-Namen.
+  - **Originalfarben**, mit drei Ausnahmen: **Gira, Busch-Jaeger und Easee** sind schwarze Logos und
+    bekommen `logoloop__img--invert` (`filter: brightness(0) invert(1)`). Gemessen am Anteil auf
+    Schwarz praktisch unsichtbarer Pixel: Gira 100 %, Easee 100 %, Busch-Jaeger 76 % (dessen
+    Schriftzug hat gar keine `fill`-Angabe und rendert deshalb schwarz). Alle übrigen liegen bei 0 %.
+  - **Reihenfolge = Array-Reihenfolge.** Schneider Merten steht bewusst an erster Stelle.
   - **Neuer Hersteller:** SVG nach `public/logos/` (Kleinbuchstaben) und eine Zeile im
-    `partners`-Array in `home-hero.tsx` – sonst nichts.
+    `partners`-Array in `home-hero.tsx`. Ist das Logo schwarz, zusätzlich `className: INVERT`.
   - Die Props sind in `logo-loop.d.ts` typisiert, weil die Komponente bewusst JavaScript bleibt.
 
 ---

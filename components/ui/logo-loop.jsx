@@ -195,7 +195,15 @@ export const LogoLoop = memo(function LogoLoop({
         >
           {logos.map((item, itemIndex) => (
             <li className="logoloop__item" key={`${copyIndex}-${itemIndex}`} role="listitem">
-              <img src={item.src} alt={item.alt ?? ""} title={item.title} loading="lazy" decoding="async" draggable={false} />
+              <img
+                src={item.src}
+                alt={item.alt ?? ""}
+                title={item.title}
+                className={item.className}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
             </li>
           ))}
         </ul>

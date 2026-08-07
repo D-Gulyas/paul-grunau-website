@@ -9,6 +9,8 @@ export interface LogoItem {
   src: string;
   alt?: string;
   title?: string;
+  /** Klasse am <img>, z. B. um ein schwarzes Logo weiß darzustellen. */
+  className?: string;
 }
 
 export interface LogoLoopProps {
