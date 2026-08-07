@@ -40,7 +40,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | `home-hero-video` | Hintergrund-Video (Loop) |
 | `home-hero-headline` | Firmenname / Überschrift |
 | `home-hero-cta` | Button „Mehr erfahren" + Telefonnummer |
-| `home-hero-partner` | „Wir arbeiten mit führenden Herstellern" |
+| `home-hero-partner` | „Wir arbeiten mit führenden Herstellern" + laufende Hersteller-Logos |
 | `home-philosophie` | Sektion „Unsere Philosophie" |
 | `home-philosophie-highlights` | Die 3 Karten rechts |
 | `home-kennzahlen` | Zahlen-Kacheln |

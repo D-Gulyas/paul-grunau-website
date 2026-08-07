@@ -1,0 +1,107 @@
+/* LogoLoop (React Bits) – CSS nach Hersteller/logo_loop.md.
+   Die vertikalen Varianten der Vorlage sind weggelassen, weil hier nur
+   horizontal gelaufen wird. Projekt-Ergänzungen stehen unten im eigenen Block. */
+
+.logoloop {
+  position: relative;
+
+  --logoloop-gap: 32px;
+  --logoloop-logoHeight: 28px;
+  --logoloop-fadeColorAuto: #000000;
+}
+
+.logoloop--scale-hover {
+  padding-top: calc(var(--logoloop-logoHeight) * 0.1);
+  padding-bottom: calc(var(--logoloop-logoHeight) * 0.1);
+}
+
+.logoloop__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  user-select: none;
+  position: relative;
+  z-index: 0;
+}
+
+.logoloop__list {
+  display: flex;
+  align-items: center;
+}
+
+.logoloop__item {
+  flex: 0 0 auto;
+  margin-right: var(--logoloop-gap);
+  font-size: var(--logoloop-logoHeight);
+  line-height: 1;
+}
+
+.logoloop__item:last-child {
+  margin-right: var(--logoloop-gap);
+}
+
+.logoloop__item img {
+  height: var(--logoloop-logoHeight);
+  width: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logoloop--scale-hover .logoloop__item {
+  overflow: visible;
+}
+
+.logoloop--scale-hover .logoloop__item:hover img {
+  transform: scale(1.2);
+  transform-origin: center center;
+}
+
+.logoloop--fade::before,
+.logoloop--fade::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(24px, 8%, 120px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Links ausblenden (Logos laufen dort hinaus) */
+.logoloop--fade::before {
+  left: 0;
+  background: linear-gradient(to right, var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Rechts einblenden (Logos kommen dort herein) */
+.logoloop--fade::after {
+  right: 0;
+  background: linear-gradient(to left, var(--logoloop-fadeColor, var(--logoloop-fadeColorAuto)) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoloop__track {
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .logoloop__item img {
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Projekt-Ergänzung: Hersteller-Logos einfarbig weiß.
+   Die Original-SVGs reichen von Weiß bis Fast-Schwarz (Gira #040404,
+   Easee #1A1A1A, Sigenergy #1d080c) – auf dem schwarzen Hero wären
+   mehrere davon unsichtbar. `brightness(0) invert(1)` macht jedes
+   Logo unabhängig von seiner Ausgangsfarbe rein weiß, passend zu den
+   weißen Herstellernamen, die hier vorher standen.
+   --------------------------------------------------------------- */
+.logoloop--monochrome .logoloop__item img {
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}

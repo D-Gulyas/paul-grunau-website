@@ -139,7 +139,20 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 - **Inhalt:** zweizeilige BlurText-Headline („Brandschutz & Elektrotechnik" größer, „Meisterbetrieb Paul
   Grunau" ~70 %). Zeile 1 ist per `as="h1"` das **einzige `<h1>` der Startseite** – nicht auf `p`
   zurückdrehen, sonst hat die Startseite keine Hauptüberschrift mehr. CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
-  Hersteller-Pille + Namen (KNX · Gira · Hager · SMA · Busch-Jaeger) in Serif-Italic.
+  Hersteller-Pille + **Logo-Loop** (siehe unten).
+- **Hersteller-Loop** (`home-hero-partner`): `ui/logo-loop.jsx` + `ui/logo-loop.css` – die Vorlage
+  „LogoLoop" (React Bits, Variante **JavaScript + CSS**) aus `Hersteller/logo_loop.md`. Die Logos
+  laufen per `requestAnimationFrame` endlos von **rechts nach links**, an beiden Rändern
+  weichgezeichnet (`fadeOut`, `fadeOutColor="#000000"`). Der Track misst sich per `ResizeObserver`
+  selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
+  beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
+  sichtbar (Desktop), drei auf dem Handy.
+  - **Logos einfarbig weiß** (`.logoloop--monochrome`, `filter: brightness(0) invert(1)`): die
+    Original-SVGs reichen von Weiß bis Fast-Schwarz (Gira `#040404`, Easee `#1A1A1A`,
+    Sigenergy `#1d080c`) und wären teilweise unsichtbar. Ersetzt die früheren weißen Serif-Namen.
+  - **Neuer Hersteller:** SVG nach `public/logos/` (Kleinbuchstaben) und eine Zeile im
+    `partners`-Array in `home-hero.tsx` – sonst nichts.
+  - Die Props sind in `logo-loop.d.ts` typisiert, weil die Komponente bewusst JavaScript bleibt.
 
 ---
 
@@ -174,7 +187,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 home-hero · page-hero · blur-text · motion-primitives
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee) · stat-value (Count-up)
-brand-logo · ui (Section, SectionHeading, ButtonLink, cx)
+brand-logo · ui (Section, SectionHeading, ButtonLink, cx) · ui/logo-loop (Hersteller-Schleife)
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)
 legal
 lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Team, Kennzahlen, Bildpfade)
@@ -192,7 +205,7 @@ lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Team, Kennzahlen, Bildpf
 - Navbar: Glas-Pille mit Links + weißer Pill-CTA + ArrowUpRight.
 - `BlurText` Wort-für-Wort-Blur-In; Framer-Entrance (`blur/opacity/y`, easeOut).
 - Cards aus Glas mit verschachtelten Glas-Icon-Flächen + Pill-Tags.
-- Partner-/Hersteller-Reihe in Serif-Italic; Kennzahlen in Serif-Italic.
+- Kennzahlen in Serif-Italic. (Die Hersteller-Reihe zeigt inzwischen Logos statt Serif-Namen.)
 - Vollhohe Sektionen.
 
 **🔁 Bewusste Abweichungen (Marken-Anpassung, kein Fehler):**

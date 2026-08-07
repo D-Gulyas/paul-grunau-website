@@ -52,6 +52,7 @@ Beide BlurText-Zeilen der Hero-Headline waren **weiß** (`text-white`):
 ## NICHT geändert (bewusst, da keine Überschriften)
 
 Diese `font-heading`-Elemente bleiben in ihrer Original-Farbe (`text-white`):
-Kennzahlen-Zahlen (`app/page.tsx`), Hersteller-Namen KNX/Gira/… (`components/home-hero.tsx`),
+Kennzahlen-Zahlen (`app/page.tsx`; die Hersteller-Namen im Hero gibt es nicht mehr – dort laufen
+jetzt Logos),
 Bewertungszahl „4,6" (`components/testimonials.tsx`), „404"-Zahl (`app/not-found.tsx`),
 Zitat/Blockquote (`app/blog/[slug]/page.tsx`).

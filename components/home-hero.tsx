@@ -4,9 +4,25 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Phone } from "lucide-react";
 import { BlurText } from "@/components/blur-text";
+import { LogoLoop } from "@/components/ui/logo-loop";
 import { asset } from "@/lib/base-path";
 
-const partners = ["KNX", "Gira", "Hager", "SMA", "Busch-Jaeger"];
+// Hersteller, mit denen der Betrieb arbeitet – laufen als Endlos-Schleife durch.
+// Neue Hersteller: SVG nach public/logos/ legen und hier eine Zeile ergänzen.
+const partners = [
+  { src: asset("/logos/knx.svg"), alt: "KNX" },
+  { src: asset("/logos/gira.svg"), alt: "Gira" },
+  { src: asset("/logos/hager.svg"), alt: "Hager" },
+  { src: asset("/logos/sma.svg"), alt: "SMA" },
+  { src: asset("/logos/busch-jaeger.svg"), alt: "Busch-Jaeger" },
+  { src: asset("/logos/schneider-merten.svg"), alt: "Schneider Electric – Merten" },
+  { src: asset("/logos/kostal.svg"), alt: "Kostal" },
+  { src: asset("/logos/qcells.svg"), alt: "Qcells" },
+  { src: asset("/logos/sigenergy.svg"), alt: "Sigenergy" },
+  { src: asset("/logos/e3.svg"), alt: "E3/DC" },
+  { src: asset("/logos/easee.svg"), alt: "Easee" },
+  { src: asset("/logos/keba.svg"), alt: "KEBA" },
+];
 
 const fade = (delay: number, reduce: boolean | null) => ({
   initial: reduce ? { opacity: 0 } : { filter: "blur(10px)", opacity: 0, y: 20 },
@@ -87,15 +103,20 @@ export function HomeHero() {
         <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">
           Wir arbeiten mit führenden Herstellern
         </span>
-        <div className="flex flex-nowrap items-center justify-center gap-x-3 gap-y-3 sm:flex-wrap sm:gap-x-12 md:gap-x-16">
-          {partners.map((p) => (
-            <span
-              key={p}
-              className="whitespace-nowrap font-heading text-base italic tracking-tight text-white sm:text-2xl md:text-3xl"
-            >
-              {p}
-            </span>
-          ))}
+        {/* Endlos-Schleife: Logos laufen von rechts nach links, an beiden Rändern ausgeblendet.
+            Breite begrenzt, damit etwa fünf Logos gleichzeitig zu sehen sind. */}
+        <div className="w-full max-w-3xl">
+          <LogoLoop
+            logos={partners}
+            speed={55}
+            direction="left"
+            logoHeight={32}
+            gap={56}
+            fadeOut
+            fadeOutColor="#000000"
+            className="logoloop--monochrome"
+            ariaLabel="Hersteller, mit denen wir arbeiten"
+          />
         </div>
       </motion.div>
     </section>
