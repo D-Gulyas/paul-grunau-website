@@ -38,7 +38,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | Name | Bereich |
 |---|---|
 | `home-hero` | Hero gesamt |
-| `home-hero-slideshow` | Hintergrund-Bilderslideshow |
+| `home-hero-slideshow` | Hintergrund-Video (Loop) |
 | `home-hero-headline` | Firmenname / Überschrift |
 | `home-hero-cta` | Button „Mehr erfahren" + Telefonnummer |
 | `home-hero-partner` | „Wir arbeiten mit führenden Herstellern" |

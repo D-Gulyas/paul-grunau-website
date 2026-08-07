@@ -1,17 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Phone } from "lucide-react";
 import { BlurText } from "@/components/blur-text";
 import { asset } from "@/lib/base-path";
-
-// Hero-Diashow: zwei Aufnahmen des fertigen Hauses mit PV-Anlage, die im Wechsel überblendet werden.
-const slides = [
-  { src: asset("/images/hero-haus-1.webp"), alt: "Einfamilienhaus mit montierter Photovoltaikanlage" },
-  { src: asset("/images/hero-haus-2.webp"), alt: "Einfamilienhaus mit Photovoltaikanlage in der Abendsonne" },
-];
 
 const partners = ["KNX", "Gira", "Hager", "SMA", "Busch-Jaeger"];
 
@@ -24,39 +17,20 @@ const fade = (delay: number, reduce: boolean | null) => ({
 export function HomeHero() {
   const reduce = useReducedMotion();
 
-  // Index des aktuell sichtbaren Slides; wechselt im Loop zwischen den beiden Bildern.
-  const [slideIndex, setSlideIndex] = useState(0);
-
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => {
-      setSlideIndex((i) => (i + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(id);
-  }, [reduce]);
-
   return (
     <section data-area="home-hero" className="relative flex min-h-dvh flex-col overflow-hidden">
-      {/* Slideshow Hintergrund: Crossfade zwischen den beiden Haus-Aufnahmen */}
+      {/* Hintergrund-Video: läuft stumm in Dauerschleife (bei reduced-motion bleibt das erste Bild stehen) */}
       <div data-area="home-hero-slideshow" className="absolute inset-0 z-0">
-        <motion.div
-          className="absolute inset-0"
-          animate={reduce ? undefined : { scale: [1, 1.06] }}
-          transition={{ duration: 16, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
-        >
-          <AnimatePresence initial={false}>
-            <motion.img
-              key={slides[slideIndex].src}
-              src={slides[slideIndex].src}
-              alt={slides[slideIndex].alt}
-              className="absolute inset-0 h-full w-full object-cover"
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-            />
-          </AnimatePresence>
-        </motion.div>
+        <video
+          src={asset("/videos/hero.mp4")}
+          autoPlay={!reduce}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         {/* Scrim für Lesbarkeit des weißen Textes */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_40%,transparent,rgba(0,0,0,0.65))]" />

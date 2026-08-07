@@ -15,7 +15,7 @@ ein cinematisches **Liquid-Glass-Design** auf tiefschwarzem Grund, überwiegend 
 ## ✨ Features
 
 - **🪞 Liquid-Glass-Design** – cinematischer Look mit Glas-Effekten (`backdrop-filter`) und Gradient-Kanten
-- **🎬 Animationen** – Blur-In-Hero, Reveal/Stagger, hochzählende Kennzahlen, Kundenstimmen-Marquee, Hero-Slideshow
+- **🎬 Animationen** – Blur-In-Hero, Reveal/Stagger, hochzählende Kennzahlen, Kundenstimmen-Marquee, Hero-Video-Loop
 - **🌟 WebGL-Footer** – bewegter Lichtstrahl (three.js-Shader), läuft nur im Viewport
 - **⭐ Echte Kundenstimmen** – Google-Rezensionen als vertikales Spalten-Marquee
 - **📱 Voll Responsive** – inkl. mobilem Menü, `prefers-reduced-motion` wird durchgängig respektiert
@@ -48,7 +48,7 @@ Die neue Webseite ist als Vorschau live über GitHub Pages verfügbar:
 
 | Route | Inhalt |
 |---|---|
-| `/` | Hero-Slideshow · Philosophie · Kennzahlen · Kundenstimmen |
+| `/` | Hero-Video · Philosophie · Kennzahlen · Kundenstimmen |
 | `/leistungen` | Elektrotechnik · KNX & Smarthome · Photovoltaik |
 | `/blog` + `/blog/[slug]` | Übersicht + 5 Artikel |
 | `/karriere` | Infoblöcke + Bewerbungsformular |

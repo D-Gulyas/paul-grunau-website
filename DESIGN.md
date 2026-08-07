@@ -108,25 +108,20 @@ position: relative; overflow: hidden;
 
 ---
 
-## 7. Hero-Slideshow (Startseite)
+## 7. Hero-Video (Startseite)
 
-Kernstück des Looks. Zwei Aufnahmen des fertigen Hauses mit PV-Anlage (lokal, `public/images/`),
-die per Crossfade im Wechsel gezeigt werden:
+Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), das in Dauerschleife läuft.
 
-- `hero-haus-1.webp` – fertiges Haus mit PV-Anlage (Tag)
-- `hero-haus-2.webp` – fertiges Haus mit PV-Anlage (Abendsonne)
-
-**Aufbau:** `AnimatePresence` mit einem einzelnen `motion.img`, dessen `key` sich alle 6 s auf den
-nächsten Slide-Index ändert (`slides` Array in `home-hero.tsx`) → weiches Opacity-Crossfade
-(`duration: 1.5s`, `easeInOut`) zwischen den beiden Bildern, danach Loop von vorn.
+**Aufbau:** ein natives `<video>` in `home-hero.tsx` mit `autoPlay loop muted playsInline`
+(`muted` + `playsInline` sind Pflicht, sonst blockieren Browser den Autostart), `object-cover`
+über die volle Herofläche. Kein Crossfade, kein Interval – die Bewegung kommt aus dem Video selbst.
 
 **Weitere Hero-Details:**
-- **Ken-Burns:** langsamer Zoom `scale [1 → 1.06]`, 16 s, `mirror`-Loop.
 - **Statischer schwarzer Blur-Rand:** `box-shadow: inset 0 0 110px 26px rgba(0,0,0,0.72)` – rahmt das Bild,
   Motiv bleibt scharf. (Kein Lade-/Erscheinen-Effekt – bewusst entfernt, siehe §11.)
 - **Scrim für Lesbarkeit:** `bg-gradient-to-b from-black/70 via-black/45 to-black` +
   radiale Vignette `radial-gradient(80% 60% at 50% 40%, transparent, rgba(0,0,0,0.65))`.
-- **reduced-motion:** kein Interval-Wechsel, erster Slide bleibt statisch stehen.
+- **reduced-motion:** kein `autoPlay`, das Video bleibt beim ersten Bild stehen.
 - **Inhalt:** zweizeilige BlurText-Headline („Brandschutz & Elektrotechnik" größer, „Meisterbetrieb Paul
   Grunau" ~70 %), CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
   Hersteller-Pille + Namen (KNX · Gira · Hager · SMA · Busch-Jaeger) in Serif-Italic.
@@ -189,8 +184,8 @@ lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Team, Kennzahlen, Bildpf
 **🔁 Bewusste Abweichungen (Marken-Anpassung, kein Fehler):**
 - **Inhalt:** Brandschutz & Elektrotechnik statt Space-Travel.
 - **Tech-Stack:** Next.js 16 + React 19 + Tailwind v4 statt CDN-React/Babel (echte Produktions-App).
-- **Hintergrund:** Hero nutzt eine **3-Bild-Slideshow** (Bau → fertig → Nacht) statt Loop-Videos.
-  → Die `FadingVideo`-Komponente/rAF-Video-Crossfade der Vorlage ist **nicht** umgesetzt (keine Videos).
+- **Hintergrund:** Hero nutzt **ein** Loop-Video (`public/videos/hero.mp4`) statt mehrerer Clips.
+  → Die `FadingVideo`-Komponente/rAF-Video-Crossfade der Vorlage ist **nicht** umgesetzt (nur ein Clip).
 - **Marken-Farbverlauf** (Rot→Orange→Gelb) auf Überschriften – die Vorlage war rein monochrom
   („no gradient / all white"). Bewusster Marken-Akzent.
 - **Footer-Lichtstrahl** (three.js) ergänzt (nicht in der Vorlage).
@@ -207,7 +202,7 @@ das Space-Icon-Set.
   (ab „Philosophie") wurde getestet und **vollständig entfernt** (Komponente `home-light-field.tsx`,
   Einbindung in `page.tsx`, Shader). **Nicht erneut hinzufügen**, außer ausdrücklich gewünscht.
 - **Hero ohne „Erscheinen"-Effekt:** kein Blur-/Fade-/Zoom-Einschwung beim Laden. Der Hintergrund ist
-  sofort da; nur Ken-Burns + Slideshow-Loop bewegen sich. Der schwarze Rand ist **statisch**.
+  sofort da; nur das Loop-Video selbst bewegt sich. Der schwarze Rand ist **statisch**.
 - **Kein `filter`/`transform` auf Glas-Vorfahren** (sonst bricht `backdrop-filter`).
 - **`prefers-reduced-motion`** bleibt in allen neuen Komponenten Pflicht.
 - Bilder bleiben **lokal** unter `public/images/` (kein `next/image` wegen Static Export).
