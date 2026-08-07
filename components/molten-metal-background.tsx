@@ -29,8 +29,8 @@ export function MoltenMetalBackground() {
     <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
       <MoltenMetal
         color1="#000000"
-        color2="#EAB308"
-        color3="#EAB308"
+        color2="#f5b301"
+        color3="#f5b301"
         speed={0.35}
         scale={4}
         detail={3}
