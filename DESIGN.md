@@ -105,12 +105,7 @@ position: relative; overflow: hidden;
   `:root svg.lucide { color: var(--color-brand-yellow) }` in `globals.css`, nicht über Klassen an den
   Icons. Zum Umfärben genügt die Variable `--color-brand-yellow` (`#f5b301`, derselbe Ton wie die
   Bewertungssterne und das Gelb-Ende des Marken-Verlaufs).
-  - **Ein Ton in beiden Modi.** Der Tag-Modus hat **bewusst keine** Sonderregel: die Unternehmensfarbe
-    soll nicht abgewandelt werden (Entscheidung des Auftraggebers). Zur Einordnung – auf dem hellen
-    Grund (`#eef1f4`) liegt `#f5b301` bei **1,63:1**, auf Schwarz bei **11,33:1**. Falls im Tag-Modus
-    doch einmal nachgeschärft werden soll, ist die richtige Stelle eine
-    `:root[data-theme="light"] svg.lucide`-Regel – **nicht** die Variable selbst ändern, sonst kippt
-    auch der Nacht-Modus.
+    Auf dem schwarzen Grund liegt der Ton bei **11,33:1** Kontrast.
   - **Inline-Styles schlagen die Regel:** der Pfeil im `LiquidMetalButton` setzt seine Farbe inline und
     referenziert deshalb selbst `var(--color-brand-yellow)`.
   - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
@@ -152,16 +147,8 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 
 - **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`, **ohne Glas** –
   nur das Logo, kein Kreis); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
-  (Leistungen · Blog · Karriere · Kontakt), **Theme-Toggle** (`theme-toggle.tsx`, Glühbirne **ohne
-  Glas**, zwischen Kontakt und Anfragen) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
-  `liquid-glass`-Dropdown.
-  Im **Tag-Modus** ist die Links-Pille per CSS **identisch** zum Dunkel-Modus gestylt (transparentes
-  Glas + helle Kante); nur der Burger behält eine helle Fläche für Lesbarkeit über dem Hero.
-  **Scroll-Farbe im Tag-Modus:** Links + Glühbirne der Pille sind **weiß**, solange die Navbar über
-  einem dunklen Bild-Hero liegt, und **schwarz**, sobald heller Inhalt darunter scrollt. Umschaltung
-  per JS: `site-navbar.tsx` setzt `data-over-hero` (Scroll-Listener, prüft `home-hero`/`blogartikel-kopf`),
-  CSS reagiert darauf. Der Burger bleibt (eigene helle Fläche) immer schwarz. Das Logo (`BrandMark`,
-  h-12) ist ein farbiges WebP → von der Farbumschaltung unberührt.
+  (Leistungen · Blog · Karriere · Kontakt) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
+  `liquid-glass`-Dropdown. Das Logo (`BrandMark`, h-12) ist ein farbiges WebP.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards, Count-up) → **Kundenstimmen** (Spalten-Marquee, echte
   Google-Rezensionen, 4,6 ★ (20)).
@@ -220,6 +207,11 @@ das Space-Icon-Set.
 
 ## 11. Verbindliche Entscheidungen — NICHT zurückdrehen
 
+- **Es gibt nur EIN Design: den Dunkel-Modus.** Der frühere Tag-/Nacht-Umschalter wurde **vollständig
+  entfernt** – Komponente `theme-toggle.tsx`, das No-Flash-Script in `layout.tsx`, der komplette
+  `[data-theme="light"]`-Block in `globals.css` (~195 Zeilen) und der `data-over-hero`-Scroll-Listener
+  in `site-navbar.tsx`, der ausschließlich den Tag-Modus bediente. Die Firmenfarben sind **Schwarz,
+  Rot (`#e11d2a`) und Gelb (`#f5b301`)**; ein heller Modus verfälscht sie. **Nicht wieder einführen.**
 - **Inhaltssektionen-Hintergrund = reines Schwarz.** Ein experimentelles WebGL-**Eck-Lichtfeld**
   (ab „Philosophie") wurde getestet und **vollständig entfernt** (Komponente `home-light-field.tsx`,
   Einbindung in `page.tsx`, Shader). **Nicht erneut hinzufügen**, außer ausdrücklich gewünscht.

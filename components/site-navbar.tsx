@@ -8,7 +8,6 @@ import { Menu, X } from "lucide-react";
 import { BrandLockup } from "@/components/brand-logo";
 import { cx } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
   { href: "/leistungen", label: "Leistungen" },
@@ -20,40 +19,15 @@ const links = [
 export function SiteNavbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  // Liegt die Navbar über einem dunklen Bild-Hero? (nur diese Routen haben einen)
-  const [overHero, setOverHero] = useState(() => pathname === "/" || /^\/blog\/[^/]+/.test(pathname));
 
   // Menü bei Routenwechsel schließen
   useEffect(() => setOpen(false), [pathname]);
-
-  // Tag-Modus: Links + Glühbirne sollen über dem dunklen Hero weiß sein und
-  // schwarz, sobald heller Inhalt (z. B. „Unsere Philosophie") unter die Navbar scrollt.
-  useEffect(() => {
-    const hero = document.querySelector('[data-area="home-hero"], [data-area="blogartikel-kopf"]');
-    if (!hero) {
-      setOverHero(false);
-      return;
-    }
-    // Navbar reicht (top-4 + Höhe) bis ~72px – solange der Hero dort noch liegt, ist sie „über Hero".
-    const update = () => setOverHero(hero.getBoundingClientRect().bottom > 72);
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [pathname]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
     // Kein filter/transform auf der Leiste – sonst deaktiviert CSS den backdrop-filter der Pille.
-    <header
-      data-area="nav-hauptmenue"
-      data-over-hero={overHero ? "true" : "false"}
-      className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16"
-    >
+    <header data-area="nav-hauptmenue" className="fixed inset-x-0 top-4 z-50 px-5 sm:px-8 lg:px-16">
       <div className="flex items-center justify-between">
         {/* Links: nur das Logo (Firmenname entfernt) */}
         <Link href="/" aria-label="Zur Startseite">
@@ -74,8 +48,6 @@ export function SiteNavbar() {
               {l.label}
             </Link>
           ))}
-          {/* Tag-/Nacht-Umschalter zwischen den Links und dem Anfragen-Button */}
-          <ThemeToggle className="ml-1" />
           <LiquidMetalButton label="Anfragen" href="/kontakt#direkt-erreichbar" className="ml-1" />
         </nav>
 
@@ -116,8 +88,7 @@ export function SiteNavbar() {
                 {l.label}
               </Link>
             ))}
-            <div className="mt-2 flex items-center justify-center gap-3">
-              <ThemeToggle />
+            <div className="mt-2 flex items-center justify-center">
               <LiquidMetalButton label="Jetzt anfragen" href="/kontakt#direkt-erreichbar" />
             </div>
           </motion.div>
