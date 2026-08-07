@@ -4,6 +4,11 @@
 
 .logoloop {
   position: relative;
+  /* Der Track ist `width: max-content` (alle Kopien nebeneinander, hier ~6400px).
+     Ohne dieses Clipping laeuft er ueber den Container hinaus quer ueber den
+     ganzen Bildschirm. In der Vorlage steckt das overflow im umgebenden
+     Beispiel-Container – hier gehoert es fest an die Komponente. */
+  overflow: hidden;
 
   --logoloop-gap: 32px;
   --logoloop-logoHeight: 28px;
