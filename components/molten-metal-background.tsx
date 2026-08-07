@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const MoltenMetal = dynamic(() => import("@/components/ui/molten-metal").then((m) => m.MoltenMetal), {
@@ -8,25 +9,33 @@ const MoltenMetal = dynamic(() => import("@/components/ui/molten-metal").then((m
 });
 
 /**
- * Molten-Metal-Hintergrund für den Inhaltsbereich der Startseite
- * (ab „Unsere Philosophie" bis einschließlich „Kundenstimmen").
+ * Molten-Metal-Hintergrund der Startseite – EIN durchgehendes Feld von
+ * „Unsere Philosophie" bis zum Ende des Footers.
  *
- * Lädt three.js wie der Footer-Strahl erst nach dem ersten Seitenaufbau – der
- * Bereich liegt ohnehin unterhalb des Hero und ist beim Start nicht zu sehen.
- * Farben nach Molten-Metal.md: Schwarz + zweimal Gelb.
+ * Sitzt bewusst im Layout und nicht in `page.tsx`, weil der Footer dort ein
+ * Geschwister von `<main>` ist. Nur so laufen Inhalt und Footer über denselben
+ * Canvas – zwei getrennte Canvas hätten je eine eigene Zeitbasis und wirkten
+ * dadurch wie zwei verschiedene Hintergründe.
+ *
+ * `top-[100dvh]` überspringt den Hero (`min-h-dvh`), sodass der Effekt genau
+ * darunter beginnt. Selbst wenn der Hero einmal höher würde, bliebe er unberührt:
+ * er liegt in `<main>` auf z-10 über diesem Feld und ist ohnehin deckend.
+ *
+ * three.js wird wie beim Footer-Strahl erst nach dem ersten Seitenaufbau geladen.
  */
 export function MoltenMetalBackground() {
   const [ready, setReady] = useState(false);
+  const istStartseite = usePathname() === "/";
 
   useEffect(() => {
     const id = window.setTimeout(() => setReady(true), 1200);
     return () => window.clearTimeout(id);
   }, []);
 
-  if (!ready) return null;
+  if (!ready || !istStartseite) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[100dvh] z-0" aria-hidden>
       <MoltenMetal
         color1="#000000"
         color2="#f5b301"

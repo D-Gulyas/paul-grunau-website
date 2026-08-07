@@ -5,7 +5,6 @@ import { Section, SectionHeading } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { TextReveal } from "@/components/ui/cascade-text";
 import { Testimonials } from "@/components/testimonials";
-import { MoltenMetalBackground } from "@/components/molten-metal-background";
 import { stats } from "@/lib/content";
 
 /**
@@ -48,14 +47,8 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      {/* Molten-Metal-Hintergrund – bewusst nur um diesen Block gelegt, damit er
-          ab „Unsere Philosophie" bis einschließlich „Kundenstimmen" liegt und
-          weder den Hero mit dem Video noch den Footer berührt. */}
-      <div className="relative">
-        <MoltenMetalBackground />
-        <div className="relative z-10">
-          {/* Unsere Philosophie */}
-          <Section area="home-philosophie">
+      {/* Unsere Philosophie */}
+      <Section area="home-philosophie">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <SectionHeading title="Unsere Philosophie" />
@@ -122,9 +115,7 @@ export default function HomePage() {
         <Reveal delay={0.2} area="kundenstimmen-cta" className="mt-12 flex justify-center">
           <LiquidMetalButton label="Rezension schreiben" href={REZENSION_URL} target="_blank" />
         </Reveal>
-          </Section>
-        </div>
-      </div>
+      </Section>
     </>
   );
 }
