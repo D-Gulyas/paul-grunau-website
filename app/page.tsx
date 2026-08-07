@@ -1,6 +1,5 @@
 import { Flame, ShieldCheck, Zap } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
-import SideRays from "@/components/side-rays";
 import { TracedIcon } from "@/components/ui/traced-icon";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
@@ -32,41 +31,6 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      {/* Inhaltsbereich der Startseite mit dekorativen Lichtstrahlen im Hintergrund.
-          Hero und Footer bleiben bewusst außen vor und unverändert. */}
-      <div className="relative">
-        {/* Dekorative Lichtstrahlen – rein visuell, ohne Interaktion.
-            Die vertikale Maske blendet die Strahlen oben (Übergang vom Hero) und
-            unten (Übergang zum Footer) weich ein/aus, statt sie hart als „Karte"
-            abzuschneiden – so entsteht ein sanfter Verlauf statt einer harten Kante. */}
-        <div
-          data-area="home-lichtstrahlen"
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-          style={{
-            maskImage:
-              "linear-gradient(to bottom, transparent 0px, black 320px, black calc(100% - 220px), transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0px, black 320px, black calc(100% - 220px), transparent 100%)",
-          }}
-        >
-          <SideRays
-            speed={2.5}
-            rayColor1="#EAB308"
-            rayColor2="#96c8ff"
-            intensity={2}
-            spread={2}
-            origin="top-right"
-            tilt={0}
-            saturation={1.5}
-            blend={0.75}
-            falloff={1.6}
-            opacity={0.5}
-          />
-        </div>
-
-        {/* Inhalt liegt über den Strahlen */}
-        <div className="relative z-10">
       {/* Unsere Philosophie */}
       <Section area="home-philosophie">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -134,8 +98,6 @@ export default function HomePage() {
           <Testimonials />
         </Reveal>
       </Section>
-        </div>
-      </div>
     </>
   );
 }
