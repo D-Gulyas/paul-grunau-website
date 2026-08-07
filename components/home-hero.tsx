@@ -1,27 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
-import {
-  animate,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Phone } from "lucide-react";
 import { BlurText } from "@/components/blur-text";
 import { asset } from "@/lib/base-path";
 
-// Hero-Diashow: identisch gerahmte Vorher/Nachher/Nacht-Aufnahme desselben Hauses.
-// hausBau = Rohbau mit Gerüst, hausFertig = fertig montierte PV-Anlage, hausNacht = selbes Haus bei Nacht mit Licht an.
-const hausBau = asset("/images/hero-haus-1.webp");
-const hausFertig = asset("/images/hero-haus-2.webp");
-const hausNacht = asset("/images/hero-haus-3.webp");
-
-// Weiche Übergangskante (Federbreite in %) der Baufortschritts-Front.
-const FEATHER = 14;
+// Hero-Diashow: zwei Aufnahmen des fertigen Hauses mit PV-Anlage, die im Wechsel überblendet werden.
+const slides = [
+  { src: asset("/images/hero-haus-1.webp"), alt: "Einfamilienhaus mit montierter Photovoltaikanlage" },
+  { src: asset("/images/hero-haus-2.webp"), alt: "Einfamilienhaus mit Photovoltaikanlage in der Abendsonne" },
+];
 
 const partners = ["KNX", "Gira", "Hager", "SMA", "Busch-Jaeger"];
 
@@ -34,103 +24,38 @@ const fade = (delay: number, reduce: boolean | null) => ({
 export function HomeHero() {
   const reduce = useReducedMotion();
 
-  // Bau-Front in % (–FEATHER = verdeckt, 100 = fertig). Läuft diagonal von links unten
-  // zur Abendsonne oben rechts und baut haus_1 → haus_2 auf.
-  const front = useMotionValue(reduce ? 100 : -FEATHER);
-  const frontEnd = useTransform(front, (v) => v + FEATHER);
-  // Reset-Front in % (–FEATHER = Tag/Nacht voll sichtbar, 100 = vollständig weg).
-  // Läuft diagonal von der Sonne oben rechts nach unten links und enthüllt wieder haus_1.
-  const reset = useMotionValue(-FEATHER);
-  const resetEnd = useTransform(reset, (v) => v + FEATHER);
-  // Übergang Tag → Nacht: haus_3 (dunklerer Himmel + Licht an) blendet sanft über das fertige Tagbild.
-  const nachtOpacity = useMotionValue(0);
-  // Aufbau-Maske auf dem fertigen Bild: alles "hinter" der Bau-Front (#000) ist sichtbar.
-  const fertigMask = useMotionTemplate`linear-gradient(to top right, #000 0%, #000 ${front}%, rgba(0,0,0,0) ${frontEnd}%, rgba(0,0,0,0) 100%)`;
-  // Reset-Maske über Tag+Nacht: wischt von oben rechts nach unten links weg und legt haus_1 frei.
-  const resetMask = useMotionTemplate`linear-gradient(to bottom left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) ${reset}%, #000 ${resetEnd}%, #000 100%)`;
+  // Index des aktuell sichtbaren Slides; wechselt im Loop zwischen den beiden Bildern.
+  const [slideIndex, setSlideIndex] = useState(0);
 
   useEffect(() => {
     if (reduce) return;
-    let cancelled = false;
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-    async function loop() {
-      while (!cancelled) {
-        // 0. haus_1 (Rohbau mit Gerüst) kurz für sich stehen lassen.
-        await sleep(1400);
-        if (cancelled) return;
-        // 1. Bau: Front wandert langsam & diagonal über das Dach – Gerüst verschwindet, Module wachsen.
-        //    Bewusst gemächlich, damit der Aufbau ruhig & smooth statt hastig wirkt.
-        await animate(front, 100, { duration: 8, ease: [0.45, 0, 0.15, 1] }).finished;
-        if (cancelled) return;
-        // 2. Fertiges Tagbild (haus_2) ein paar Sekunden halten.
-        await sleep(3000);
-        if (cancelled) return;
-        // 3. Tag → Nacht: Himmel dunkelt sanft ab und die Lichter gehen an (haus_3 blendet weich auf).
-        await animate(nachtOpacity, 1, { duration: 4, ease: "easeInOut" }).finished;
-        if (cancelled) return;
-        // 4. Nächtlichen Zustand mit Licht ein paar Sekunden halten.
-        await sleep(3200);
-        if (cancelled) return;
-        // 5. Reset diagonal: von der Sonne oben rechts nach unten links wischt Tag+Nacht weg und haus_1 erscheint wieder.
-        await animate(reset, 100, { duration: 6, ease: [0.45, 0, 0.15, 1] }).finished;
-        if (cancelled) return;
-        // 6. Unsichtbar zurücksetzen (haus_1 liegt jetzt frei) und Loop sanft erneut starten.
-        front.set(-FEATHER);
-        nachtOpacity.set(0);
-        reset.set(-FEATHER);
-        await sleep(500);
-      }
-    }
-    loop();
-    return () => {
-      cancelled = true;
-    };
-  }, [reduce, front, reset, nachtOpacity]);
+    const id = setInterval(() => {
+      setSlideIndex((i) => (i + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, [reduce]);
 
   return (
     <section data-area="home-hero" className="relative flex min-h-dvh flex-col overflow-hidden">
-      {/* Slideshow Hintergrund: Baufortschritts-Übergang */}
+      {/* Slideshow Hintergrund: Crossfade zwischen den beiden Haus-Aufnahmen */}
       <div data-area="home-hero-slideshow" className="absolute inset-0 z-0">
         <motion.div
           className="absolute inset-0"
           animate={reduce ? undefined : { scale: [1, 1.06] }}
           transition={{ duration: 16, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
         >
-          {/* Basis: Rohbau mit Gerüst */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={hausBau}
-            alt="Einfamilienhaus im Bau mit Gerüst in der Abendsonne"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          {/* Wrapper über Tag+Nacht: wird beim Reset diagonal von oben rechts nach unten links weggewischt und legt haus_1 frei */}
-          <motion.div
-            className="absolute inset-0"
-            style={{ maskImage: resetMask, WebkitMaskImage: resetMask }}
-          >
-            {/* Overlay: fertiges Haus mit PV-Anlage, durch die Bau-Maske enthüllt */}
-            <motion.div
-              className="absolute inset-0"
-              style={{ maskImage: fertigMask, WebkitMaskImage: fertigMask }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={hausFertig}
-                alt="Fertiges Einfamilienhaus mit montierter Photovoltaikanlage in der Abendsonne"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </motion.div>
-            {/* Overlay: dasselbe Haus bei Nacht mit Licht an – blendet sanft über das fertige Tagbild */}
-            <motion.div className="absolute inset-0" style={{ opacity: nachtOpacity }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={hausNacht}
-                alt="Fertiges Einfamilienhaus mit Photovoltaikanlage bei Nacht mit eingeschalteter Beleuchtung"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </motion.div>
-          </motion.div>
+          <AnimatePresence initial={false}>
+            <motion.img
+              key={slides[slideIndex].src}
+              src={slides[slideIndex].src}
+              alt={slides[slideIndex].alt}
+              className="absolute inset-0 h-full w-full object-cover"
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+            />
+          </AnimatePresence>
         </motion.div>
         {/* Scrim für Lesbarkeit des weißen Textes */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black" />

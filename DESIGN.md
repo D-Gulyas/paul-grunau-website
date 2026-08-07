@@ -110,34 +110,15 @@ position: relative; overflow: hidden;
 
 ## 7. Hero-Slideshow (Startseite)
 
-Kernstück des Looks. Drei identisch gerahmte Aufnahmen desselben Hauses (lokal, `public/images/`):
+Kernstück des Looks. Zwei Aufnahmen des fertigen Hauses mit PV-Anlage (lokal, `public/images/`),
+die per Crossfade im Wechsel gezeigt werden:
 
-- `hero-haus-1.webp` – Rohbau mit Gerüst (Abendsonne)
-- `hero-haus-2.webp` – fertige PV-Anlage, Tag
-- `hero-haus-3.webp` – dasselbe Haus bei Nacht mit Licht
+- `hero-haus-1.webp` – fertiges Haus mit PV-Anlage (Tag)
+- `hero-haus-2.webp` – fertiges Haus mit PV-Anlage (Abendsonne)
 
-**Aufbau (Schichten, unten → oben):**
-1. Basis-`<img>` haus_1.
-2. **Reset-Wrapper** mit `resetMask` – enthält:
-   - Ebene mit `fertigMask` → haus_2,
-   - Ebene mit `nachtOpacity` → haus_3.
-
-**Zwei diagonale Masken** (`FEATHER = 14` weiche Kante):
-- `fertigMask`: `linear-gradient(to top right …)` – baut haus_1 → haus_2 auf (Front läuft von unten-links
-  zur Abendsonne oben-rechts; Gerüst verschwindet, Module wachsen).
-- `resetMask`: `linear-gradient(to bottom left …)` – wischt Tag+Nacht von oben-rechts nach unten-links
-  weg und legt haus_1 wieder frei.
-
-**Loop-Timeline** (in `home-hero.tsx`):
-| # | Aktion | Dauer |
-|---|---|---|
-| 0 | haus_1 halten | 1,4 s |
-| 1 | Bau haus_1 → haus_2 (diagonal, bewusst gemächlich) | 8 s |
-| 2 | fertiges Tagbild halten | 3 s |
-| 3 | Tag → Nacht (haus_3 blendet weich auf) | 4 s |
-| 4 | Nachtbild halten | 3,2 s |
-| 5 | Diagonaler Reset (Tag+Nacht weg, haus_1 erscheint) | 6 s |
-| 6 | unsichtbar zurücksetzen, Loop neu | 0,5 s |
+**Aufbau:** `AnimatePresence` mit einem einzelnen `motion.img`, dessen `key` sich alle 6 s auf den
+nächsten Slide-Index ändert (`slides` Array in `home-hero.tsx`) → weiches Opacity-Crossfade
+(`duration: 1.5s`, `easeInOut`) zwischen den beiden Bildern, danach Loop von vorn.
 
 **Weitere Hero-Details:**
 - **Ken-Burns:** langsamer Zoom `scale [1 → 1.06]`, 16 s, `mirror`-Loop.
@@ -145,7 +126,7 @@ Kernstück des Looks. Drei identisch gerahmte Aufnahmen desselben Hauses (lokal,
   Motiv bleibt scharf. (Kein Lade-/Erscheinen-Effekt – bewusst entfernt, siehe §11.)
 - **Scrim für Lesbarkeit:** `bg-gradient-to-b from-black/70 via-black/45 to-black` +
   radiale Vignette `radial-gradient(80% 60% at 50% 40%, transparent, rgba(0,0,0,0.65))`.
-- **reduced-motion:** Front direkt auf `100` (statisches fertiges Tagbild), keine Loop-Animation.
+- **reduced-motion:** kein Interval-Wechsel, erster Slide bleibt statisch stehen.
 - **Inhalt:** zweizeilige BlurText-Headline („Brandschutz & Elektrotechnik" größer, „Meisterbetrieb Paul
   Grunau" ~70 %), CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
   Hersteller-Pille + Namen (KNX · Gira · Hager · SMA · Busch-Jaeger) in Serif-Italic.
