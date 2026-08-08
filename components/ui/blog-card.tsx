@@ -1,30 +1,28 @@
-import type { HTMLAttributes, CSSProperties } from "react";
+import type { HTMLAttributes } from "react";
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import { cx } from "@/components/ui";
 
 /**
- * BlogCard – Kartendesign aus `new-card-design.md` (Vorlage „card-21 / DestinationCard").
+ * BlogCard – Artikelkarte im Aufbau aus `new-card-design.md`
+ * (Vorlage „card-21 / DestinationCard"), auf das Design dieser Seite gezogen.
  *
- * **Nur für den Blog.** Alle anderen Karten der Seite bleiben beim Glas-Design
+ * **Nur für den Blog.** Alle anderen Karten bleiben beim Glas-Design
  * (`.glass` + `.glass-glow`) – das hier ist bewusst die einzige Ausnahme.
  *
- * Aufbau wie in der Vorlage: bildfüllender Hintergrund mit Zoom beim Hover, darüber
- * ein Farbverlauf in der Themenfarbe, unten der Inhalt und eine Glasleiste mit Pfeil.
- * Die Themenfarbe kommt als HSL-Tripel (`"356 72% 24%"`) über die CSS-Variable
- * `--theme-color` herein und färbt Verlauf, Schein und Leiste in einem Zug.
+ * Ruhezustand: nur das leicht weichgezeichnete Titelbild, sonst nichts.
+ * Beim Zeigen: das Bild zoomt, ein schwarzer Verlauf blendet ein und der Inhalt
+ * fährt von links herein – Pille, Lesezeit, rote Überschrift, „Weiterlesen".
  *
  * Angepasst gegenüber der Vorlage:
  * - `next/link` statt `<a>` – sonst bricht die Navigation unter einem Unterpfad (basePath).
  * - `cx` aus `components/ui` statt `cn` aus `@/lib/utils` – dieselbe Aufgabe, ist schon da,
  *   spart zwei Abhängigkeiten (clsx + tailwind-merge).
  * - Kein `forwardRef`: die Karte wird serverseitig gerendert, eine Ref gäbe es dort ohnehin nicht.
- *
- * > Das `backdrop-blur-md` an der Leiste ist hier wirkungslos und bleibt nur, weil es so in
- * > der Vorlage steht. Grund: `StaggerItem` hält als Vorfahre ein `filter` (die Blur-Einblendung)
- * > und schneidet damit den Backdrop ab – der bekannte Fallstrick aus DESIGN.md. Sichtbar ist
- * > die Leiste ohnehin über ihre eigene Tönung; hinter ihr liegt der Verlauf bei 0,9 Deckkraft,
- * > es gäbe also praktisch nichts zu verwischen. **Nicht** versuchen, den Blur „zu reparieren".
+ * - Keine Themenfarben je Fachbereich mehr und kein Zoom der ganzen Karte – beides ersetzt
+ *   durch einen einheitlichen, dezenten Blur, damit alle fünf Karten gleich auftreten.
+ * - Statt der getönten Leiste wieder das schlichte „Weiterlesen" mit `ArrowUpRight`,
+ *   wie an allen anderen Stellen der Seite.
  */
 
 export interface BlogCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -36,65 +34,44 @@ export interface BlogCardProps extends HTMLAttributes<HTMLDivElement> {
   readingTime: string;
   title: string;
   href: string;
-  /** HSL-Tripel ohne `hsl()`, z. B. `"356 72% 24%"`. */
-  themeColor: string;
 }
 
-/* Themenfarben aus dem Marken-Verlauf (Rot → Orange → Gelb), abgedunkelt auf
-   Verlaufstiefe. Bewusst nur diese drei Töne – kein neuer Farbkreis fürs Blog. */
-const THEMEN: Record<string, string> = {
-  Brandschutz: "356 72% 24%",
-  Sicherheit: "356 72% 24%",
-  Elektrotechnik: "44 95% 22%",
-  Praxistipps: "21 85% 24%",
-};
+/* Einblenden von links. `group-focus-within` holt den Inhalt auch bei Tastaturbedienung
+   hervor; `(hover: none)` zeigt ihn auf Touchgeräten dauerhaft – dort gibt es kein Hover,
+   ohne diese Zeile bliebe die Karte auf dem Handy leer. */
+const EINBLENDEN =
+  "opacity-0 -translate-x-4 transition-all duration-500 ease-out " +
+  "group-hover:translate-x-0 group-hover:opacity-100 " +
+  "group-focus-within:translate-x-0 group-focus-within:opacity-100 " +
+  "[@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100";
 
-/** Themenfarbe zum Fachbereich; unbekannte Bereiche bekommen Marken-Rot. */
-export function themeForCategory(category: string) {
-  return THEMEN[category] ?? "356 72% 24%";
-}
-
-export function BlogCard({
-  className,
-  imageUrl,
-  category,
-  readingTime,
-  title,
-  href,
-  themeColor,
-  ...props
-}: BlogCardProps) {
+export function BlogCard({ className, imageUrl, category, readingTime, title, href, ...props }: BlogCardProps) {
   return (
     // `group` schaltet die Hover-Effekte der Kinder
-    <div
-      style={{ "--theme-color": themeColor } as CSSProperties}
-      className={cx("group h-full w-full", className)}
-      {...props}
-    >
+    <div className={cx("group h-full w-full", className)} {...props}>
       <Link
         href={href}
         aria-label={`Artikel lesen: ${title}`}
-        className="relative block h-full w-full overflow-hidden rounded-2xl shadow-lg transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-[0_0_60px_-15px_hsl(var(--theme-color)/0.6)]"
-        style={{ boxShadow: "0 0 40px -15px hsl(var(--theme-color) / 0.5)" }}
+        className="relative block h-full w-full overflow-hidden rounded-2xl shadow-lg"
       >
-        {/* Titelbild mit Zoom beim Hover */}
+        {/* Titelbild: einheitlicher, dezenter Blur; beim Zeigen zoomt es.
+            `scale-105` schon im Ruhezustand, damit die weichen Blur-Kanten außerhalb
+            des Rahmens liegen – sonst schimmerte ringsum ein heller Saum durch. */}
         <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-110"
+          className="absolute inset-0 scale-105 bg-cover bg-center blur-[3px] transition-transform duration-500 ease-in-out group-hover:scale-110"
           style={{ backgroundImage: `url(${imageUrl})` }}
         />
 
-        {/* Verlauf in der Themenfarbe – trägt den Text und hält ihn lesbar */}
+        {/* Schwarzer Verlauf hinter dem Text – trägt die rote Überschrift.
+            Blendet zusammen mit dem Inhalt ein, damit die Karte in Ruhe sauber bleibt. */}
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, hsl(var(--theme-color) / 0.9), hsl(var(--theme-color) / 0.6) 30%, transparent 60%)",
-          }}
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100"
         />
 
-        {/* Inhalt: Pille + Lesezeit, Überschrift, Leiste. Bewusst ohne Anrisstext –
-            die Karte soll ruhig bleiben, der Text steht im Artikel. */}
-        <div className="relative flex h-full flex-col justify-end p-6 text-white">
+        {/* Inhalt: bewusst knapp – Pille, Lesezeit, Überschrift, „Weiterlesen".
+            Kein Anrisstext, der Text steht im Artikel. */}
+        <div className={cx("relative flex h-full flex-col justify-end p-6 text-white", EINBLENDEN)}>
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-medium text-black">
               {category}
@@ -104,14 +81,14 @@ export function BlogCard({
             </span>
           </div>
 
-          <h3 className="mt-4 text-balance font-heading text-2xl italic leading-tight tracking-[-0.5px]">
+          <h3 className="mt-4 text-balance font-heading text-2xl italic leading-tight tracking-[-0.5px] text-brand-gradient">
             {title}
           </h3>
 
-          <div className="mt-6 flex items-center justify-between rounded-lg border border-[hsl(var(--theme-color)/0.3)] bg-[hsl(var(--theme-color)/0.2)] px-4 py-3 backdrop-blur-md transition-all duration-300 group-hover:border-[hsl(var(--theme-color)/0.5)] group-hover:bg-[hsl(var(--theme-color)/0.4)]">
-            <span className="font-body text-sm font-semibold tracking-wide">Weiterlesen</span>
-            <ArrowRight className="h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1" />
-          </div>
+          <span className="mt-5 inline-flex items-center gap-1.5 font-body text-sm font-medium text-white/80 transition-colors group-hover:text-white">
+            Weiterlesen
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </span>
         </div>
       </Link>
     </div>

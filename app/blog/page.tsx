@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section } from "@/components/ui";
-import { BlogCard, themeForCategory } from "@/components/ui/blog-card";
+import { BlogCard } from "@/components/ui/blog-card";
 import { blogPosts } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -41,7 +41,6 @@ export default function BlogPage() {
                 readingTime={post.readingTime}
                 title={post.title}
                 href={`/blog/${post.slug}`}
-                themeColor={themeForCategory(post.category)}
               />
             </StaggerItem>
           ))}
