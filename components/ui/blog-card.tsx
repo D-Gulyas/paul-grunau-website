@@ -10,7 +10,7 @@ import { cx } from "@/components/ui";
  * **Nur für den Blog.** Alle anderen Karten bleiben beim Glas-Design
  * (`.glass` + `.glass-glow`) – das hier ist bewusst die einzige Ausnahme.
  *
- * Ruhezustand: nur das leicht weichgezeichnete Titelbild, sonst nichts.
+ * Ruhezustand: nur das Titelbild – oben scharf, zur unteren Hälfte hin weichgezeichnet.
  * Beim Zeigen: das Bild zoomt, ein schwarzer Verlauf blendet ein und der Inhalt
  * fährt von links herein – Pille, Lesezeit, rote Überschrift, „Weiterlesen".
  *
@@ -21,6 +21,8 @@ import { cx } from "@/components/ui";
  * - Kein `forwardRef`: die Karte wird serverseitig gerendert, eine Ref gäbe es dort ohnehin nicht.
  * - Keine Themenfarben je Fachbereich mehr und kein Zoom der ganzen Karte – beides ersetzt
  *   durch einen einheitlichen, dezenten Blur, damit alle fünf Karten gleich auftreten.
+ * - Das Seitenverhältnis gibt der Rahmen vor (`BlogGallery`: 3:2 wie die Titelbilder),
+ *   damit `bg-cover` möglichst wenig vom Motiv abschneidet.
  * - Statt der getönten Leiste wieder das schlichte „Weiterlesen" mit `ArrowUpRight`,
  *   wie an allen anderen Stellen der Seite.
  */
@@ -35,6 +37,10 @@ export interface BlogCardProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   href: string;
 }
+
+/* Der Blur wirkt nur auf der unteren Hälfte: bis 30 % Höhe voll, bis 55 % ausgeblendet.
+   Darüber bleibt das Bild scharf, damit das Motiv erkennbar ist. */
+const MASKE_UNTERE_HAELFTE = "linear-gradient(to top, #000 0%, #000 30%, transparent 55%)";
 
 /* Einblenden von links. `group-focus-within` holt den Inhalt auch bei Tastaturbedienung
    hervor; `(hover: none)` zeigt ihn auf Touchgeräten dauerhaft – dort gibt es kein Hover,
@@ -54,13 +60,23 @@ export function BlogCard({ className, imageUrl, category, readingTime, title, hr
         aria-label={`Artikel lesen: ${title}`}
         className="relative block h-full w-full overflow-hidden rounded-2xl shadow-lg"
       >
-        {/* Titelbild: einheitlicher, dezenter Blur; beim Zeigen zoomt es.
+        {/* Titelbild in zwei Ebenen, gemeinsam gezoomt.
             `scale-105` schon im Ruhezustand, damit die weichen Blur-Kanten außerhalb
             des Rahmens liegen – sonst schimmerte ringsum ein heller Saum durch. */}
-        <div
-          className="absolute inset-0 scale-105 bg-cover bg-center blur-[3px] transition-transform duration-500 ease-in-out group-hover:scale-110"
-          style={{ backgroundImage: `url(${imageUrl})` }}
-        />
+        <div className="absolute inset-0 scale-105 transition-transform duration-500 ease-in-out group-hover:scale-110">
+          {/* scharf – das Bild soll erkennbar bleiben */}
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${imageUrl})` }} />
+          {/* dieselbe Ebene weichgezeichnet, per Maske nur auf der unteren Hälfte:
+              unten voll, nach oben ausblendend. Trägt später den Text. */}
+          <div
+            className="absolute inset-0 bg-cover bg-center blur-[2px]"
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              maskImage: MASKE_UNTERE_HAELFTE,
+              WebkitMaskImage: MASKE_UNTERE_HAELFTE,
+            }}
+          />
+        </div>
 
         {/* Schwarzer Verlauf hinter dem Text – trägt die rote Überschrift.
             Blendet zusammen mit dem Inhalt ein, damit die Karte in Ruhe sauber bleibt. */}

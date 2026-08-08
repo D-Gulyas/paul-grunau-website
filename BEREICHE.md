@@ -65,7 +65,7 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 |---|---|
 | `blog-hero` | Kopfbereich Übersicht |
 | `blog-liste` | Container Artikelliste |
-| `blog-artikel-liste` | Alle fünf Artikelkarten (Grid) |
+| `blog-artikel-galerie` | Artikelgalerie (eine Karte, Pfeile + Punkte) |
 | `blogartikel` | Einzelartikel gesamt |
 | `blogartikel-kopf` | Titelbild + Überschrift |
 | `blogartikel-inhalt` | Artikeltext |

@@ -192,18 +192,28 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 - **Weitere Seiten:** `/leistungen` (Hero + Elektrotechnik · KNX/Smarthome · Photovoltaik), `/blog` +
   `/blog/[slug]` (5 Artikel), `/karriere` (+ Bewerbungsformular), `/kontakt` (Team + Formular),
   `/impressum`, `/datenschutz`, markenkonforme 404.
-- **Blog-Übersicht** (`blog-artikel-liste`): **fünf gleichwertige Karten** im Raster
-  (1 / 2 / 3 Spalten, Höhe 420 px bzw. 440 px ab `sm`). **Kein hervorgehobener Artikel mehr** –
-  der frühere breite „Featured"-Block und `data-area="blog-artikel-featured"` sind entfallen.
+- **Blog-Übersicht** (`blog-artikel-galerie`): **eine Karte zur Zeit, zentriert**, weiterzuklicken
+  über Pfeile oder Punkte darunter (`components/blog-gallery.tsx`, am Ende geht es von vorn los).
+  Fünf Karten nebeneinander wirkten überladen; der frühere „Featured"-Block und die
+  `data-area`s `blog-artikel-featured` / `blog-artikel-liste` sind entfallen.
+  - **Rahmen im Bildformat 3:2** (`aspect-[3/2] max-w-2xl`) – genau das Verhältnis der Titelbilder
+    (1536 × 1024). Dadurch schneidet `bg-cover` fast nichts mehr ab; im vorherigen, fast
+    quadratischen Rahmen fiel rund ein Drittel der Bildbreite weg.
+  - Die Steuerung liegt **unter** der Karte, nicht darüber: auf dem Handy läge sie sonst auf der
+    Überschrift. Beim Blättern schiebt framer-motion die Karten seitlich (`AnimatePresence`),
+    bei reduzierter Bewegung wird nur überblendet.
   - Die Karte ist **`ui/blog-card.tsx`**, Aufbau nach der Vorlage aus `new-card-design.md`
     („card-21 / DestinationCard"), auf dieses Design gezogen.
   - **Nur im Blog.** Alle anderen Karten der Seite bleiben beim Glas-Design (`.glass` +
     `.glass-glow`). Diese eine Ausnahme ist gewollt – nicht auf Leistungen, Kennzahlen o. Ä. ausrollen.
-  - **In Ruhe zeigt die Karte nur das Titelbild** – einheitlich `blur-[3px]`, sonst nichts.
-    Kein Text, kein Verlauf. Die Themenfarben je Fachbereich sind bewusst **entfallen**:
-    dieser eine Blur ersetzt sie, damit alle fünf Karten gleich auftreten.
-    Das Bild steht im Ruhezustand schon auf `scale-105`, damit die weichen Blur-Kanten
-    außerhalb des Rahmens liegen – sonst schimmert ringsum ein heller Saum durch.
+  - **In Ruhe zeigt die Karte nur das Titelbild**, kein Text und kein Verlauf. Das Bild liegt in
+    **zwei Ebenen**: oben scharf, darüber dieselbe Ebene mit `blur-[2px]`, per Maske
+    `linear-gradient(to top, #000 0%, #000 30%, transparent 55%)` nur auf der **unteren Hälfte**.
+    Oben bleibt das Motiv damit klar erkennbar, unten trägt die Weichzeichnung später den Text.
+    Die Themenfarben je Fachbereich sind bewusst **entfallen** – dieser eine Blur ersetzt sie.
+  - Beide Ebenen stehen im Ruhezustand auf `scale-105`, damit die weichen Blur-Kanten außerhalb
+    des Rahmens liegen – sonst schimmert ringsum ein heller Saum durch. Kostet rund 5 % des
+    Bildes; bewusst in Kauf genommen, ein sichtbarer Saum wäre schlimmer.
   - **Beim Zeigen:** Bild zoomt auf `scale-110`, ein schwarzer Verlauf blendet ein und der
     Inhalt fährt von links herein (`-translate-x-4` → `0`, Deckkraft 0 → 1, 500 ms).
     **Die Karte selbst zoomt nicht** – nur das Bild darin.
@@ -237,7 +247,7 @@ testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
 ansprechpartner-karten (Kontakt-Personen + Pop-up)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
 ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)
-ui/blog-card (Artikelkarte – NUR im Blog, siehe Abschnitt 8)
+ui/blog-card (Artikelkarte – NUR im Blog) · blog-gallery (Galerie darum, siehe Abschnitt 8)
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)
 legal
 lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Ansprechpartner, Fachbereiche, Kennzahlen)
