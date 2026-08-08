@@ -223,6 +223,12 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
     `excerpt` bleibt in `lib/content.ts` und wird weiterhin für die Meta-Beschreibung gebraucht.
   - **Überschrift in `text-brand-gradient`** (Marken-Rot): der schwarze Verlauf dahinter ist
     genau dafür da. Ohne ihn wäre Rot auf dem Bild zu kontrastarm.
+  - **Glaskante** wie an den Karten in Karriere und Kontakt, damit die Seite durchgehend gleich
+    wirkt. Sie kommt über die Utility **`.glass-edge`** auf ein eigenes Overlay als **letztes Kind**
+    der Karte. `.glass` selbst geht hier nicht: dessen `::before` läge unter dem Titelbild und wäre
+    unsichtbar – und Fläche plus `backdrop-filter` braucht die Karte ohnehin nicht.
+    Die Werte in `.glass-edge` sind identisch zu `.glass::before`; ändert sich dort etwas,
+    hier mitziehen.
 
 > [!warning] Der Hover-Inhalt braucht zwei Rückfälle – nicht entfernen
 > Tailwind v4 packt `group-hover:` in `@media (hover: hover)`. Ohne Gegenstück bliebe die

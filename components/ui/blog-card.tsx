@@ -10,6 +10,9 @@ import { cx } from "@/components/ui";
  * **Nur für den Blog.** Alle anderen Karten bleiben beim Glas-Design
  * (`.glass` + `.glass-glow`) – das hier ist bewusst die einzige Ausnahme.
  *
+ * Die Glaskante (`.glass-edge`) ist dieselbe wie an den Karten in Karriere und Kontakt,
+ * damit die Seite durchgehend gleich wirkt.
+ *
  * Ruhezustand: nur das Titelbild – oben scharf, zur unteren Hälfte hin weichgezeichnet.
  * Beim Zeigen: das Bild zoomt, ein schwarzer Verlauf blendet ein und der Inhalt
  * fährt von links herein – Pille, Lesezeit, rote Überschrift, „Weiterlesen".
@@ -106,6 +109,10 @@ export function BlogCard({ className, imageUrl, category, readingTime, title, hr
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         </div>
+
+        {/* Glaskante wie an den Karten in Karriere und Kontakt. Als letztes Kind und
+            damit über dem Titelbild – `.glass::before` läge darunter und wäre unsichtbar. */}
+        <div aria-hidden className="glass-edge absolute inset-0" />
       </Link>
     </div>
   );
