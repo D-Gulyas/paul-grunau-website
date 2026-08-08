@@ -65,21 +65,10 @@
   margin-inline: -0.2em;
 }
 
-/* Wort-für-Wort-Variante des Marken-Verlaufs – ausschließlich für `BlurText` im Hero.
-   Dort animiert framer-motion je Wort ein `filter`. Damit bekommt jedes Wort eine eigene
-   Rendering-Ebene, und der am Elternteil geclippte Verlauf kommt darin nicht mehr an: die
-   Überschrift wäre unsichtbar (geerbtes `text-fill-color: transparent`, aber kein Verlauf).
-   Deshalb trägt hier **jedes Wort seinen eigenen** Verlauf. `background-attachment: fixed`
-   verankert ihn am Viewport statt am Wort – sonst liefe der Verlauf in jedem Wort neu von
-   Rot nach Gelb. So teilen sich alle Wörter einen durchgehenden Verlauf. */
-@utility text-brand-gradient-word {
-  background-image: linear-gradient(100deg, #e11d2a 12%, #f26619 50%, #f5b301 88%);
-  background-attachment: fixed;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
+/* Die Hero-Headline trägt bewusst **keinen** Verlauf, sondern solides Markenrot `#e11d2a`
+   (direkt an den `BlurText` in `home-hero.tsx`). Eine wortweise Verlaufs-Variante war da und
+   wurde wieder entfernt: sie verträgt sich nicht mit dem Wort-für-Wort-Blur. Begründung und
+   Rückweg stehen in HEADINGS-COLOR-BACKUP.md – bitte nicht erneut anlegen. */
 
 @layer base {
   html {

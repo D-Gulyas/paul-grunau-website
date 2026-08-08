@@ -13,20 +13,12 @@ export function BlurText({
   className,
   delay = 0,
   nowrap = false,
-  gradient = false,
   as: Tag = "p",
 }: {
   text: string;
   className?: string;
   delay?: number;
   nowrap?: boolean;
-  /**
-   * Marken-Verlauf statt einfarbigem Text. Der Verlauf sitzt an **jedem Wort**, nicht am
-   * Elternteil: das animierte `filter` je Wort gibt ihm eine eigene Rendering-Ebene, in der
-   * ein am Elternteil geclippter Verlauf nicht ankommt – die Überschrift wäre unsichtbar.
-   * Details in `globals.css` bei `text-brand-gradient-word`.
-   */
-  gradient?: boolean;
   /** Semantisches Element – für die Haupt-Überschrift einer Seite `h1`. Ändert die Optik nicht. */
   as?: "p" | "h1" | "h2";
 }) {
@@ -45,7 +37,6 @@ export function BlurText({
         <Fragment key={`${word}-${i}`}>
           {i > 0 && " "}
           <motion.span
-            className={gradient ? "text-brand-gradient-word" : undefined}
             style={{ display: "inline-block", marginRight: "0.28em" }}
             initial={reduce ? { opacity: 0 } : { filter: "blur(10px)", opacity: 0, y: 50 }}
             whileInView={

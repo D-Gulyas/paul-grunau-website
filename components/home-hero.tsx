@@ -68,19 +68,20 @@ export function HomeHero() {
         <div data-area="home-hero-headline" className="flex flex-col items-center">
           {/* Zeile 1: obere Headline – immer größer als Zeile 2 (gleiche vw-Skala, höhere Werte).
               Zugleich das <h1> der Startseite (Google/Screenreader), Optik unverändert. */}
+          {/* Bewusst solides Markenrot statt des Marken-Verlaufs: der Verlauf verträgt sich
+              nicht mit dem Wort-für-Wort-Blur (siehe HEADINGS-COLOR-BACKUP.md). Alle übrigen
+              Überschriften der Seite tragen weiterhin den Verlauf. */}
           <BlurText
             text="Brandschutz & Elektrotechnik"
             as="h1"
             nowrap
-            gradient
-            className="justify-center font-heading text-[clamp(1.2rem,6vw,5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px]"
+            className="justify-center font-heading text-[clamp(1.2rem,6vw,5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px] text-[#e11d2a]"
           />
           {/* Zeile 2: untere Headline – proportional ~70 % von Zeile 1, damit sie nie größer wirkt */}
           <BlurText
             text="Meisterbetrieb Paul Grunau"
             delay={0.4}
-            gradient
-            className="max-w-4xl justify-center font-heading text-[clamp(0.85rem,4.2vw,3.5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px]"
+            className="max-w-4xl justify-center font-heading text-[clamp(0.85rem,4.2vw,3.5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px] text-[#e11d2a]"
           />
         </div>
 

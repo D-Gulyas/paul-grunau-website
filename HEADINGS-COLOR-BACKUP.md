@@ -9,7 +9,11 @@ Diese Datei hält die beiden früheren Zustände fest, damit sie sich exakt zur�
 |---|---|---|
 | bis 02.07.2026 | Verlauf `105deg`, quer | weiß |
 | 02.07.2026 – 08.08.2026 | einfarbig Markenrot `#e11d2a` | rot `#e11d2a` |
-| **seit 08.08.2026** | **Verlauf `170deg`, senkrecht** | **Verlauf, wortweise** |
+| **seit 08.08.2026** | **Verlauf `170deg`, senkrecht** | **rot `#e11d2a`** (siehe unten) |
+
+> [!] **Die Hero-Headline bekommt keinen Verlauf.** Eine wortweise Variante
+> (`text-brand-gradient-word`) war kurzzeitig da und wurde wieder entfernt: sie verträgt sich
+> nicht mit dem Wort-für-Wort-Blur von `BlurText`. Nicht erneut anlegen – Begründung unten.
 
 ## Warum der Verlauf jetzt anders läuft als 2026-07
 
@@ -30,6 +34,24 @@ behoben wurden – beide stecken samt Begründung in `app/globals.css`:
 > das überschreibt die Margin-Kompensation aus Punkt 1. Zentriert wird über den Elternteil
 > (`flex justify-center`), so gelöst in `app/not-found.tsx`.
 
+## Warum die Hero-Headline außen vor bleibt
+
+Sie ist die einzige Überschrift, die durch `BlurText` läuft: framer-motion animiert dort je Wort
+`filter`, `opacity` und `y`. Damit bekommt **jedes Wort eine eigene Rendering-Ebene** – und ein
+am Elternteil geclippter Verlauf kommt darin nicht an. Da `-webkit-text-fill-color: transparent`
+aber vererbt wird, war die Headline mit `text-brand-gradient` schlicht **unsichtbar**.
+
+Der Ausweg war, jedem Wort einen eigenen Verlauf zu geben und ihn per
+`background-attachment: fixed` am Viewport zu verankern, damit er über die Wörter durchläuft
+statt in jedem Wort neu bei Rot zu beginnen. Das sah im Standbild richtig aus, **während der
+Einblendung aber nicht**: die Wörter bewegen sich (`y: 50 → 0`) und werden weichgezeichnet,
+während der Verlauf am Viewport klebt – er wandert dabei sichtbar durch die Buchstaben.
+
+Deshalb: **Headline solide rot** (`text-[#e11d2a]` direkt an beiden `BlurText` in
+`components/home-hero.tsx`), alle übrigen Überschriften mit Verlauf. Wer es erneut versuchen
+will, muss zuerst das Zusammenspiel von bewegtem Text und Verlaufsverankerung lösen – ein
+anderer Winkel oder andere Stops ändern daran nichts.
+
 ## Rückweg 1 – alles einfarbig Markenrot (Stand 02.07. – 08.08.2026)
 
 In `app/globals.css` bei `@utility text-brand-gradient` die fünf Verlaufszeilen
@@ -41,13 +63,12 @@ color: #e11d2a;
 ```
 
 `padding-inline` / `margin-inline` können dann ebenfalls raus – ohne `background-clip: text`
-schneidet nichts mehr ab. Für den Hero in `components/home-hero.tsx` an beiden `BlurText`
-die Prop `gradient` entfernen und `text-[#e11d2a]` an die `className` hängen.
+schneidet nichts mehr ab. Die Hero-Headline ist davon nicht betroffen, sie ist bereits rot.
 
 ## Rückweg 2 – Hero-Headline weiß (Stand bis 02.07.2026)
 
-In `components/home-hero.tsx` an beiden `BlurText` die Prop `gradient` entfernen und
-`text-white` an die `className` hängen.
+In `components/home-hero.tsx` an beiden `BlurText` in der `className` `text-[#e11d2a]`
+durch `text-white` ersetzen.
 
 ## Wo der Verlauf überall hängt
 
@@ -56,11 +77,8 @@ An **einer** Stelle: `@utility text-brand-gradient` in `app/globals.css`, benutz
 `ansprechpartner-karten.tsx` · `app/page.tsx` · `leistungen` · `blog` + `blog/[slug]` ·
 `kontakt` · `karriere` · `not-found`).
 
-Dazu die Sonderform `@utility text-brand-gradient-word` – **nur** für `BlurText` im Hero.
-Grund: dort animiert framer-motion je Wort ein `filter`, wodurch jedes Wort eine eigene
-Rendering-Ebene bekommt und ein am Elternteil geclippter Verlauf darin nicht ankommt – die
-Überschrift wäre unsichtbar. Deshalb trägt dort jedes Wort seinen eigenen Verlauf, per
-`background-attachment: fixed` am Viewport verankert, damit er über die Wörter durchläuft.
+Die Hero-Headline gehört **nicht** dazu – sie steht solide rot direkt an den beiden `BlurText`
+in `components/home-hero.tsx` (Begründung oben).
 
 ## Nicht eingefärbt (bewusst, da keine Überschriften)
 

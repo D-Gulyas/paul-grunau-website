@@ -39,10 +39,11 @@ Marken-Farbverlauf (Rot → Orange → Gelb) auf Überschriften. Alles ruhig, ho
     seitlich über die Box, und `background-clip: text` färbt nur innerhalb der Box. Genau daran
     scheiterte der Verlauf beim ersten Anlauf. **Folge:** an einer Überschrift **kein** `mx-auto` /
     `ml-*` / `mr-*` – das überschreibt die Kompensation; zentriert wird über den Elternteil.
-  - Der Hero nutzt die Sonderform `text-brand-gradient-word` (jedes Wort trägt den Verlauf selbst,
-    am Viewport verankert) – `BlurText` animiert je Wort ein `filter`, unter dem ein am Elternteil
-    geclippter Verlauf unsichtbar bliebe. Beides erklärt in `globals.css` und
-    `HEADINGS-COLOR-BACKUP.md`.
+  - **Ausnahme Hero-Headline:** die steht solide rot (`text-[#e11d2a]` an beiden `BlurText` in
+    `home-hero.tsx`). Ein Verlauf verträgt sich dort nicht mit dem Wort-für-Wort-Blur – am
+    Elternteil geclippt wäre sie unsichtbar, wortweise wandert der Verlauf während der
+    Einblendung durch die Buchstaben. Ausführlich in `HEADINGS-COLOR-BACKUP.md`;
+    **nicht erneut versuchen**, ohne das gelöst zu haben.
 - **Keine** flächigen Farbverläufe im Hintergrund, kein Grün. Farbe erscheint ausschließlich als
   Text-Verlauf und als Hover-Akzent.
 
