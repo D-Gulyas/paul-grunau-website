@@ -4,7 +4,8 @@ import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
-import { team } from "@/lib/content";
+import { AnsprechpartnerKarten } from "@/components/ansprechpartner-karten";
+import { ansprechpartner, fachbereiche } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -34,19 +35,22 @@ export default function KontaktPage() {
         intro="Egal, ob Sie eine Brandschutzlösung benötigen, eine Elektroinstallation planen oder eine Wartung anfragen möchten – wir sind für Sie da."
       />
 
-      {/* Team */}
+      {/* Team – zwei Ebenen: oben die persönlichen Ansprechpartner, darunter die Fachbereiche */}
       <Section area="kontakt-team" className="pt-12">
         <Reveal>
           <SectionHeading eyebrow="Ihre Ansprechpartner" title="Persönlicher Kontakt steht bei uns im Mittelpunkt" />
         </Reveal>
-        <StaggerGroup className="mt-12 grid gap-6 md:grid-cols-3">
-          {team.map((m) => (
-            <StaggerItem key={m.name}>
-              <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
+
+        <AnsprechpartnerKarten personen={ansprechpartner} />
+
+        <StaggerGroup area="kontakt-fachbereiche" className="mt-6 grid gap-6 md:grid-cols-2">
+          {fachbereiche.map((f) => (
+            <StaggerItem key={f.name} className="h-full">
+              <div className="glass flex h-full flex-col rounded-3xl p-7">
                 <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
-                <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{m.name}</h3>
-                <p className="font-body text-sm font-normal text-white/70">{m.role}</p>
-                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{m.bio}</p>
+                <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{f.name}</h3>
+                <p className="font-body text-sm font-normal text-white/70">{f.role}</p>
+                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{f.bio}</p>
               </div>
             </StaggerItem>
           ))}

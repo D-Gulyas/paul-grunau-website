@@ -290,12 +290,45 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export const team = [
+/**
+ * Persönliche Ansprechpartner – stehen auf der Kontaktseite gleichrangig
+ * nebeneinander, darunter folgen die Fachbereiche.
+ *
+ * NOCH EINZUPFLEGEN (Angaben von Herrn Grunau):
+ *   `image`     – Pfad zum Porträtfoto unter /public/images/, z. B.
+ *                 "/images/team-paul-grunau.webp". Solange leer, zeigt die
+ *                 Karte einen dezenten Platzhalter.
+ *   `werdegang` – Text fürs Pop-up (Ausbildung, Stationen, Schwerpunkte).
+ *                 Solange leer, zeigt das Pop-up nur den Kurztext.
+ * Sonst muss nichts angepasst werden – Karten und Pop-up stehen bereits.
+ */
+export type Ansprechpartner = {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+  werdegang?: string[];
+};
+
+export const ansprechpartner: Ansprechpartner[] = [
   {
     name: "Paul Grunau",
     role: "Geschäftsführer & Elektromeister",
     bio: "Gründer des Meisterbetriebs. Ihr persönlicher Ansprechpartner für Brandschutz, Elektrotechnik und alle Projektfragen.",
+    image: undefined,
+    werdegang: undefined,
   },
+  {
+    name: "Yanick Becker",
+    role: "Ansprechpartner",
+    bio: "Ihr direkter Kontakt für Anfragen, Terminabstimmung und die Begleitung Ihres Projekts.",
+    image: undefined,
+    werdegang: undefined,
+  },
+];
+
+/** Fachbereiche – bewusst ohne Foto und Pop-up, da es keine Einzelpersonen sind. */
+export const fachbereiche = [
   {
     name: "Team Elektrotechnik",
     role: "Meister & Fachkräfte",
