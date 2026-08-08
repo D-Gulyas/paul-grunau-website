@@ -1,58 +1,68 @@
-# Backup: Überschriften-Farben (Stand vor der „alles rot"-Umstellung)
+# Überschriften-Farben – Verlauf und Rückwege
 
-Dieser Snapshot hält die **ursprüngliche Farbeinstellung aller Überschriften** fest, damit sie sich
-jederzeit exakt wiederherstellen lässt. Angelegt am 2026-07-02, unmittelbar bevor alle Überschriften auf
-Markenrot `#e11d2a` gesetzt wurden.
+Aktueller Zustand: **alle Überschriften tragen den Marken-Verlauf rot → orange → gelb** (wie im Logo).
+Diese Datei hält die beiden früheren Zustände fest, damit sie sich exakt zurückholen lassen.
 
-## Wiederherstellung – so kommt der Original-Zustand zurück
+## Zeitleiste
 
-### 1. Marken-Farbverlauf der Bereichs-/Seiten-Überschriften (`app/globals.css`)
+| Stand | Überschriften | Hero-Headline |
+|---|---|---|
+| bis 02.07.2026 | Verlauf `105deg`, quer | weiß |
+| 02.07.2026 – 08.08.2026 | einfarbig Markenrot `#e11d2a` | rot `#e11d2a` |
+| **seit 08.08.2026** | **Verlauf `170deg`, senkrecht** | **Verlauf, wortweise** |
 
-Alle mit der Utility `text-brand-gradient` gesetzten Überschriften (16 Stellen, siehe Liste unten)
-hingen an **einem** Verlauf. Original-Definition der Utility:
+## Warum der Verlauf jetzt anders läuft als 2026-07
+
+Der alte Verlauf lief **quer** (`105deg`). Das hatte zwei Probleme, die beim zweiten Anlauf
+behoben wurden – beide stecken samt Begründung in `app/globals.css`:
+
+1. **Kursive Glyphen wurden abgeschnitten.** `background-clip: text` gibt nur innerhalb der Box
+   Farbe ab; die kursive Instrument Serif ragt bis zu **0,167 em** rechts und **0,082 em** links
+   darüber hinaus (gemessen). Genau daran scheiterte der Verlauf damals, und deshalb wurde auf
+   solides Rot umgestellt. Lösung: `padding-inline: 0.2em` plus ausgleichendes negatives Margin.
+2. **Quer laufende Verläufe kamen bei umbrechenden Überschriften nicht durch.** `width: fit-content`
+   liefert die **ungebrochene** Textbreite: bei der Seiten-Überschrift 896 px Box gegenüber 364 px
+   längster Zeile – der sichtbare Text sah nur die ersten 40 % des Verlaufs und blieb fast ganz rot.
+   Lösung: der Verlauf läuft jetzt fast senkrecht (`170deg`). Die Box**höhe** entspricht immer
+   exakt dem gesetzten Text, damit läuft er in jeder Überschrift vollständig durch.
+
+> [!] An einer Überschrift mit `text-brand-gradient` **kein** `mx-auto` / `ml-*` / `mr-*` setzen –
+> das überschreibt die Margin-Kompensation aus Punkt 1. Zentriert wird über den Elternteil
+> (`flex justify-center`), so gelöst in `app/not-found.tsx`.
+
+## Rückweg 1 – alles einfarbig Markenrot (Stand 02.07. – 08.08.2026)
+
+In `app/globals.css` bei `@utility text-brand-gradient` die fünf Verlaufszeilen
+(`background-image`, beide `background-clip`, `-webkit-text-fill-color`, `color: transparent`)
+ersetzen durch:
 
 ```css
-@utility text-brand-gradient {
-  width: fit-content;
-  background-image: linear-gradient(105deg, #e11d2a 0%, #f26619 50%, #f5b301 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
+color: #e11d2a;
 ```
 
-→ Zum Wiederherstellen die `background-image`-Zeile wieder auf den obigen **Verlauf** setzen
-(`linear-gradient(105deg, #e11d2a 0%, #f26619 50%, #f5b301 100%)`).
+`padding-inline` / `margin-inline` können dann ebenfalls raus – ohne `background-clip: text`
+schneidet nichts mehr ab. Für den Hero in `components/home-hero.tsx` an beiden `BlurText`
+die Prop `gradient` entfernen und `text-[#e11d2a]` an die `className` hängen.
 
-### 2. Hero-Headline (`components/home-hero.tsx`)
+## Rückweg 2 – Hero-Headline weiß (Stand bis 02.07.2026)
 
-Beide BlurText-Zeilen der Hero-Headline waren **weiß** (`text-white`):
+In `components/home-hero.tsx` an beiden `BlurText` die Prop `gradient` entfernen und
+`text-white` an die `className` hängen.
 
-- Zeile 1 „Brandschutz & Elektrotechnik": `… tracking-[-1px] text-white`
-- Zeile 2 „Meisterbetrieb Paul Grunau": `… tracking-[-1px] text-white`
+## Wo der Verlauf überall hängt
 
-→ Zum Wiederherstellen `text-[#e11d2a]` wieder auf `text-white` zurücksetzen.
+An **einer** Stelle: `@utility text-brand-gradient` in `app/globals.css`, benutzt an 17 Stellen
+(`components/ui.tsx` SectionHeading · `page-hero.tsx` · `legal.tsx` · `ui/blog-card.tsx` ·
+`ansprechpartner-karten.tsx` · `app/page.tsx` · `leistungen` · `blog` + `blog/[slug]` ·
+`kontakt` · `karriere` · `not-found`).
 
-## Betroffene Überschriften mit `text-brand-gradient` (Original: Verlauf rot→orange→gelb)
+Dazu die Sonderform `@utility text-brand-gradient-word` – **nur** für `BlurText` im Hero.
+Grund: dort animiert framer-motion je Wort ein `filter`, wodurch jedes Wort eine eigene
+Rendering-Ebene bekommt und ein am Elternteil geclippter Verlauf darin nicht ankommt – die
+Überschrift wäre unsichtbar. Deshalb trägt dort jedes Wort seinen eigenen Verlauf, per
+`background-attachment: fixed` am Viewport verankert, damit er über die Wörter durchläuft.
 
-| Datei | Überschrift |
-|---|---|
-| `components/ui.tsx` | `SectionHeading` (h2) – z. B. „Unsere Philosophie" |
-| `components/page-hero.tsx` | Seiten-Hero-Titel (h1) |
-| `components/legal.tsx` | Rechtstexte-Abschnitte (h2) |
-| `app/page.tsx` | Highlight-Karten (h3), „Kundenstimmen" (h2) |
-| `app/leistungen/page.tsx` | Leistungs-Titel (h2) |
-| `app/blog/page.tsx` | Blog-Titel (h2), Beitrags-Titel (h3) |
-| `app/blog/[slug]/page.tsx` | Artikel-Titel (h1), Abschnitte (h2), „Fragen…" (h3), „Weitere Artikel" (h2) |
-| `app/kontakt/page.tsx` | Team-Namen (h3), „Direkt erreichbar" (h2) |
-| `app/karriere/page.tsx` | Block-Titel (h3) |
-| `app/not-found.tsx` | „Seite nicht gefunden" (h1) |
+## Nicht eingefärbt (bewusst, da keine Überschriften)
 
-## NICHT geändert (bewusst, da keine Überschriften)
-
-Diese `font-heading`-Elemente bleiben in ihrer Original-Farbe (`text-white`):
-Kennzahlen-Zahlen (`app/page.tsx`; die Hersteller-Namen im Hero gibt es nicht mehr – dort laufen
-jetzt Logos),
-Bewertungszahl „4,6" (`components/testimonials.tsx`), „404"-Zahl (`app/not-found.tsx`),
-Zitat/Blockquote (`app/blog/[slug]/page.tsx`).
+Kennzahlen-Zahlen (`app/page.tsx`), Bewertungszahl „4,6" (`components/testimonials.tsx`),
+„404"-Zahl (`app/not-found.tsx`), Zitat/Blockquote (`app/blog/[slug]/page.tsx`) – alle `text-white`.

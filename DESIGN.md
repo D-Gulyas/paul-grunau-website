@@ -22,16 +22,27 @@ Marken-Farbverlauf (Rot → Orange → Gelb) auf Überschriften. Alles ruhig, ho
 | Hintergrund (global) | `#000000` (reines Schwarz, `body` in `globals.css`) |
 | Text primär | Weiß `#fff` |
 | Text sekundär | `text-white/90`, `/70`, `/65` (abgestufte Transparenz) |
-| **Marken-Verlauf** (Headlines) | `linear-gradient(105deg, #e11d2a 0%, #f26619 50%, #f5b301 100%)` |
+| **Marken-Verlauf** (Headlines) | `linear-gradient(170deg, #e11d2a 8%, #f26619 46%, #f5b301 84%)` |
 | Hover-Akzent | Markenorange `#f26619` (Footer-Links, Social, Kontaktkarten) |
 | Hero-Telefonnummer Hover | Markenrot `#e11d2a` |
 | Textauswahl | `rgba(255,255,255,0.22)` |
 | Scrollbar-Thumb | `rgba(255,255,255,0.18)` |
 
-- Alle Bereichs-Überschriften laufen über `@utility text-brand-gradient`: aktuell **solides Markenrot
-  `#e11d2a`**, `text-transform:uppercase`, `width:fit-content` und **`font-weight:700` (fett, in beiden
-  Modi – wie der Firmenname im Hero)**. Der ursprüngliche Rot→Orange→Gelb-Verlauf ist als Kommentar in
-  `globals.css` archiviert (siehe `HEADINGS-COLOR-BACKUP.md`).
+- Alle Bereichs-Überschriften laufen über `@utility text-brand-gradient`: **Marken-Verlauf
+  rot → orange → gelb wie im Logo**, `text-transform:uppercase`, `width:fit-content` und
+  **`font-weight:700` (fett, in beiden Modi – wie der Firmenname im Hero)**.
+  - Der Verlauf läuft **fast senkrecht** (`170deg`), nicht quer. Grund: `width:fit-content` liefert
+    bei umbrechendem Text die **ungebrochene** Breite (Seiten-Überschrift: 896 px Box gegenüber
+    364 px längster Zeile) – quer bliebe die Überschrift fast ganz rot. Die Box**höhe** passt
+    dagegen immer zum gesetzten Text.
+  - `padding-inline: 0.2em` + ausgleichendes negatives Margin: kursive Glyphen ragen bis 0,167 em
+    seitlich über die Box, und `background-clip: text` färbt nur innerhalb der Box. Genau daran
+    scheiterte der Verlauf beim ersten Anlauf. **Folge:** an einer Überschrift **kein** `mx-auto` /
+    `ml-*` / `mr-*` – das überschreibt die Kompensation; zentriert wird über den Elternteil.
+  - Der Hero nutzt die Sonderform `text-brand-gradient-word` (jedes Wort trägt den Verlauf selbst,
+    am Viewport verankert) – `BlurText` animiert je Wort ein `filter`, unter dem ein am Elternteil
+    geclippter Verlauf unsichtbar bliebe. Beides erklärt in `globals.css` und
+    `HEADINGS-COLOR-BACKUP.md`.
 - **Keine** flächigen Farbverläufe im Hintergrund, kein Grün. Farbe erscheint ausschließlich als
   Text-Verlauf und als Hover-Akzent.
 
@@ -221,8 +232,8 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
     mit `ArrowUpRight` (dieselbe Optik wie überall sonst auf der Seite, keine getönte Leiste).
     **Kein Anrisstext** (`excerpt`) – der Text steht im Artikel, die Karte soll ruhig bleiben.
     `excerpt` bleibt in `lib/content.ts` und wird weiterhin für die Meta-Beschreibung gebraucht.
-  - **Überschrift in `text-brand-gradient`** (Marken-Rot): der schwarze Verlauf dahinter ist
-    genau dafür da. Ohne ihn wäre Rot auf dem Bild zu kontrastarm.
+  - **Überschrift in `text-brand-gradient`** (Marken-Verlauf): der schwarze Verlauf dahinter ist
+    genau dafür da. Ohne ihn wäre die warme Schrift auf dem Bild zu kontrastarm.
   - **Glaskante** wie an den Karten in Karriere und Kontakt, damit die Seite durchgehend gleich
     wirkt. Sie kommt über die Utility **`.glass-edge`** auf ein eigenes Overlay als **letztes Kind**
     der Karte. `.glass` selbst geht hier nicht: dessen `::before` läge unter dem Titelbild und wäre

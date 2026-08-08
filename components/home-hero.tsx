@@ -72,13 +72,15 @@ export function HomeHero() {
             text="Brandschutz & Elektrotechnik"
             as="h1"
             nowrap
-            className="justify-center font-heading text-[clamp(1.2rem,6vw,5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px] text-[#e11d2a]"
+            gradient
+            className="justify-center font-heading text-[clamp(1.2rem,6vw,5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px]"
           />
           {/* Zeile 2: untere Headline – proportional ~70 % von Zeile 1, damit sie nie größer wirkt */}
           <BlurText
             text="Meisterbetrieb Paul Grunau"
             delay={0.4}
-            className="max-w-4xl justify-center font-heading text-[clamp(0.85rem,4.2vw,3.5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px] text-[#e11d2a]"
+            gradient
+            className="max-w-4xl justify-center font-heading text-[clamp(0.85rem,4.2vw,3.5rem)] font-bold italic uppercase leading-[0.95] tracking-[-1px]"
           />
         </div>
 
