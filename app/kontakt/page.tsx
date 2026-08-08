@@ -46,7 +46,7 @@ export default function KontaktPage() {
         <StaggerGroup area="kontakt-fachbereiche" className="mt-6 grid gap-6 md:grid-cols-2">
           {fachbereiche.map((f) => (
             <StaggerItem key={f.name} className="h-full">
-              <div className="glass flex h-full flex-col rounded-3xl p-7">
+              <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
                 <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{f.name}</h3>
                 <p className="font-body text-sm font-normal text-white/70">{f.role}</p>
