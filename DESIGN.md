@@ -192,6 +192,27 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 - **Weitere Seiten:** `/leistungen` (Hero + Elektrotechnik · KNX/Smarthome · Photovoltaik), `/blog` +
   `/blog/[slug]` (5 Artikel), `/karriere` (+ Bewerbungsformular), `/kontakt` (Team + Formular),
   `/impressum`, `/datenschutz`, markenkonforme 404.
+- **Blog-Übersicht** (`blog-artikel-liste`): **fünf gleichwertige Karten** im Raster
+  (1 / 2 / 3 Spalten, Höhe 420 px bzw. 440 px ab `sm`). **Kein hervorgehobener Artikel mehr** –
+  der frühere breite „Featured"-Block und `data-area="blog-artikel-featured"` sind entfallen.
+  - Die Karte ist **`ui/blog-card.tsx`** nach der Vorlage aus `new-card-design.md`
+    („card-21 / DestinationCard"): bildfüllender Hintergrund, Zoom beim Hover, darüber ein
+    Verlauf in der Themenfarbe, unten Inhalt und eine getönte Leiste mit Pfeil.
+  - **Nur im Blog.** Alle anderen Karten der Seite bleiben beim Glas-Design (`.glass` +
+    `.glass-glow`). Diese eine Ausnahme ist gewollt – nicht auf Leistungen, Kennzahlen o. Ä. ausrollen.
+  - **Inhalt bewusst knapp:** weiße Pille (Fachbereich), Uhr + Lesezeit, Überschrift, „Weiterlesen".
+    **Kein Anrisstext** (`excerpt`) – der Text steht im Artikel, die Karte soll ruhig bleiben.
+    `excerpt` bleibt in `lib/content.ts` und wird weiterhin für die Meta-Beschreibung gebraucht.
+  - **Themenfarbe je Fachbereich** als HSL-Tripel in `--theme-color`, abgeleitet aus dem
+    Marken-Verlauf: Brandschutz/Sicherheit → Rot `356 72% 24%`, Elektrotechnik → Gelb
+    `44 95% 22%`, Praxistipps → Orange `21 85% 24%`. Neue Fachbereiche in `THEMEN`
+    (in `blog-card.tsx`) ergänzen, sonst greift Marken-Rot als Rückfall.
+  - **Überschrift in Weiß**, nicht `text-brand-gradient`: Rot auf dem Bildverlauf wäre zu
+    kontrastarm, und `width: fit-content` der Utility passt nicht zu mehrzeiligen Titeln.
+    `font-heading` italic bleibt – die Karte soll trotz neuem Aufbau nach dieser Seite aussehen.
+  - Das `backdrop-blur-md` an der Leiste ist **wirkungslos** und bleibt nur der Vorlage zuliebe:
+    `StaggerItem` hält als Vorfahre ein `filter` und schneidet den Backdrop ab (siehe Abschnitt
+    Glas-Fallstricke). Hinter der Leiste liegt der Verlauf ohnehin bei 0,9 Deckkraft.
 - **Footer** (`site-footer.tsx`): enthält **`footer-beam.tsx`** – bewegter WebGL-Lichtstrahl (three.js
   Fragment-Shader, „Chrome look" mit minimaler RGB-Aufspaltung; läuft nur im Viewport,
   reduced-motion-fest). Eingebunden über **`footer-beam-lazy.tsx`**: three.js (~460 kB) wird erst
@@ -209,6 +230,7 @@ testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
 ansprechpartner-karten (Kontakt-Personen + Pop-up)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
 ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)
+ui/blog-card (Artikelkarte – NUR im Blog, siehe Abschnitt 8)
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)
 legal
 lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Ansprechpartner, Fachbereiche, Kennzahlen)
