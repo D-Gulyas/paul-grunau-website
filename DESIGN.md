@@ -142,9 +142,10 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   Grunau" ~70 %). Zeile 1 ist per `as="h1"` das **einzige `<h1>` der Startseite** – nicht auf `p`
   zurückdrehen, sonst hat die Startseite keine Hauptüberschrift mehr. CTAs „Mehr erfahren" (`liquid-glass-strong` + ArrowUpRight) und Telefonnummer,
   Hersteller-Pille + **Logo-Loop** (siehe unten).
-- **Hersteller-Loop** (`home-hero-partner`): `ui/logo-loop.jsx` + `ui/logo-loop.css` – die Vorlage
-  „LogoLoop" (React Bits, Variante **JavaScript + CSS**) aus `Hersteller/logo_loop.md`. Die Logos
-  laufen per `requestAnimationFrame` endlos von **rechts nach links**, an beiden Rändern
+- **Hersteller-Loop** (`home-hero-partner`): `ui/logo-loop.jsx` + `ui/logo-loop.css` – Aufbau nach der
+  Vorlage „LogoLoop" (React Bits, Variante **JavaScript + CSS**) aus `Hersteller/logo_loop.md`,
+  die Bewegung selbst aber über **framer-motion** statt über eine eigene `requestAnimationFrame`-
+  Schleife (siehe unten). Die Logos laufen endlos von **rechts nach links**, an beiden Rändern
   weichgezeichnet (`fadeOut`, `fadeOutColor="#000000"`). Der Track misst sich per `ResizeObserver`
   selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
   beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
@@ -152,11 +153,19 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   - **Alle Logos einheitlich weiß, kein Hintergrund-Streifen.** Umgesetzt über eine **CSS-Maske**
     (`.logoloop__logo`): die Farbe kommt aus `background-color`, das `<img>` darunter ist unsichtbar
     und liefert nur die Breite. Grund: ein CSS-`filter` kann das Marken-Gelb nicht exakt treffen.
-  - **Hover auf einem Logo:** Lauf hält an (`hoverSpeed={0}`), Logo zoomt auf `scale(1.12)` und
-    wechselt auf `#f5b301`. Beim Verlassen läuft alles normal weiter.
-  - **Einlauf nach dem Laden:** Der Offset startet bei `-containerWidth`, der Track steht also rechts
+  - **Antrieb über framer-motion, nicht über eigenes rAF.** Zwei MotionValues: `x` (Versatz des
+    Tracks, gerendert vom `motion.div`) und `tempo` (px/s). `useAnimationFrame` schreibt `x` pro
+    Frame fort – dieselbe Frame-Schleife wie alle anderen Animationen der Seite. Reduzierte
+    Bewegung läuft über `useReducedMotion()` (die CSS-Regel bleibt als Absicherung fürs erste Bild).
+  - **Hover auf einem Logo:** Der Lauf bremst weich auf `hoverSpeed={0}` ab – `animate()` blendet
+    `tempo` in 0,5 s über, statt hart zu stoppen. Das Logo zoomt auf `scale(1.12)` und wechselt auf
+    `#f5b301`. Beim Verlassen läuft alles genauso weich wieder an. **Genau dafür** der MotionValue
+    und kein Keyframe-Lauf mit `repeat: Infinity` (wie bei den Kundenstimmen) – ein Keyframe-Lauf
+    ließe sich nur anhalten, nicht abbremsen.
+  - **Einlauf nach dem Laden:** `x` startet bei `+containerWidth`, der Track steht also rechts
     außerhalb; die Logos laufen von rechts herein, beginnend mit **Schneider Merten** (erster Eintrag
-    im `partners`-Array). Erst ab Offset 0 greift der Modulo-Umlauf.
+    im `partners`-Array). Erst nach dem Einlauf greift der Modulo-Umlauf – gemessen springt `x` dann
+    um exakt eine Sequenzbreite, der Umschlag ist deshalb unsichtbar.
   - **Kein `loading="lazy"`** an den Logo-Bildern: sie starten außerhalb des Sichtfelds, lazy würde
     das Laden verhindern – ohne geladenes SVG gibt es keine Breite und die Schleife liefe nicht an.
   - **Reihenfolge = Array-Reihenfolge.** Schneider Merten steht bewusst an erster Stelle.

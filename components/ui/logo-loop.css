@@ -103,7 +103,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Kein Lauf und kein Einlauf – die Logos stehen still, beginnend beim ersten Eintrag. */
+  /* Kein Lauf und kein Einlauf – die Logos stehen still, beginnend beim ersten Eintrag.
+     Die Komponente hält sich über `useReducedMotion()` ebenfalls daran; diese Regel
+     greift schon beim ersten Bild, bevor der Hook im Browser ausgewertet ist, und
+     sticht per !important den Inline-Transform von framer-motion. */
   .logoloop__track {
     transform: translate3d(0, 0, 0) !important;
   }
