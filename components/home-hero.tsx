@@ -92,11 +92,11 @@ export function HomeHero() {
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 sm:h-5 sm:w-5" />
           </Link>
           <a
-            href="tel:+4915152516244"
+            href="tel:+4922919159239"
             className="group inline-flex items-center gap-1.5 font-body text-xs font-medium text-white/90 sm:gap-2 sm:text-sm"
           >
             <Phone className="h-3.5 w-3.5 text-white/90 sm:h-4 sm:w-4" />
-            <span className="transition-colors group-hover:text-[#f5b301]">+49 151 525 162 44</span>
+            <span className="transition-colors group-hover:text-[#f5b301]">+49 2291 9159239</span>
           </a>
         </motion.div>
       </div>
