@@ -87,7 +87,9 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | Name | Bereich |
 |---|---|
 | `kontakt-hero` | Kopfbereich |
-| `kontakt-team` | Ansprechpartner-Karten |
+| `kontakt-team` | Sektion „Ihre Ansprechpartner" gesamt |
+| `kontakt-ansprechpartner` | Obere Ebene: Personen-Karten mit Pop-up (Paul Grunau, Yanick Becker) |
+| `kontakt-fachbereiche` | Untere Ebene: Team Elektrotechnik / Team Brandschutz |
 | `kontakt-direkt-erreichbar` | Sektion „Direkt erreichbar" |
 | `kontakt-infos` | Adresse / Telefon / Mail / Öffnungszeiten |
 | `kontakt-formular` | Das Kontaktformular |

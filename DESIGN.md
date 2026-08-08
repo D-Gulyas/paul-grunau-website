@@ -100,7 +100,9 @@ position: relative; overflow: hidden;
   die `motion`-Instanzen wieder → Einblendungen laufen uneinheitlich. Dadurch erscheinen die Elemente
   auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
   bleiben unberührt; Scroll-Reveal unterhalb des Folds bleibt erhalten.)
-- **`stat-value`**: Count-up der Kennzahlen beim Sichtbarwerden.
+- **`ui/cascade-text` (`TextReveal`)**: Zeichen-Kaskade **beim Hover** – jedes Zeichen rollt versetzt
+  nach oben (Zweitzeichen per `text-shadow`), gleichzeitig Farbwechsel auf `hoverColor`.
+  Genutzt für die Kennzahlen (`hoverColor="#f5b301"`). Ein früheres Count-up gibt es **nicht** mehr.
 - **Icons:** lucide-Icons sind **statisch** (keine Animation). Gelb (`text-brand-yellow` = `#f5b301`,
   11,33:1 auf Schwarz) sind **nur die Inhalts-Icons**, per Klasse am Icon gesetzt:
   Philosophie-Karten, Leistungs-Blöcke, Team-Karten und Kontaktdaten – dazu die Bewertungssterne, die
@@ -171,7 +173,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   (Leistungen · Blog · Karriere · Kontakt) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
   `liquid-glass`-Dropdown. Das Logo (`BrandMark`, h-12) ist ein farbiges WebP.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
-  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards, Count-up; Zahlen **fett**, Hover-Farbe
+  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards; Zahlen **fett**, Hover-Farbe
   Marken-Gelb) → **Kundenstimmen** (Spalten-Marquee, echte Google-Rezensionen, 4,6 ★ (20)) →
   **`kundenstimmen-cta`**: `LiquidMetalButton` „Rezension schreiben" (blendet per `Reveal` ein,
   öffnet im neuen Tab). Ziel steht als Konstante `REZENSION_URL` oben in `app/page.tsx` – vorläufig
@@ -192,13 +194,16 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 ## 9. Komponenten-Inventar (Quelle der Wahrheit)
 
 ```
-home-hero · page-hero · blur-text · motion-primitives
+home-hero · page-hero · blur-text · motion-primitives (Reveal, StaggerGroup, StaggerItem)
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
-testimonials (Spalten-Marquee) · stat-value (Count-up)
-brand-logo · ui (Section, SectionHeading, ButtonLink, cx) · ui/logo-loop (Hersteller-Schleife)
+testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
+ansprechpartner-karten (Kontakt-Personen + Pop-up)
+brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
+ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)
 form-fields · contact-form · application-form · glass-select (eigenes Glas-Dropdown)
 legal
-lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Team, Kennzahlen, Bildpfade)
+lib/content.ts  → zentrale Inhalte (Leistungen, Blog, Ansprechpartner, Fachbereiche, Kennzahlen)
+lib/base-path.ts → asset() für nackte <img>/<a> bei Unterpfad-Deployment
 ```
 
 ---
