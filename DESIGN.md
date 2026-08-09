@@ -114,6 +114,12 @@ position: relative; overflow: hidden;
 - **`BlurText`** (`blur-text.tsx`): Wort-für-Wort-Blur-In der Headlines (Stagger pro Wort).
 - **`Reveal` / `StaggerGroup` / `StaggerItem`** (`motion-primitives.tsx`): Scroll-Reveal & Staffelung
   (`whileInView`, `once`).
+  - **`viewport.amount` ist ein Anteil des Blocks, nicht des Fensters** (Standard 0,2). Umhüllt ein
+    `Reveal` einen sehr hohen Bereich, geht das nicht auf: der Artikeltext im Blog ist rund 1860 px
+    hoch, auf dem Handy sind davon nie mehr als ~16 % gleichzeitig zu sehen – der Text blieb bis zum
+    ersten Scrollen unsichtbar (gemessen 0,155 gegen die Schwelle 0,2). `Reveal` nimmt dafür eine
+    **`amount`-Prop**; im Blog-Artikel steht `amount="some"`. Faustregel: Block höher als das
+    Fenster → ein Prozentwert ist die falsche Schwelle.
 - **Kennzahlen (`home-kennzahlen`)**: vier Karten, die einzeln nacheinander in `#f5b301` aufleuchten
   (`gruppe` je Karte, `festeLaenge={0.12}`). **Nur die Zahl ist fett**, die Beschriftung bleibt im
   Grundgewicht. Abstand nach oben `pt-28 md:pt-36` (vorher `py-10 md:py-12`) – die vier Stufen

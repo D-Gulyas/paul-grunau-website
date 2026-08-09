@@ -10,12 +10,23 @@ export function Reveal({
   y = 20,
   className,
   area,
+  amount = 0.2,
 }: {
   children: ReactNode;
   delay?: number;
   y?: number;
   className?: string;
   area?: string;
+  /**
+   * Wie viel vom Block im Bild stehen muss, damit er einblendet.
+   *
+   * Der Standard 0,2 passt für gewöhnliche Blöcke. Umhüllt ein `Reveal` einen
+   * **sehr hohen** Bereich, geht er nicht auf: Der Fließtext eines Blog-Artikels
+   * ist rund 1860 px hoch, auf dem Handy sind davon nie mehr als 16 % gleichzeitig
+   * zu sehen – der Text blieb bis zum ersten Scrollen unsichtbar. Für solche
+   * Bereiche `"some"` setzen (sobald irgendein Teil im Bild ist).
+   */
+  amount?: number | "some" | "all";
 }) {
   const reduce = useReducedMotion();
 
@@ -25,7 +36,7 @@ export function Reveal({
       className={className}
       initial={reduce ? { opacity: 0 } : { opacity: 0, y, filter: "blur(10px)" }}
       whileInView={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
     >
       {children}

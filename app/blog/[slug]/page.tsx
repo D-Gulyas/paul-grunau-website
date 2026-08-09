@@ -171,7 +171,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
       {/* Inhalt */}
       <div data-area="blogartikel-inhalt" className="mx-auto w-full max-w-3xl px-5 py-14 md:px-8">
-        <Reveal>
+        {/* `amount="some"`: Dieses eine `Reveal` umhüllt den kompletten Artikeltext (rund
+            1860 px). Mit dem Standardwert 0,2 wären auf dem Handy nie genug Prozent davon
+            gleichzeitig im Bild – der Text blieb bis zum ersten Scrollen unsichtbar. */}
+        <Reveal amount="some">
           <div className="space-y-6">
             {post.body.map((block, i) => (
               <Block key={i} block={block} />
