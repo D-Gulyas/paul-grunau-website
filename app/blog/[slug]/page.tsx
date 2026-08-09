@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import { Section } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
-import { MagicText } from "@/components/ui/magic-text";
+import { MagicListe, MagicListePunkt, MagicText } from "@/components/ui/magic-text";
 import { blogPosts, type BlogBlock } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -26,27 +26,29 @@ function Block({ block }: { block: BlogBlock }) {
       return <MagicText text={block.text} className="font-body text-base font-light leading-relaxed text-white/75" />;
     case "h":
       return <h2 className="pt-4 font-heading text-3xl italic tracking-[-1px] text-brand-gradient">{block.text}</h2>;
+    // Listen blenden Punkt für Punkt ein, sobald der Absatz darüber fertig
+    // aufgeleuchtet ist – beides hängt in derselben Kette.
     case "list":
       return block.ordered ? (
-        <ol className="space-y-3">
+        <MagicListe as="ol" className="space-y-3">
           {block.items.map((it, i) => (
-            <li key={it} className="flex gap-3 font-body font-light text-white/75">
+            <MagicListePunkt key={it} index={i} className="flex gap-3 font-body font-light text-white/75">
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white text-xs font-semibold text-black">
                 {i + 1}
               </span>
               <span className="leading-relaxed">{it}</span>
-            </li>
+            </MagicListePunkt>
           ))}
-        </ol>
+        </MagicListe>
       ) : (
-        <ul className="space-y-2.5">
-          {block.items.map((it) => (
-            <li key={it} className="flex gap-3 font-body font-light text-white/75">
+        <MagicListe className="space-y-2.5">
+          {block.items.map((it, i) => (
+            <MagicListePunkt key={it} index={i} className="flex gap-3 font-body font-light text-white/75">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white" />
               <span className="leading-relaxed">{it}</span>
-            </li>
+            </MagicListePunkt>
           ))}
-        </ul>
+        </MagicListe>
       );
     case "quote":
       return (

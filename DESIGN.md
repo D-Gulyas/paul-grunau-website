@@ -157,6 +157,15 @@ position: relative; overflow: hidden;
     `typeof intro === "string"` und fallen sonst auf ein gewöhnliches `<p>` zurück.
   - **Nicht** im Ansprechpartner-Pop-up: dort ist der Seiten-Scroll gesperrt, der Fortschritt käme nie
     über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
+- **`MagicListe` / `MagicListePunkt`** (gleiche Datei): Aufzählungen blenden Punkt für Punkt über
+  Deckkraft und 14 px Verschiebung ein (`as="ol"` für nummerierte Listen, zwei Punkte gleichzeitig über
+  `LISTEN_WELLE`). Sie hängen in **derselben Kette** wie die Absätze und starten dadurch genau dann,
+  wenn der Fließtext darüber fertig aufgeleuchtet ist – Leistungen (Häkchen-Listen) und Blog-Artikel.
+  Wer eine weitere Bewegung anhängen will, meldet sie ebenfalls bei der Sequenz an, statt Timings von
+  Hand abzustimmen.
+- **Zweispalter mit Überschrift** („Unsere Philosophie"): Die Überschrift steht **über** beiden Spalten,
+  damit Fließtext und Karten auf derselben Höhe beginnen. Kein `items-start` + Versatz an der rechten
+  Spalte – die Höhe der Überschrift ändert sich mit Breakpoint und geladener Schrift.
 - **Icons:** lucide-Icons sind **statisch** (keine Animation). Gelb (`text-brand-yellow` = `#f5b301`,
   11,33:1 auf Schwarz) sind **nur die Inhalts-Icons**, per Klasse am Icon gesetzt:
   Philosophie-Karten, Leistungs-Blöcke, Team-Karten und Kontaktdaten – dazu die Bewertungssterne, die

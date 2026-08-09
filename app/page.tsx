@@ -50,10 +50,16 @@ export default function HomePage() {
 
       {/* Unsere Philosophie */}
       <Section area="home-philosophie">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        {/* Überschrift über beiden Spalten, damit Fließtext und Karten auf
+            derselben Höhe beginnen. Stünde sie in der linken Spalte, müsste die
+            rechte um die Höhe der Überschrift versetzt werden – die ändert sich
+            aber mit jedem Breakpoint. */}
+        <Reveal>
+          <SectionHeading title="Unsere Philosophie" />
+        </Reveal>
+        <div className="mt-6 grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <SectionHeading title="Unsere Philosophie" />
-            <div className="mt-6 space-y-4 font-body text-base font-light leading-relaxed text-white/70">
+            <div className="space-y-4 font-body text-base font-light leading-relaxed text-white/70">
               <MagicText text="Für uns ist gutes Handwerk mehr als Technik – es ist Verantwortung. Was wir planen und installieren, schützt Menschen, Werte und Zuhause und muss über viele Jahre zuverlässig funktionieren. Deshalb arbeiten wir lieber einmal gründlich als zweimal schnell." />
               <MagicText text="Wir glauben an ehrliche Beratung auf Augenhöhe, an saubere und präzise Ausführung und an Lösungen mit Weitblick. Meisterqualität heißt für uns, Sorgfalt nicht als Aufwand zu sehen, sondern als Selbstverständlichkeit – bei jedem Kunden, ob privat, gewerblich oder öffentlich." />
             </div>

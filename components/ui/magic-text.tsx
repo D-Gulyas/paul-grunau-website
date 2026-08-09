@@ -1,8 +1,24 @@
 "use client";
 
 import * as React from "react";
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 
 /**
  * Scroll-gesteuertes Aufleuchten von Fließtext.
@@ -54,6 +70,10 @@ const SICHTBARER_WEG = 0.2;
 const KETTEN_WEG = 0.1;
 /** Ab wie viel senkrechter Überlappung (px) zwei Absätze als eine Reihe gelten. */
 const REIHEN_TOLERANZ = 20;
+/** Wie viele Listenpunkte gleichzeitig einblenden. */
+const LISTEN_WELLE = 2;
+/** Wie weit ein Listenpunkt beim Einblenden von unten hereinrückt (px). */
+const LISTEN_VERSATZ = 14;
 
 type Mass = { top: number; bottom: number };
 type Fenster = [number, number];
@@ -182,6 +202,52 @@ export function MagicTextSequenz({ children }: { children: ReactNode }) {
   return <SequenzContext.Provider value={anmelden}>{children}</SequenzContext.Provider>;
 }
 
+/**
+ * Meldet ein Element bei der Sequenz an und liefert seinen Fortschritt von 0
+ * bis 1 – genutzt von Absätzen wie von Listen, damit beide in derselben Kette
+ * hängen und nacheinander laufen.
+ *
+ * `schluessel` löst eine Neuanmeldung aus, wenn sich der Inhalt ändert.
+ */
+function useSequenzFortschritt(container: React.RefObject<HTMLElement | null>, schluessel: unknown) {
+  const { scrollY } = useScroll();
+  const anmelden = useContext(SequenzContext);
+
+  /**
+   * Das Scrollfenster in Pixeln, in dem dieses Element läuft.
+   *
+   * Bis zur ersten Messung liegt das Ende unerreichbar weit unten – es startet
+   * dadurch garantiert ruhend statt halb fertig.
+   */
+  const [fenster, setFenster] = useState<Fenster>([0, 1e6]);
+
+  useEffect(() => {
+    const el = container.current;
+    if (!el) return;
+
+    // Im Verbund bestimmt die Sequenz das Fenster.
+    if (anmelden) return anmelden({ el, setzen: setFenster });
+
+    // Ohne Sequenz (Komponente allein genutzt) misst sich das Element selbst.
+    const messen = () => {
+      const r = el.getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      setFenster(fensterBerechnen([{ top, bottom: top + r.height }], window.innerHeight)[0]);
+    };
+    messen();
+    const beobachter = new ResizeObserver(messen);
+    beobachter.observe(el);
+    window.addEventListener("resize", messen);
+    return () => {
+      beobachter.disconnect();
+      window.removeEventListener("resize", messen);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anmelden, schluessel]);
+
+  return useTransform(scrollY, fenster, [0, 1]);
+}
+
 export interface MagicTextProps {
   text: string;
   /** Element, das gerendert wird – Standard ist der Absatz. */
@@ -236,41 +302,7 @@ export function MagicText({
 }: MagicTextProps) {
   const container = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const anmelden = useContext(SequenzContext);
-
-  /**
-   * Das Scrollfenster in Pixeln, in dem dieser Absatz aufleuchtet.
-   *
-   * Bis zur ersten Messung liegt das Ende unerreichbar weit unten – der Absatz
-   * startet dadurch garantiert ruhend statt halb aufgeleuchtet.
-   */
-  const [fenster, setFenster] = useState<Fenster>([0, 1e6]);
-
-  useEffect(() => {
-    const el = container.current;
-    if (!el) return;
-
-    // Im Verbund bestimmt die Sequenz das Fenster.
-    if (anmelden) return anmelden({ el, setzen: setFenster });
-
-    // Ohne Sequenz (Komponente allein genutzt) misst sich der Absatz selbst.
-    const messen = () => {
-      const r = el.getBoundingClientRect();
-      const top = r.top + window.scrollY;
-      setFenster(fensterBerechnen([{ top, bottom: top + r.height }], window.innerHeight)[0]);
-    };
-    messen();
-    const beobachter = new ResizeObserver(messen);
-    beobachter.observe(el);
-    window.addEventListener("resize", messen);
-    return () => {
-      beobachter.disconnect();
-      window.removeEventListener("resize", messen);
-    };
-  }, [anmelden, text]);
-
-  const fortschritt = useTransform(scrollY, fenster, [0, 1]);
+  const fortschritt = useSequenzFortschritt(container, text);
 
   const words = text.split(" ");
 
@@ -305,5 +337,76 @@ export function MagicText({
         </React.Fragment>
       ))}
     </Component>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Listen – blenden nacheinander ein, sobald der Absatz darüber fertig ist
+   -------------------------------------------------------------------------- */
+
+const ListeContext = createContext<{ fortschritt: MotionValue<number>; anzahl: number } | null>(null);
+
+/**
+ * Aufzählung, deren Punkte beim Scrollen nacheinander einblenden.
+ *
+ * Die Liste hängt in derselben Kette wie die Absätze (`MagicTextSequenz`) und
+ * bekommt dadurch ihr Fenster erst zugeteilt, wenn der Fließtext darüber fertig
+ * aufgeleuchtet ist – auf Leistungen wie in den Blog-Artikeln.
+ *
+ * Bewegung nur über Deckkraft und Verschiebung, kein `filter` (siehe DESIGN.md).
+ */
+export function MagicListe({
+  as: Component = "ul",
+  className,
+  children,
+}: {
+  as?: "ul" | "ol";
+  className?: string;
+  children: ReactNode;
+}) {
+  const container = useRef<HTMLElement>(null);
+  const anzahl = Math.max(1, React.Children.count(children));
+  const fortschritt = useSequenzFortschritt(container, anzahl);
+  const wert = useMemo(() => ({ fortschritt, anzahl }), [fortschritt, anzahl]);
+
+  return (
+    <Component ref={container as React.Ref<never>} className={className}>
+      <ListeContext.Provider value={wert}>{children}</ListeContext.Provider>
+    </Component>
+  );
+}
+
+/** Ein Punkt einer `MagicListe`. `index` bestimmt, wann er an der Reihe ist. */
+export function MagicListePunkt({
+  index,
+  className,
+  children,
+}: {
+  index: number;
+  className?: string;
+  children: ReactNode;
+}) {
+  const liste = useContext(ListeContext);
+  const reduce = useReducedMotion();
+  // Ersatzwert, damit die Hook-Reihenfolge auch ohne Liste drumherum stimmt.
+  const ruhend = useMotionValue(1);
+  const fortschritt = liste?.fortschritt ?? ruhend;
+  const anzahl = liste?.anzahl ?? 1;
+
+  // Wie bei den Wörtern: Die Punkte überlappen sich leicht, damit die Liste
+  // fließt statt durchzuschalten.
+  const schritte = anzahl + LISTEN_WELLE - 1;
+  const bereich: [number, number] = [index / schritte, (index + LISTEN_WELLE) / schritte];
+  const opacity = useTransform(fortschritt, bereich, [0, 1]);
+  const y = useTransform(fortschritt, bereich, [LISTEN_VERSATZ, 0]);
+
+  if (reduce || !liste) {
+    return <li className={className}>{children}</li>;
+  }
+
+  return (
+    <motion.li className={className} style={{ opacity, y }}>
+      {children}
+    </motion.li>
   );
 }

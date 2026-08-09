@@ -3,7 +3,7 @@ import { Check, Cpu, Sun, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/motion-primitives";
 import { Eyebrow, Section } from "@/components/ui";
-import { MagicText } from "@/components/ui/magic-text";
+import { MagicListe, MagicListePunkt, MagicText } from "@/components/ui/magic-text";
 import { services } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -65,14 +65,20 @@ export default function LeistungenPage() {
                   text={s.description}
                   className="mt-4 font-body text-base font-light leading-relaxed text-white/70"
                 />
-                <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-                  {s.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 font-body text-sm font-light text-white/80">
+                {/* Blendet Punkt für Punkt ein, sobald der Absatz darüber
+                    fertig aufgeleuchtet ist – beides hängt in derselben Kette. */}
+                <MagicListe className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {s.features.map((f, i) => (
+                    <MagicListePunkt
+                      key={f}
+                      index={i}
+                      className="flex items-start gap-3 font-body text-sm font-light text-white/80"
+                    >
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-white" />
                       {f}
-                    </li>
+                    </MagicListePunkt>
                   ))}
-                </ul>
+                </MagicListe>
               </Reveal>
             </div>
           );
