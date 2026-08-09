@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, User, X } from "lucide-react";
+import { User, X } from "lucide-react";
+import { Pfeil } from "@/components/ui/pfeil";
 import { StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { MagicText } from "@/components/ui/magic-text";
 import { asset } from "@/lib/base-path";
@@ -95,7 +96,7 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
               {/* Gleiche Optik wie „Artikel lesen“ auf den Blog-Karten */}
               <span className="mt-6 inline-flex items-center gap-1.5 font-body text-sm font-medium text-white/85">
                 Mehr erfahren
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <Pfeil />
               </span>
             </button>
           </StaggerItem>

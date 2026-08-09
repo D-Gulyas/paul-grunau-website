@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
+import { Pfeil } from "@/components/ui/pfeil";
 import { BlurText } from "@/components/blur-text";
 import { LogoLoop } from "@/components/ui/logo-loop";
 import { asset } from "@/lib/base-path";
@@ -92,7 +93,7 @@ export function HomeHero() {
             className="liquid-glass-strong group inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-body text-xs font-medium text-white transition-transform duration-300 hover:-translate-y-0.5 sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm"
           >
             Mehr erfahren
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 sm:h-5 sm:w-5" />
+            <Pfeil className="sm:h-5 sm:w-5" />
           </Link>
           <a
             href="tel:+4922919159239"

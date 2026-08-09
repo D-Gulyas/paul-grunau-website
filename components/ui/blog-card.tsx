@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+import { Pfeil } from "@/components/ui/pfeil";
 import { cx } from "@/components/ui";
 
 /**
@@ -106,7 +107,7 @@ export function BlogCard({ className, imageUrl, category, readingTime, title, hr
 
           <span className="mt-5 inline-flex items-center gap-1.5 font-body text-sm font-medium text-white/80 transition-colors group-hover:text-white">
             Weiterlesen
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <Pfeil />
           </span>
         </div>
 

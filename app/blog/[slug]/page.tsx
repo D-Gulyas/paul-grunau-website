@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
+import { ArrowLeft, Clock } from "lucide-react";
+import { Pfeil } from "@/components/ui/pfeil";
 import { Reveal } from "@/components/motion-primitives";
 import { Section } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
@@ -158,10 +159,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <div data-area="blogartikel-cta" className="glass-strong flex flex-col items-start justify-between gap-5 rounded-3xl p-7 sm:flex-row sm:items-center">
             <div>
               <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">Fragen zu diesem Thema?</h3>
-              <MagicText
-                text="Unser Meisterteam berät Sie gerne persönlich."
-                className="mt-1 font-body text-sm font-light text-white/65"
-              />
+              {/* Bewusst ohne MagicText: Der Tipp ist der letzte Block des
+                  Artikels und soll auch das Letzte sein, was aufleuchtet. */}
+              <p className="mt-1 font-body text-sm font-light text-white/65">
+                Unser Meisterteam berät Sie gerne persönlich.
+              </p>
             </div>
             <LiquidMetalButton label="Kontakt aufnehmen" href="/kontakt" />
           </div>
@@ -186,7 +188,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                 <span className="font-body text-xs text-white/55">{p.category}</span>
                 <h3 className="mt-0.5 line-clamp-2 font-body text-sm font-medium text-white">{p.title}</h3>
               </div>
-              <ArrowUpRight className="mr-2 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-white" />
+              <Pfeil className="mr-2 shrink-0" />
             </Link>
           ))}
         </div>

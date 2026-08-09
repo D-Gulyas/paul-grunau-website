@@ -66,16 +66,33 @@ const MINDESTWEG = 0.3;
  * frei unter der Navbar stehen.
  */
 const SICHTBARER_WEG = 0.2;
-/** Notreserve, falls die Kette einen Absatz überholt hat. */
-const KETTEN_WEG = 0.1;
+/**
+ * Mindestweg, wenn die Kette einen Absatz überholt hat und er gestaucht wird.
+ *
+ * Bewusst nicht knapper: Sonst schlägt ausgerechnet der Tipp am Ende eines
+ * Blog-Artikels in einem Wimpernschlag um, während er auf anderen Artikeln in
+ * Ruhe aufleuchtet. Höher darf der Wert auch nicht – bei dicht gestapeltem Text
+ * liegen die natürlichen Enden nur rund 0,17 vh auseinander, und die Kette
+ * begänne sich aufzustauen.
+ */
+const KETTEN_WEG = 0.15;
 /** Ab wie viel senkrechter Überlappung (px) zwei Absätze als eine Reihe gelten. */
 const REIHEN_TOLERANZ = 20;
 /** Wie viele Listenpunkte gleichzeitig einblenden. */
 const LISTEN_WELLE = 2;
 /** Wie weit ein Listenpunkt beim Einblenden von unten hereinrückt (px). */
 const LISTEN_VERSATZ = 14;
+/**
+ * Scrollweg pro Listenschritt, als Anteil der Fensterhöhe.
+ *
+ * Listen bekommen daraus eine **feste** Fensterlänge (`Schritte × dieser Wert`)
+ * statt einer aus ihrer Höhe und Position abgeleiteten. Nur so laufen alle
+ * Listen der Seite gleich schnell – vorher hing das Tempo an Höhe und Abstand
+ * der jeweiligen Liste, und sie wirkten sichtbar unterschiedlich.
+ */
+const LISTEN_SCHRITT = 0.05;
 
-type Mass = { top: number; bottom: number };
+type Mass = { top: number; bottom: number; laenge?: number };
 type Fenster = [number, number];
 
 /**
@@ -97,15 +114,22 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
     .map((m, i) => ({ ...m, i }))
     .sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
-  const reihen: { top: number; bottom: number; indizes: number[] }[] = [];
+  const reihen: { top: number; bottom: number; laengen: (number | undefined)[]; indizes: number[] }[] =
+    [];
   for (const eintrag of sortiert) {
     const letzte = reihen[reihen.length - 1];
     if (letzte && eintrag.top < letzte.bottom - REIHEN_TOLERANZ) {
       letzte.top = Math.min(letzte.top, eintrag.top);
       letzte.bottom = Math.max(letzte.bottom, eintrag.bottom);
+      letzte.laengen.push(eintrag.laenge);
       letzte.indizes.push(eintrag.i);
     } else {
-      reihen.push({ top: eintrag.top, bottom: eintrag.bottom, indizes: [eintrag.i] });
+      reihen.push({
+        top: eintrag.top,
+        bottom: eintrag.bottom,
+        laengen: [eintrag.laenge],
+        indizes: [eintrag.i],
+      });
     }
   }
 
@@ -113,20 +137,34 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
   let vorherEnde = Number.NEGATIVE_INFINITY;
 
   for (const reihe of reihen) {
+    // Nur wenn jedes Mitglied der Reihe eine feste Länge mitbringt (Listen),
+    // läuft die Reihe nach fester Länge statt nach ihrer Ausdehnung.
+    const festeLaenge = reihe.laengen.every((l) => l != null)
+      ? Math.max(...(reihe.laengen as number[]))
+      : null;
+
     let start = reihe.top - vh * START_BEI;
-    let ende = reihe.bottom - vh * ENDE_BEI;
-    if (ende - start < vh * MINDESTWEG) ende = start + vh * MINDESTWEG;
+    let ende: number;
 
-    // Steht die Reihe beim Laden schon im Bild, läge ihr Fenster in der
-    // Vergangenheit – sie wäre ohne Zutun des Users bereits aufgeleuchtet.
-    // Deshalb ans obere Seitenende schieben, mit kurzem Weg.
-    if (start < 0) {
-      ende = Math.min(ende - start, vh * SICHTBARER_WEG);
-      start = 0;
+    if (festeLaenge != null) {
+      if (start < 0) start = 0;
+      start = Math.max(start, vorherEnde);
+      ende = start + festeLaenge;
+    } else {
+      ende = reihe.bottom - vh * ENDE_BEI;
+      if (ende - start < vh * MINDESTWEG) ende = start + vh * MINDESTWEG;
+
+      // Steht die Reihe beim Laden schon im Bild, läge ihr Fenster in der
+      // Vergangenheit – sie wäre ohne Zutun des Users bereits aufgeleuchtet.
+      // Deshalb ans obere Seitenende schieben, mit kurzem Weg.
+      if (start < 0) {
+        ende = Math.min(ende - start, vh * SICHTBARER_WEG);
+        start = 0;
+      }
+
+      start = Math.max(start, vorherEnde);
+      ende = Math.max(ende, start + vh * KETTEN_WEG);
     }
-
-    start = Math.max(start, vorherEnde);
-    ende = Math.max(ende, start + vh * KETTEN_WEG);
 
     for (const i of reihe.indizes) fenster[i] = [start, ende];
     vorherEnde = ende;
@@ -135,7 +173,12 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
   return fenster;
 }
 
-type Eintrag = { el: HTMLElement; setzen: (f: Fenster) => void };
+type Eintrag = {
+  el: HTMLElement;
+  setzen: (f: Fenster) => void;
+  /** Feste Fensterlänge statt einer aus der Ausdehnung abgeleiteten (Listen). */
+  laenge?: (vh: number) => number;
+};
 
 const SequenzContext = createContext<((eintrag: Eintrag) => () => void) | null>(null);
 
@@ -153,12 +196,13 @@ export function MagicTextSequenz({ children }: { children: ReactNode }) {
   const berechnen = useCallback(() => {
     const liste = eintraege.current;
     if (!liste.length) return;
-    const masse = liste.map(({ el }) => {
+    const vh = window.innerHeight;
+    const masse = liste.map(({ el, laenge }) => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY;
-      return { top, bottom: top + r.height };
+      return { top, bottom: top + r.height, laenge: laenge?.(vh) };
     });
-    const fenster = fensterBerechnen(masse, window.innerHeight);
+    const fenster = fensterBerechnen(masse, vh);
     liste.forEach((eintrag, i) => eintrag.setzen(fenster[i]));
   }, []);
 
@@ -209,9 +253,17 @@ export function MagicTextSequenz({ children }: { children: ReactNode }) {
  *
  * `schluessel` löst eine Neuanmeldung aus, wenn sich der Inhalt ändert.
  */
-function useSequenzFortschritt(container: React.RefObject<HTMLElement | null>, schluessel: unknown) {
+function useSequenzFortschritt(
+  container: React.RefObject<HTMLElement | null>,
+  schluessel: unknown,
+  laenge?: (vh: number) => number,
+) {
   const { scrollY } = useScroll();
   const anmelden = useContext(SequenzContext);
+  // Wird nur beim Rechnen gelesen, soll aber nicht bei jedem Rendern neu
+  // anmelden – deshalb über eine Referenz statt über die Effekt-Abhängigkeiten.
+  const laengeRef = useRef(laenge);
+  laengeRef.current = laenge;
 
   /**
    * Das Scrollfenster in Pixeln, in dem dieses Element läuft.
@@ -225,14 +277,19 @@ function useSequenzFortschritt(container: React.RefObject<HTMLElement | null>, s
     const el = container.current;
     if (!el) return;
 
+    // Ob ein Element eine feste Länge will, steht für seine ganze Lebensdauer
+    // fest – die Referenz liefert nur den jeweils aktuellen Wert.
+    const festeLaenge = laengeRef.current ? (vh: number) => laengeRef.current!(vh) : undefined;
+
     // Im Verbund bestimmt die Sequenz das Fenster.
-    if (anmelden) return anmelden({ el, setzen: setFenster });
+    if (anmelden) return anmelden({ el, setzen: setFenster, laenge: festeLaenge });
 
     // Ohne Sequenz (Komponente allein genutzt) misst sich das Element selbst.
     const messen = () => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY;
-      setFenster(fensterBerechnen([{ top, bottom: top + r.height }], window.innerHeight)[0]);
+      const vh = window.innerHeight;
+      setFenster(fensterBerechnen([{ top, bottom: top + r.height, laenge: festeLaenge?.(vh) }], vh)[0]);
     };
     messen();
     const beobachter = new ResizeObserver(messen);
@@ -366,7 +423,13 @@ export function MagicListe({
 }) {
   const container = useRef<HTMLElement>(null);
   const anzahl = Math.max(1, React.Children.count(children));
-  const fortschritt = useSequenzFortschritt(container, anzahl);
+
+  // Feste Länge aus der Zahl der Schritte: Damit ist der Abstand zwischen zwei
+  // Punkten und die Dauer eines einzelnen Punktes in **jeder** Liste gleich,
+  // egal wie viele Punkte sie hat und wo sie steht.
+  const laenge = useCallback((vh: number) => vh * LISTEN_SCHRITT * (anzahl + LISTEN_WELLE - 1), [anzahl]);
+
+  const fortschritt = useSequenzFortschritt(container, anzahl, laenge);
   const wert = useMemo(() => ({ fortschritt, anzahl }), [fortschritt, anzahl]);
 
   return (

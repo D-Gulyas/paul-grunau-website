@@ -193,12 +193,17 @@ export function LiquidMetalButton({ label, href, target, type = "button", onClic
             >
               {label}
             </span>
+            {/* Ruht gedämpft und leuchtet erst beim Zeigen auf – wie alle Pfeile
+                dieser Art, siehe `ui/pfeil.tsx`. Hier über die Deckkraft, damit
+                der dokumentierte Farbton des Buttons erhalten bleibt. */}
             <ArrowUpRight
               size={16}
               style={{
                 color: textColor,
+                opacity: isHovered ? 1 : 0.4,
                 filter: "drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.6))",
-                transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                transition:
+                  "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
                 transform: isHovered ? "translate(2px, -2px)" : "translate(0, 0)",
               }}
             />

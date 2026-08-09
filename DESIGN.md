@@ -163,6 +163,17 @@ position: relative; overflow: hidden;
   wenn der Fließtext darüber fertig aufgeleuchtet ist – Leistungen (Häkchen-Listen) und Blog-Artikel.
   Wer eine weitere Bewegung anhängen will, meldet sie ebenfalls bei der Sequenz an, statt Timings von
   Hand abzustimmen.
+  - **Feste Fensterlänge** (`Schritte × LISTEN_SCHRITT × vh`), gemeldet über `laenge` an die Sequenz –
+    **nicht** aus der Ausdehnung abgeleitet wie beim Fließtext. Nur so sind Abstand und Dauer eines
+    Punktes in jeder Liste gleich; aus Höhe und Position abgeleitet liefen die Listen sichtbar
+    unterschiedlich schnell.
+- **Der `quote`-Block ist der letzte animierte Block eines Blog-Artikels.** Der Text der Mini-CTA
+  darunter ist bewusst ein gewöhnliches `<p>` – nach dem Tipp soll nichts mehr aufleuchten.
+- **`ui/pfeil` (`Pfeil`)**: der Pfeil an Links, Buttons und Karten – **kein eigener `ArrowUpRight` mehr
+  im Markup**. Ruht bei 40 % Deckkraft und leuchtet beim Zeigen auf volles Weiß auf, gleichzeitig 2 px
+  nach oben rechts. Braucht ein Elternteil mit `group`. `aufHell` für weiße Flächen (leuchtet dann nach
+  Schwarz). Der `LiquidMetalButton` bringt dasselbe Verhalten inline mit, dort über die Deckkraft,
+  damit sein `#e6e6e6` erhalten bleibt.
 - **Zweispalter mit Überschrift** („Unsere Philosophie"): Die Überschrift steht **über** beiden Spalten,
   damit Fließtext und Karten auf derselben Höhe beginnen. Kein `items-start` + Versatz an der rechten
   Spalte – die Höhe der Überschrift ändert sich mit Breakpoint und geladener Schrift.
@@ -314,6 +325,7 @@ home-hero · page-hero · blur-text · motion-primitives (Reveal, StaggerGroup, 
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
 ui/magic-text (MagicText, Fließtext leuchtet beim Scrollen wortweise auf)
+ui/pfeil (Pfeil, ArrowUpRight mit Hover-Aufleuchten – überall statt eigener Icons)
 ansprechpartner-karten (Kontakt-Personen + Pop-up)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
 ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)

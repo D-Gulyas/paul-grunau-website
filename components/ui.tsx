@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { MagicText } from "@/components/ui/magic-text";
+import { Pfeil } from "@/components/ui/pfeil";
 
 /* --- Class merge helper (klein, ohne Dependency) --- */
 export function cx(...parts: (string | false | null | undefined)[]) {
@@ -29,9 +29,8 @@ export function ButtonLink({ href, children, variant = "primary", icon = true, c
   const content = (
     <>
       {children}
-      {icon && (
-        <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-      )}
+      {/* Auf der weißen Primärfläche leuchtet der Pfeil nach Schwarz statt nach Weiß. */}
+      {icon && <Pfeil aufHell={variant === "primary"} />}
     </>
   );
 
