@@ -16,10 +16,13 @@ export function BrandMark({ title = "Paul Grunau Logo", className }: { title?: s
 export function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
     <span className="flex items-center gap-2.5 text-white">
-      {/* Auf dem Desktop deutlich größer (48 → 64 px), damit das Logo neben der Navbar-Pille
-          nicht verloren wirkt. Auf dem Handy bleibt es klein – dort steht der Burger daneben. */}
-      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full md:h-[72px] md:w-[72px]">
-        <BrandMark className="h-12 w-12 text-white md:h-16 md:w-16" />
+      {/* Auf dem Desktop deutlich größer (48 → 80 px), damit das Logo neben der Navbar-Pille
+          nicht verloren wirkt. Auf dem Handy bleibt es klein – dort steht der Burger daneben.
+          Ab `md` ist der Kreis genauso groß wie das Zeichen: er trägt kein eigenes Aussehen, und
+          so bestimmt allein das Logo die Höhe der Leiste – ein größerer Kreis würde die Glaspille
+          zusätzlich nach unten schieben. */}
+      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full md:h-20 md:w-20">
+        <BrandMark className="h-12 w-12 text-white md:h-20 md:w-20" />
       </span>
       {!compact && (
         <span className="flex flex-col leading-tight">

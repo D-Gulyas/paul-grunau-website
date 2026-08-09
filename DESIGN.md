@@ -282,10 +282,16 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   nur das Logo, kein Kreis); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
   (Leistungen · Blog · Karriere · Kontakt) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
   `liquid-glass`-Dropdown. Das Logo (`BrandMark`) ist ein farbiges WebP und **zweistufig groß**:
-  48 px auf dem Handy (`h-12`, Kreis 56 px), ab `md` **64 px** (`h-16`, Kreis 72 px). Neben der
-  58 px hohen Glaspille wirkte es mit 48 px zu klein; bei 64 px liegen Logo- und Pillenmitte
-  gemessen beide bei 52 px. Die 256-px-Bilddatei deckt das auch auf Retina ab – **nicht** durch
-  eine größere Datei ersetzen. Das Footer-Logo ist eine eigene Stelle (`h-9`) und bleibt klein.
+  48 px auf dem Handy (`h-12`, Kreis 56 px), ab `md` **80 px** (`h-20`, Kreis ebenfalls 80 px).
+  Neben der 58 px hohen Glaspille wirkte es mit 48 px zu klein, 64 px waren noch zu wenig; bei
+  80 px liegen Logo- und Pillenmitte gemessen beide bei 56 px. Am schmalsten Desktop-Punkt
+  (768 px) bleiben 57 px Luft zwischen Logo und Pille.
+  - **Ab `md` ist der Kreis genauso groß wie das Zeichen.** Er hat kein eigenes Aussehen und
+    dient nur der Zentrierung – wäre er größer, würde er die Höhe der Leiste bestimmen und die
+    Glaspille zusätzlich nach unten schieben. So gibt allein das Logo die Höhe vor.
+  - Die 256-px-Bilddatei deckt 80 px auch auf Retina ab – **nicht** durch eine größere Datei
+    ersetzen (über 128 px Darstellung bräuchte es allerdings eine neue). Das Footer-Logo ist eine
+    eigene Stelle (`h-9`) und bleibt klein.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards; Zahlen **fett**, Hover-Farbe
   Marken-Gelb) → **Kundenstimmen** (Spalten-Marquee, echte Google-Rezensionen, 4,6 ★ (20)) →
