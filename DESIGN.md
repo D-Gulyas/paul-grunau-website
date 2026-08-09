@@ -373,27 +373,16 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 > Verlauf und Inhalt zusätzlich `[@media(hover:none)]:opacity-100` (Touch zeigt alles
 > dauerhaft) und `group-focus-within:` (Tastaturbedienung). Beides ist geprüft:
 > unter `(hover: none)` steht der Inhalt auf Deckkraft 1 und ohne Versatz.
-- **Blog-Artikel-Kopf** (`blogartikel-kopf`): Titelbild randlos über die volle Breite, **Höhe kommt
-  aus dem Bild** (`<img className="block w-full">` ohne Höhenangabe, kein `object-cover`). Vorher
-  stand es in einer Box mit fester vh-Höhe – auf dem Handy passte das zufällig, auf dem Desktop war
-  die Box 2,56:1 gegen ein 3:2-Bild und rund 40 % des Motivs fielen weg. Geprüft: gerendertes
-  Seitenverhältnis = natürliches (1,5) auf 375, 768 und 1440 px.
-  - **`object-contain` wäre der naheliegende Weg und ist bewusst nicht genommen** – es gäbe
-    schwarze Balken links und rechts. Über die Bildhöhe zu gehen zeigt das Motiv vollständig
-    **und** randlos.
-  - Der `<header>` trägt **kein `overflow-hidden`** mehr; es stutzte das Bild sonst wieder auf
-    Texthöhe. Der frühere `pt-28` am Header sitzt jetzt an der Textspalte, sonst begänne das Bild
-    erst unterhalb der Navbar.
-  - **Gestapelt wird erst ab `md`** (`md:grid` + `md:col-start-1 md:row-start-1` an beiden Kindern,
-    Kopfhöhe = die größere von Bild und Text). Auf Handybreite ist ein 3:2-Bild nur rund 250 px
-    hoch; der Text läge dann genau auf der Unterkante, wo der schwarze Verlauf mitten im Übergang
-    ist – der Zurück-Link war dort kaum zu lesen. Auf dem Handy steht der Text deshalb im Fluss
-    **unter** dem Bild.
-  - **Zwei Verläufe statt einem:** oben ein Scrim für Titel, Zurück-Link und Navbar
-    (`from-ink/75 via-ink/30 via-40% to-transparent to-70%`), unten der weiche schwarze Rand
-    (`from-ink via-ink/65 via-20% to-transparent to-50%`), damit das Bild ohne sichtbare Kante in
-    die schwarze Seite ausläuft. Der frühere einzelne Verlauf lag mit `via-ink/85` über der ganzen
-    Höhe – bei einem vollständig gezeigten Bild wäre davon nur der obere Rand zu sehen gewesen.
+- **Blog-Artikel-Kopf** (`blogartikel-kopf`): Titelbild als Hintergrund in einer Box mit **fester
+  vh-Höhe** (`h-[46vh] sm:h-[54vh] md:h-[62vh]`) und `object-cover`, darüber ein Verlauf
+  (`from-ink via-ink/85 to-ink/55`), Text (Zurück-Link, Pille, `h1`) liegt darauf. Der `<header>`
+  trägt `overflow-hidden pt-28`.
+  - **Der Beschnitt auf dem Desktop ist gewollt, kein offener Fehler.** Die Box ist dort 2,56:1
+    gegen ein 3:2-Bild; rund 40 % des Motivs fallen weg. Am 09.08.2026 lief ein Versuch, das Bild
+    über seine eigene Höhe vollständig zu zeigen (kein `object-cover`, ab `md` gestapelt, zwei
+    getrennte Verläufe) – **auf Wunsch des Kunden zurückgedreht, die Optik gefiel nicht.**
+    Technisch funktionierte er; wer ihn erneut aufgreift, muss vorher rückfragen. Was dabei zu
+    beachten war, steht in `04 Regeln und Fallstricke` im Projektgehirn.
 - **Karriere-Infoblöcke** (`karriere-infobloecke`): vier Glaskarten, Raster `sm:grid-cols-2
   lg:grid-cols-4`. Bei `md:grid-cols-3` (bis dahin drei Karten) wäre die vierte allein in einer
   zweiten Reihe gelandet.
