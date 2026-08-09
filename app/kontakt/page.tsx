@@ -77,8 +77,8 @@ export default function KontaktPage() {
               {contactInfo.map((c) => (
                 <StaggerItem key={c.label}>
                   <div className="glass group flex items-start gap-4 rounded-2xl p-4">
-                    {/* Icon-Grau wie die Pfeile auf den Buttons (#e6e6e6) */}
-                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-[#e6e6e6]" aria-hidden />
+                    {/* Icons im Marken-Gelb wie die übrigen Inhalts-Icons (Philosophie, Leistungen, Team) */}
+                    <c.icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-brand-yellow" aria-hidden />
                     <div>
                       <div className="font-body text-xs font-medium uppercase tracking-wider text-white/50">
                         {c.label}

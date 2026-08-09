@@ -101,7 +101,9 @@ export function BlogCard({ className, imageUrl, category, readingTime, title, hr
             </span>
           </div>
 
-          <h3 className="mt-4 text-balance font-heading text-2xl italic leading-tight tracking-[-0.5px] text-brand-gradient">
+          {/* Auf dem Handy kleiner: bei 3:2-Karte und voller Handybreite liefen die längeren
+              Titel sonst über drei bis vier Zeilen und drängten „Weiterlesen" aus der Karte. */}
+          <h3 className="mt-4 text-balance font-heading text-lg italic leading-tight tracking-[-0.5px] text-brand-gradient sm:text-xl md:text-2xl">
             {title}
           </h3>
 

@@ -86,12 +86,16 @@ export function SiteFooter() {
                   a.bauer@grunau.mobi
                 </a>
               </li>
-              <li className="flex items-start gap-3">
+              {/* Kein Link, aber derselbe gelbe Hover wie Telefon/Mobil/E-Mail – über die
+                  Gruppe, damit auch die zweite Zeile („Sa–So geschlossen") mit umschlägt. */}
+              <li className="group flex items-start gap-3">
                 <Clock className="mt-0.5 h-4 w-4 shrink-0 text-white/60" />
-                <span>
+                <span className="transition-colors group-hover:text-[#f5b301]">
                   Mo–Do 08:00–16:00 · Fr 08:00–14:00
                   <br />
-                  <span className="text-white/40">Sa–So geschlossen</span>
+                  <span className="text-white/40 transition-colors group-hover:text-[#f5b301]/70">
+                    Sa–So geschlossen
+                  </span>
                 </span>
               </li>
             </ul>

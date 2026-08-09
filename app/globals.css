@@ -70,6 +70,17 @@
    wurde wieder entfernt: sie verträgt sich nicht mit dem Wort-für-Wort-Blur. Begründung und
    Rückweg stehen in HEADINGS-COLOR-BACKUP.md – bitte nicht erneut anlegen. */
 
+/* Echte Fettung für die Hero-Headline.
+   `font-bold` allein bringt dort nichts: Instrument Serif liefert nur Gewicht 400, und der
+   Browser synthetisiert bei dieser Schrift kein Bold (nachgemessen – Textbreite bei 400 und
+   700 identisch). Die Verdickung kommt deshalb über eine Kontur in der Textfarbe.
+   `em`-Maß, damit sie mit der clamp()-Größe der Headline mitwächst; `paint-order` legt die
+   Kontur unter die Füllung, sodass die Buchstabenform sauber bleibt. */
+@utility text-fett-kontur {
+  -webkit-text-stroke: 0.024em currentColor;
+  paint-order: stroke fill;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

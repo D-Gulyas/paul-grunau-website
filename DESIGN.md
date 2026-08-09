@@ -61,6 +61,13 @@ Marken-Farbverlauf (Rot → Orange → Gelb) auf Überschriften. Alles ruhig, ho
 - Body: Barlow, `font-light` als Grundgewicht, `leading-relaxed`/`leading-snug`.
 - Eingebunden via `next/font/google` (`app/layout.tsx`).
 
+**⚠️ `font-bold` wirkt an Headlines nicht.** Instrument Serif kommt nur mit Gewicht 400 und Chrome
+synthetisiert dafür kein Bold (nachgemessen: „Brandschutz" ist bei `font-weight: 400` und `700`
+exakt gleich breit – 220,42 px bei 48 px). Echte Fettung gibt es über `@utility text-fett-kontur`
+(`globals.css`): Kontur in der Textfarbe, `0.024em`, `paint-order: stroke fill`. Sitzt an beiden
+`BlurText` der Hero-Headline. **Nicht** an `text-brand-gradient`-Überschriften verwenden – deren
+Füllung ist transparent, die Kontur würde daraus leere Umrisse machen.
+
 ---
 
 ## 4. Liquid-Glass-System (Kern des Looks)
@@ -197,6 +204,9 @@ position: relative; overflow: hidden;
   Button-Pfeile, Blog-Uhren, Formular-Haken. Bewusste Entscheidung – flächendeckendes Gelb wurde
   getestet und wieder verworfen. **Keine globale `svg.lucide`-Regel einführen**, sie würde genau das
   wiederherstellen.
+  - Die fünf Karten unter **„Direkt erreichbar"** (Adresse · Telefon · Mobil · E-Mail ·
+    Öffnungszeiten) standen als Einzige im Button-Grau `#e6e6e6` und tragen jetzt ebenfalls
+    `text-brand-yellow`. Die **Footer**-Kontaktsymbole bleiben davon unberührt und weiterhin weiß.
   - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
     lief pro Icon als Endlos-Animation mit zwei `drop-shadow`-Filtern und machte auf dem Handy Probleme.
     **Nicht wieder einführen.**
@@ -267,7 +277,11 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 - **Navbar** (`site-navbar.tsx`): fixiert `top-4`; links Logo (`BrandLockup compact`, **ohne Glas** –
   nur das Logo, kein Kreis); Mitte `liquid-glass`-Pille (`data-area="nav-links-desktop"`) mit Links
   (Leistungen · Blog · Karriere · Kontakt) und `LiquidMetalButton` „Anfragen"; mobil Hamburger →
-  `liquid-glass`-Dropdown. Das Logo (`BrandMark`, h-12) ist ein farbiges WebP.
+  `liquid-glass`-Dropdown. Das Logo (`BrandMark`) ist ein farbiges WebP und **zweistufig groß**:
+  48 px auf dem Handy (`h-12`, Kreis 56 px), ab `md` **64 px** (`h-16`, Kreis 72 px). Neben der
+  58 px hohen Glaspille wirkte es mit 48 px zu klein; bei 64 px liegen Logo- und Pillenmitte
+  gemessen beide bei 52 px. Die 256-px-Bilddatei deckt das auch auf Retina ab – **nicht** durch
+  eine größere Datei ersetzen. Das Footer-Logo ist eine eigene Stelle (`h-9`) und bleibt klein.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
   gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards; Zahlen **fett**, Hover-Farbe
   Marken-Gelb) → **Kundenstimmen** (Spalten-Marquee, echte Google-Rezensionen, 4,6 ★ (20)) →
@@ -276,6 +290,9 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   eine Google-Maps-Suche auf den Betrieb, ersetzbar durch den direkten `g.page/r/…/review`-Link.
 - **Hover-Farben:** im **Footer** (Links, Telefon/Mail, Social-Icons) und bei den **Kennzahlen** ist der
   Hover **Marken-Gelb**. Auf der Kontaktseite und beim Hero-Telefon bleibt er bewusst **rot** (`#e11d2a`).
+  - Die **Öffnungszeiten im Footer** sind kein Link und hatten deshalb als Einzige keinen Hover. Er
+    hängt jetzt am `<li>` (`group`) und wirkt per `group-hover:` auf beide Zeilen – „Sa–So
+    geschlossen" gedämpft auf `/70`, damit die Abstufung bleibt. Die Adresse behält keinen Hover.
 - **Weitere Seiten:** `/leistungen` (Hero + Elektrotechnik · KNX/Smarthome · Photovoltaik), `/blog` +
   `/blog/[slug]` (5 Artikel), `/karriere` (+ Bewerbungsformular), `/kontakt` (Team + Formular),
   `/impressum`, `/datenschutz`, markenkonforme 404.
@@ -310,6 +327,10 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
     `excerpt` bleibt in `lib/content.ts` und wird weiterhin für die Meta-Beschreibung gebraucht.
   - **Überschrift in `text-brand-gradient`** (Marken-Verlauf): der schwarze Verlauf dahinter ist
     genau dafür da. Ohne ihn wäre die warme Schrift auf dem Bild zu kontrastarm.
+  - **Größe `text-lg sm:text-xl md:text-2xl`** – sie **muss** auf dem Handy mitschrumpfen. Fest auf
+    `text-2xl` liefen bei 375 px Breite (Karte 335 × 223 px) vier der fünf Titel über drei Zeilen und
+    drückten „Weiterlesen" an den unteren Rand. Die Karte kann nicht mitwachsen, ihre Höhe gibt das
+    Seitenverhältnis vor – also fügt sich der Inhalt. Mit `text-lg` bleiben alle fünf bei ≤ 2 Zeilen.
   - **Glaskante** wie an den Karten in Karriere und Kontakt, damit die Seite durchgehend gleich
     wirkt. Sie kommt über die Utility **`.glass-edge`** auf ein eigenes Overlay als **letztes Kind**
     der Karte. `.glass` selbst geht hier nicht: dessen `::before` läge unter dem Titelbild und wäre
