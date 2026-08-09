@@ -434,8 +434,15 @@ function Word({
       {/* Ruhende Kopie: liegt an derselben Stelle, ist aber für Screenreader
           und Suchmaschinen unsichtbar – sonst stünde jeder Satz doppelt da.
           Sie behält immer die geerbte Textfarbe, auch wenn oben drüber in
-          einer anderen Farbe aufgeleuchtet wird. */}
-      <span className="absolute" style={{ opacity: ghostOpacity }} aria-hidden>
+          einer anderen Farbe aufgeleuchtet wird.
+
+          `inset-0` ist wichtig: Ohne die Angabe schrumpft die Kopie auf ihre
+          eigene Breite und setzt sich an ihre statische Position. Bricht ein
+          Wort in sich um – „Notfall-Erreichbarkeit" tut das am Bindestrich –,
+          werden die beiden Kopien dann unterschiedlich ausgerichtet und der
+          Text steht sichtbar versetzt. Mit `inset-0` übernimmt die Kopie exakt
+          die Box des Wortes und bricht und zentriert genau wie das Original. */}
+      <span className="absolute inset-0" style={{ opacity: ghostOpacity }} aria-hidden>
         {children}
       </span>
       <motion.span style={{ opacity, color: revealColor }}>{children}</motion.span>

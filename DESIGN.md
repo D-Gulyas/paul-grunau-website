@@ -142,6 +142,10 @@ position: relative; overflow: hidden;
   - Import aus **`framer-motion`**, nicht aus `motion/react`: dieselbe Bibliothek unter neuem Namen,
     ein zweites Paket würde nur den Bundle aufblähen.
   - Die ruhende Kopie trägt **`aria-hidden`**, sonst steht jeder Satz doppelt im DOM.
+  - Die ruhende Kopie braucht **`inset-0`** (nicht nur `absolute` wie in der Vorlage). Sonst schrumpft
+    sie auf ihre eigene Breite und sitzt an ihrer statischen Position – das passt zufällig, solange
+    jedes Wort in eine Zeile passt. Bricht ein Wort in sich um (`Notfall-Erreichbarkeit` am
+    Bindestrich), stehen die Kopien sichtbar versetzt. **Nicht wegoptimieren.**
   - **Das Scrollfenster wird in Pixeln selbst gerechnet, nicht über `useScroll({ target, offset })`.**
     Ein `offset` misst die Position im Fenster – ein Absatz, der beim Laden schon sichtbar ist (jedes
     Intro unter einer Seiten-Überschrift), stünde damit von Anfang an halb bis ganz aufgeleuchtet da.
