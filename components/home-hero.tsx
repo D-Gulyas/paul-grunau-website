@@ -106,14 +106,20 @@ export function HomeHero() {
       </div>
 
       {/* Partner */}
-      <motion.div {...fade(0.9, reduce)} data-area="home-hero-partner" className="relative z-10 flex flex-col items-center gap-4 px-4 pb-8">
+      <motion.div {...fade(0.9, reduce)} data-area="home-hero-partner" className="relative z-10 flex flex-col items-center gap-4 px-4 pb-8 lg:px-0">
         <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">
           Wir arbeiten mit führenden Herstellern
         </span>
         {/* Endlos-Schleife: Logos laufen von rechts nach links, an beiden Rändern ausgeblendet.
-            Breite begrenzt, damit etwa fünf Logos gleichzeitig zu sehen sind.
-            hoverSpeed={0}: beim Zeigen auf ein Logo hält der Lauf an. */}
-        <div className="w-full max-w-3xl">
+            hoverSpeed={0}: beim Zeigen auf ein Logo hält der Lauf an.
+
+            Breite: auf Mobil/Tablet begrenzt (max-w-3xl), damit etwa fünf Logos gleichzeitig
+            zu sehen sind. Ab `lg` bekommt der Wrapper bewusst dieselbe Box wie `Section`
+            (`max-w-6xl` + `px-8`, siehe components/ui.tsx) – dadurch sitzt der Ausblender
+            links exakt auf der Kante der Überschrift „Unsere Philosophie" und der Einblender
+            rechts exakt auf der Kante der Karten daneben. Ändert sich das Section-Maß,
+            muss es hier mitgezogen werden. */}
+        <div className="mx-auto w-full max-w-3xl lg:max-w-6xl lg:px-8">
           <LogoLoop
             logos={partners}
             speed={55}

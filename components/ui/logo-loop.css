@@ -13,9 +13,13 @@
   --logoloop-gap: 32px;
   --logoloop-logoHeight: 28px;
   --logoloop-fadeColorAuto: #000000;
-}
 
-.logoloop--scale-hover {
+  /* Luft fuer den Hover-Zoom. Der Container ist genau so hoch wie ein Logo; ohne
+     diesen Puffer schneidet das `overflow: hidden` oben und unten das vergroesserte
+     Logo ab. Der Zoom (scale 1.12, s. unten) laesst es je Seite um 6 % der
+     Logo-Hoehe wachsen – 10 % Polsterung decken das mit Reserve ab.
+     In der Vorlage haengt diese Polsterung an `.logoloop--scale-hover`; hier ist der
+     Zoom fest eingebaut und gilt darum unabhaengig von der `scaleOnHover`-Prop. */
   padding-top: calc(var(--logoloop-logoHeight) * 0.1);
   padding-bottom: calc(var(--logoloop-logoHeight) * 0.1);
 }

@@ -249,8 +249,14 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
   Schleife (siehe unten). Die Logos laufen endlos von **rechts nach links**, an beiden Rändern
   weichgezeichnet (`fadeOut`, `fadeOutColor="#000000"`). Der Track misst sich per `ResizeObserver`
   selbst und legt so viele Kopien der Liste an, wie die Containerbreite braucht – dadurch keine Lücke
-  beim Umlauf. Container `max-w-3xl`, `logoHeight={32}`, `gap={56}` → **fünf Logos gleichzeitig**
-  sichtbar (Desktop), drei auf dem Handy.
+  beim Umlauf. `logoHeight={32}`, `gap={56}`.
+  - **Breite ist zweistufig** (09.08.2026): bis `lg` `max-w-3xl` → drei bis fünf Logos gleichzeitig.
+    **Ab `lg`** bekommt der Wrapper dieselbe Box wie `Section` (`max-w-6xl` + `px-8`, dazu `lg:px-0`
+    am `home-hero-partner`-Elternteil, der sonst `px-4` beisteuert). Dadurch sitzt der Ausblender
+    links exakt auf der Kante der Überschrift „Unsere Philosophie" und der Einblender rechts exakt
+    auf der Kante der Karten daneben (gemessen bei 1280 px: beide bei 91,5 px bzw. 1179,5 px).
+    **Wird das Section-Maß geändert, muss es in `home-hero.tsx` mitgezogen werden** – die beiden
+    Boxen sind nur über gleiche Utilities gekoppelt, nicht über eine gemeinsame Variable.
   - **Alle Logos einheitlich weiß, kein Hintergrund-Streifen.** Umgesetzt über eine **CSS-Maske**
     (`.logoloop__logo`): die Farbe kommt aus `background-color`, das `<img>` darunter ist unsichtbar
     und liefert nur die Breite. Grund: ein CSS-`filter` kann das Marken-Gelb nicht exakt treffen.
@@ -263,6 +269,11 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
     `#f5b301`. Beim Verlassen läuft alles genauso weich wieder an. **Genau dafür** der MotionValue
     und kein Keyframe-Lauf mit `repeat: Infinity` (wie bei den Kundenstimmen) – ein Keyframe-Lauf
     ließe sich nur anhalten, nicht abbremsen.
+    - **`.logoloop` trägt dafür eine senkrechte Polsterung** von 10 % der Logohöhe (09.08.2026).
+      Der Container ist sonst exakt logohoch, und das `overflow: hidden` (nötig fürs Clipping des
+      `max-content`-Tracks) schnitt das gezoomte Logo oben und unten ab – gemessen 1,92 px je Seite.
+      **Nicht entfernen**, solange der Hover-Zoom in der CSS fest eingebaut ist. In der Vorlage hängt
+      diese Polsterung an `.logoloop--scale-hover`; hier gilt sie unabhängig von `scaleOnHover`.
   - **Einlauf nach dem Laden:** `x` startet bei `+containerWidth`, der Track steht also rechts
     außerhalb; die Logos laufen von rechts herein, beginnend mit **Schneider Merten** (erster Eintrag
     im `partners`-Array). Erst nach dem Einlauf greift der Modulo-Umlauf – gemessen springt `x` dann
@@ -293,7 +304,9 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
     ersetzen (über 128 px Darstellung bräuchte es allerdings eine neue). Das Footer-Logo ist eine
     eigene Stelle (`h-9`) und bleibt klein.
 - **Startseite** (`/`): Hero → **Unsere Philosophie** (2-spaltig: Text + 3 `glass`-Highlight-Cards mit
-  gelben lucide-Icons) → **Kennzahlen** (4 `glass`-Cards; Zahlen **fett**, Hover-Farbe
+  gelben lucide-Icons; Kopfabstand **`pt-32 md:pt-44`** statt des Section-Standards `pt-20 md:pt-28` –
+  der Hero endet mit der Partner-Zeile dicht am unteren Rand und lief sonst optisch in die Sektion
+  hinein) → **Kennzahlen** (4 `glass`-Cards; Zahlen **fett**, Hover-Farbe
   Marken-Gelb) → **Kundenstimmen** (Spalten-Marquee, echte Google-Rezensionen, 4,6 ★ (20)) →
   **`kundenstimmen-cta`**: `LiquidMetalButton` „Rezension schreiben" (blendet per `Reveal` ein,
   öffnet im neuen Tab). Ziel steht als Konstante `REZENSION_URL` oben in `app/page.tsx` – vorläufig

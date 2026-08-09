@@ -47,8 +47,11 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      {/* Unsere Philosophie */}
-      <Section area="home-philosophie">
+      {/* Unsere Philosophie – der erste Block nach dem Hero bekommt oben bewusst mehr
+          Abstand als der Section-Standard (pt-20/md:pt-28). Der Hero endet mit der
+          Partner-Zeile dicht am unteren Rand; ohne den Zuschlag laufen Hero und
+          Philosophie optisch ineinander. */}
+      <Section area="home-philosophie" className="pt-32 md:pt-44">
         {/* Überschrift über beiden Spalten, damit Fließtext und Karten auf
             derselben Höhe beginnen. Stünde sie in der linken Spalte, müsste die
             rechte um die Höhe der Überschrift versetzt werden – die ändert sich
