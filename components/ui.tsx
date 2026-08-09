@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
+import { MagicText } from "@/components/ui/magic-text";
 
 /* --- Class merge helper (klein, ohne Dependency) --- */
 export function cx(...parts: (string | false | null | undefined)[]) {
@@ -90,11 +91,17 @@ export function SectionHeading({
       <h2 className="max-w-3xl text-balance font-heading text-4xl italic leading-[0.95] tracking-[-1px] text-brand-gradient sm:text-5xl md:text-6xl">
         {title}
       </h2>
-      {intro && (
-        <p className="max-w-2xl text-pretty font-body text-base font-light leading-relaxed text-white/70 md:text-lg">
-          {intro}
-        </p>
-      )}
+      {intro &&
+        (typeof intro === "string" ? (
+          <MagicText
+            text={intro}
+            className="max-w-2xl text-pretty font-body text-base font-light leading-relaxed text-white/70 md:text-lg"
+          />
+        ) : (
+          <p className="max-w-2xl text-pretty font-body text-base font-light leading-relaxed text-white/70 md:text-lg">
+            {intro}
+          </p>
+        ))}
     </div>
   );
 }

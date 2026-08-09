@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion-primitives";
 import { Eyebrow } from "@/components/ui";
+import { MagicText } from "@/components/ui/magic-text";
 
 export function PageHero({
   eyebrow,
@@ -31,9 +32,18 @@ export function PageHero({
         </Reveal>
         {intro && (
           <Reveal delay={0.2}>
-            <p className="mt-6 max-w-2xl text-pretty font-body text-lg font-light leading-relaxed text-white/70">
-              {intro}
-            </p>
+            {/* Fließtext leuchtet beim Scrollen wortweise auf; nur reiner Text
+                lässt sich in Wörter zerlegen, alles andere bleibt unverändert. */}
+            {typeof intro === "string" ? (
+              <MagicText
+                text={intro}
+                className="mt-6 max-w-2xl text-pretty font-body text-lg font-light leading-relaxed text-white/70"
+              />
+            ) : (
+              <p className="mt-6 max-w-2xl text-pretty font-body text-lg font-light leading-relaxed text-white/70">
+                {intro}
+              </p>
+            )}
           </Reveal>
         )}
       </div>

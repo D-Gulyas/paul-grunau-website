@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, User, X } from "lucide-react";
 import { StaggerGroup, StaggerItem } from "@/components/motion-primitives";
+import { MagicText } from "@/components/ui/magic-text";
 import { asset } from "@/lib/base-path";
 import type { Ansprechpartner } from "@/lib/content";
 
@@ -87,8 +88,10 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
             >
               <Portrait person={p} gross />
               <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{p.name}</h3>
-              <p className="font-body text-sm font-normal text-white/70">{p.role}</p>
-              <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{p.bio}</p>
+              <MagicText text={p.role} className="font-body text-sm font-normal text-white/70" />
+              <MagicText text={p.bio} className="mt-3 font-body text-sm font-light leading-relaxed text-white/65" />
+              {/* Im Pop-up bleibt der Text unverändert: dort ist der Seiten-Scroll
+                  gesperrt, der Effekt käme nie über seinen Startzustand hinaus. */}
               {/* Gleiche Optik wie „Artikel lesen“ auf den Blog-Karten */}
               <span className="mt-6 inline-flex items-center gap-1.5 font-body text-sm font-medium text-white/85">
                 Mehr erfahren

@@ -115,6 +115,24 @@ position: relative; overflow: hidden;
 - **`ui/cascade-text` (`TextReveal`)**: Zeichen-Kaskade **beim Hover** – jedes Zeichen rollt versetzt
   nach oben (Zweitzeichen per `text-shadow`), gleichzeitig Farbwechsel auf `hoverColor`.
   Genutzt für die Kennzahlen (`hoverColor="#f5b301"`). Ein früheres Count-up gibt es **nicht** mehr.
+- **`ui/magic-text` (`MagicText`)**: Fließtext leuchtet **beim Scrollen** wortweise auf – jedes Wort
+  liegt doppelt übereinander (ruhende Kopie bei 20 % Deckkraft, darüber eine, deren `opacity` per
+  `useScroll`/`useTransform` am Scrollfortschritt des Absatzes hängt, Fenster
+  `["start 0.9", "start 0.25"]`). Vorlage: `Magic-Text.md` im Projektordner.
+  Gilt für **allen Fließtext**, **nie** für Überschriften (die tragen den Marken-Verlauf) – die
+  vollständige Liste der Fundstellen steht im Projekt-Gehirn unter „02 Animationen".
+  - **Typografie wird geerbt**, nicht mitgebracht: die Komponente bekommt die Klassen des bisherigen
+    `<p>` unverändert übergeben (wie `TextReveal`). Die Vorlage setzt fix `text-3xl font-semibold
+    leading-[0.5] p-4` – bewusst **nicht** übernommen.
+  - Import aus **`framer-motion`**, nicht aus `motion/react`: dieselbe Bibliothek unter neuem Namen,
+    ein zweites Paket würde nur den Bundle aufblähen.
+  - Die ruhende Kopie trägt **`aria-hidden`**, sonst steht jeder Satz doppelt im DOM.
+  - Zerlegt einen String in Wörter → nur reiner Text. `PageHero` und `SectionHeading` prüfen deshalb
+    `typeof intro === "string"` und fallen sonst auf ein gewöhnliches `<p>` zurück.
+  - **Nicht** im Ansprechpartner-Pop-up: dort ist der Seiten-Scroll gesperrt, der Fortschritt käme nie
+    über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
+  - Der `quote`-Block der Blog-Artikel (die Tipp-Karte) nutzt denselben Effekt in
+    `text-brand-yellow` statt `text-white/90`.
 - **Icons:** lucide-Icons sind **statisch** (keine Animation). Gelb (`text-brand-yellow` = `#f5b301`,
   11,33:1 auf Schwarz) sind **nur die Inhalts-Icons**, per Klasse am Icon gesetzt:
   Philosophie-Karten, Leistungs-Blöcke, Team-Karten und Kontaktdaten – dazu die Bewertungssterne, die
@@ -262,6 +280,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 home-hero · page-hero · blur-text · motion-primitives (Reveal, StaggerGroup, StaggerItem)
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
+ui/magic-text (MagicText, Fließtext leuchtet beim Scrollen wortweise auf)
 ansprechpartner-karten (Kontakt-Personen + Pop-up)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
 ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)

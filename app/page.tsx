@@ -4,6 +4,7 @@ import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitive
 import { Section, SectionHeading } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { TextReveal } from "@/components/ui/cascade-text";
+import { MagicText } from "@/components/ui/magic-text";
 import { Testimonials } from "@/components/testimonials";
 import { stats } from "@/lib/content";
 
@@ -53,16 +54,8 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading title="Unsere Philosophie" />
             <div className="mt-6 space-y-4 font-body text-base font-light leading-relaxed text-white/70">
-              <p>
-                Für uns ist gutes Handwerk mehr als Technik – es ist Verantwortung. Was wir planen und installieren,
-                schützt Menschen, Werte und Zuhause und muss über viele Jahre zuverlässig funktionieren. Deshalb arbeiten
-                wir lieber einmal gründlich als zweimal schnell.
-              </p>
-              <p>
-                Wir glauben an ehrliche Beratung auf Augenhöhe, an saubere und präzise Ausführung und an Lösungen mit
-                Weitblick. Meisterqualität heißt für uns, Sorgfalt nicht als Aufwand zu sehen, sondern als
-                Selbstverständlichkeit – bei jedem Kunden, ob privat, gewerblich oder öffentlich.
-              </p>
+              <MagicText text="Für uns ist gutes Handwerk mehr als Technik – es ist Verantwortung. Was wir planen und installieren, schützt Menschen, Werte und Zuhause und muss über viele Jahre zuverlässig funktionieren. Deshalb arbeiten wir lieber einmal gründlich als zweimal schnell." />
+              <MagicText text="Wir glauben an ehrliche Beratung auf Augenhöhe, an saubere und präzise Ausführung und an Lösungen mit Weitblick. Meisterqualität heißt für uns, Sorgfalt nicht als Aufwand zu sehen, sondern als Selbstverständlichkeit – bei jedem Kunden, ob privat, gewerblich oder öffentlich." />
             </div>
             <div className="mt-8">
               <LiquidMetalButton label="Alle Leistungen ansehen" href="/leistungen" />
@@ -76,7 +69,10 @@ export default function HomePage() {
                   <h.icon strokeWidth={1.5} className="h-8 w-8 shrink-0 text-brand-yellow" aria-hidden />
                   <div>
                     <h3 className="font-heading text-xl italic tracking-[-0.5px] text-brand-gradient">{h.title}</h3>
-                    <p className="mt-1.5 font-body text-sm font-light leading-relaxed text-white/65">{h.text}</p>
+                    <MagicText
+                      text={h.text}
+                      className="mt-1.5 font-body text-sm font-light leading-relaxed text-white/65"
+                    />
                   </div>
                 </div>
               </StaggerItem>
@@ -94,7 +90,7 @@ export default function HomePage() {
                 <div className="font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl">
                   <TextReveal as="span" text={s.value} fontSize="inherit" hoverColor="#f5b301" />
                 </div>
-                <div className="mt-3 font-body text-sm font-light text-white/70">{s.label}</div>
+                <MagicText as="div" text={s.label} className="mt-3 font-body text-sm font-light text-white/70" />
               </div>
             </StaggerItem>
           ))}

@@ -4,6 +4,7 @@ import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
+import { MagicText } from "@/components/ui/magic-text";
 import { AnsprechpartnerKarten } from "@/components/ansprechpartner-karten";
 import { ansprechpartner, fachbereiche } from "@/lib/content";
 
@@ -49,8 +50,11 @@ export default function KontaktPage() {
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
                 <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{f.name}</h3>
-                <p className="font-body text-sm font-normal text-white/70">{f.role}</p>
-                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">{f.bio}</p>
+                <MagicText text={f.role} className="font-body text-sm font-normal text-white/70" />
+                <MagicText
+                  text={f.bio}
+                  className="mt-3 font-body text-sm font-light leading-relaxed text-white/65"
+                />
               </div>
             </StaggerItem>
           ))}
@@ -64,10 +68,10 @@ export default function KontaktPage() {
           <div data-area="kontakt-infos" className="lg:col-span-2">
             <Reveal>
               <h2 className="font-heading text-3xl italic tracking-[-1px] text-brand-gradient">Direkt erreichbar</h2>
-              <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/65">
-                Wir legen Wert auf direkte, unkomplizierte Kommunikation. Rufen Sie uns an oder schreiben Sie uns – wir
-                beraten Sie gerne persönlich.
-              </p>
+              <MagicText
+                text="Wir legen Wert auf direkte, unkomplizierte Kommunikation. Rufen Sie uns an oder schreiben Sie uns – wir beraten Sie gerne persönlich."
+                className="mt-3 font-body text-sm font-light leading-relaxed text-white/65"
+              />
             </Reveal>
             <StaggerGroup className="mt-7 space-y-3">
               {contactInfo.map((c) => (

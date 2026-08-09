@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import { Section } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
+import { MagicText } from "@/components/ui/magic-text";
 import { blogPosts, type BlogBlock } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 function Block({ block }: { block: BlogBlock }) {
   switch (block.type) {
     case "p":
-      return <p className="font-body text-base font-light leading-relaxed text-white/75">{block.text}</p>;
+      return <MagicText text={block.text} className="font-body text-base font-light leading-relaxed text-white/75" />;
     case "h":
       return <h2 className="pt-4 font-heading text-3xl italic tracking-[-1px] text-brand-gradient">{block.text}</h2>;
     case "list":
@@ -53,9 +54,13 @@ function Block({ block }: { block: BlogBlock }) {
           <figcaption className="font-body text-xs font-medium uppercase tracking-[0.16em] text-white/60">
             {block.label}
           </figcaption>
-          <blockquote className="mt-3 font-heading text-2xl italic leading-snug text-white/90">
-            „{block.text}"
-          </blockquote>
+          {/* Der Tipp leuchtet im Marken-Gelb auf statt in Weiß – er ist die
+              Kernaussage des Artikels und soll sich davon abheben. */}
+          <MagicText
+            as="blockquote"
+            text={`„${block.text}"`}
+            className="mt-3 font-heading text-2xl italic leading-snug text-brand-yellow"
+          />
         </figure>
       );
     case "table":
@@ -149,9 +154,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <div data-area="blogartikel-cta" className="glass-strong flex flex-col items-start justify-between gap-5 rounded-3xl p-7 sm:flex-row sm:items-center">
             <div>
               <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">Fragen zu diesem Thema?</h3>
-              <p className="mt-1 font-body text-sm font-light text-white/65">
-                Unser Meisterteam berät Sie gerne persönlich.
-              </p>
+              <MagicText
+                text="Unser Meisterteam berät Sie gerne persönlich."
+                className="mt-1 font-body text-sm font-light text-white/65"
+              />
             </div>
             <LiquidMetalButton label="Kontakt aufnehmen" href="/kontakt" />
           </div>

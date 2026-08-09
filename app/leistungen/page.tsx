@@ -3,6 +3,7 @@ import { Check, Cpu, Sun, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/motion-primitives";
 import { Eyebrow, Section } from "@/components/ui";
+import { MagicText } from "@/components/ui/magic-text";
 import { services } from "@/lib/content";
 import { asset } from "@/lib/base-path";
 
@@ -60,7 +61,10 @@ export default function LeistungenPage() {
                   <Eyebrow>{s.tag}</Eyebrow>
                 </div>
                 <h2 className="mt-5 font-heading text-4xl italic tracking-[-1px] text-brand-gradient md:text-5xl">{s.title}</h2>
-                <p className="mt-4 font-body text-base font-light leading-relaxed text-white/70">{s.description}</p>
+                <MagicText
+                  text={s.description}
+                  className="mt-4 font-body text-base font-light leading-relaxed text-white/70"
+                />
                 <ul className="mt-7 grid gap-3 sm:grid-cols-2">
                   {s.features.map((f) => (
                     <li key={f} className="flex items-start gap-3 font-body text-sm font-light text-white/80">

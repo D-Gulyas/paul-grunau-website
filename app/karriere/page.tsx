@@ -4,6 +4,7 @@ import { PageHero } from "@/components/page-hero";
 import { ApplicationForm } from "@/components/application-form";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
+import { MagicText } from "@/components/ui/magic-text";
 
 export const metadata: Metadata = {
   title: "Karriere",
@@ -51,7 +52,10 @@ export default function KarrierePage() {
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
                 <b.icon strokeWidth={1.5} className="h-8 w-8 text-brand-yellow" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{b.title}</h3>
-                <p className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65">{b.text}</p>
+                <MagicText
+                  text={b.text}
+                  className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65"
+                />
               </div>
             </StaggerItem>
           ))}
