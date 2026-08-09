@@ -10,7 +10,14 @@
  * über Opacity/Blur/Position laufen, nicht über Farben.)
  *
  * Navbar und Footer liegen im Layout und bleiben davon unberührt.
+ *
+ * Zusätzlich sitzt hier `MagicTextSequenz`: Sie sammelt alle `MagicText` der
+ * aktuellen Seite ein und reiht deren Scrollfenster aneinander, damit die
+ * Absätze nacheinander aufleuchten statt alle gleichzeitig. Das gehört genau
+ * hierher – bei jeder Navigation startet die Sammlung dadurch frisch.
  */
+import { MagicTextSequenz } from "@/components/ui/magic-text";
+
 export default function Template({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <MagicTextSequenz>{children}</MagicTextSequenz>;
 }

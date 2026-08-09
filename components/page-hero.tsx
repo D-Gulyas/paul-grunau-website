@@ -14,8 +14,11 @@ export function PageHero({
   intro?: ReactNode;
   area?: string;
 }) {
+  // Der Abstand nach oben ist bewusst groß: Der Intro-Absatz darunter leuchtet über
+  // die ersten Scrollpixel auf, und in dieser Zeit muss die Überschrift noch frei
+  // unter der Navbar stehen – sonst liest der User sie nie fertig.
   return (
-    <section data-area={area} className="relative overflow-hidden px-5 pb-8 pt-36 md:px-8 md:pt-44">
+    <section data-area={area} className="relative overflow-hidden px-5 pb-8 pt-60 md:px-8 md:pt-64">
       {/* dezenter Markenglow im Kopfbereich */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[60%] opacity-80 brand-aura"

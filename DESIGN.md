@@ -107,7 +107,11 @@ position: relative; overflow: hidden;
 - **`BlurText`** (`blur-text.tsx`): Wort-für-Wort-Blur-In der Headlines (Stagger pro Wort).
 - **`Reveal` / `StaggerGroup` / `StaggerItem`** (`motion-primitives.tsx`): Scroll-Reveal & Staffelung
   (`whileInView`, `once`).
-- **`app/template.tsx`** (Passthrough): erzwingt bei **jeder** Navigation einen frischen Mount des
+- **`PageHero`-Kopfabstand `pt-60 md:pt-64`** (vorher `pt-36 md:pt-44`): Der Intro-Absatz leuchtet über
+  die ersten ~180 px Scroll auf. Mit dem alten Abstand lag die Überschrift zu diesem Zeitpunkt bereits
+  hinter der Navbar und ließ sich nie fertig lesen. Gemessen steht sie jetzt bei 125–127 px, die Navbar
+  endet bei 72–74 px. **Nicht verkleinern**, ohne `SICHTBARER_WEG` in `ui/magic-text.tsx` mitzukürzen.
+- **`app/template.tsx`**: erzwingt bei **jeder** Navigation einen frischen Mount des
   Seiteninhalts. Sonst verwendet React auf strukturgleichen Unterseiten (alle `PageHero` + `Section`)
   die `motion`-Instanzen wieder → Einblendungen laufen uneinheitlich. Dadurch erscheinen die Elemente
   auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
@@ -138,6 +142,14 @@ position: relative; overflow: hidden;
   - **Vier Wörter gehen gleichzeitig über** (`WELLE`), verteilt über `n + WELLE − 1` Schritte. Die
     Vorlage gibt jedem Wort exakt `[i/n, (i+1)/n]` – immer nur eins in Bewegung, das schaltet sichtbar
     durch statt zu fließen.
+  - **`MagicTextSequenz`** (in `app/template.tsx`) sammelt alle `MagicText` der Seite ein und reiht
+    ihre Fenster aneinander, damit die Absätze **nacheinander** aufleuchten. Absätze, deren senkrechte
+    Ausdehnung sich überlappt (Kartenraster), bilden eine Reihe und leuchten gemeinsam auf; Reihen
+    laufen nacheinander. Beim Anketten wird die Reihe **gestaucht**, nicht verschoben
+    (`ende = max(natürlichesEnde, start + 0,1 vh)`) – sonst summiert sich auf dicht gestapeltem Text
+    ein Rückstand auf und Absätze stehen noch dunkel da, wenn sie längst vorbeigescrollt sind.
+  - Ein Absatz, der beim Laden schon im Bild steht, bekommt sein Fenster auf `scrollY = 0` geschoben
+    **und auf 0,2 vh gekürzt** – er liegt dem User ja bereits vor Augen.
   - **`revealColor`**: färbt **nur** die animierte Kopie; die ruhende behält die geerbte Farbe. Ein
     farbig aufleuchtender Absatz startet dadurch wie normaler Fließtext. Genutzt vom `quote`-Block der
     Blog-Artikel (Tipp-Karte): `text-white/90` + `revealColor="#f5b301"`.

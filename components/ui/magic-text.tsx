@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
 /**
@@ -9,7 +9,11 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
  *
  * Jedes Wort liegt doppelt übereinander: eine ruhende Geister-Kopie mit
  * geringer Deckkraft und darüber eine, deren Opacity am Scrollfortschritt
- * hängt. Beim Scrollen leuchtet der Absatz als weiche Welle auf.
+ * hängt. Beim Scrollen läuft eine weiche Welle durch den Absatz.
+ *
+ * Die Absätze einer Seite leuchten **nacheinander** auf, nicht gleichzeitig:
+ * `MagicTextSequenz` (liegt in `app/template.tsx`) sammelt alle Absätze ein,
+ * sortiert sie nach ihrer Position und reiht ihre Scrollfenster aneinander.
  *
  * Typografie (Schriftart, Größe, Gewicht, Farbe, Zeilenhöhe) wird bewusst vom
  * umgebenden Element geerbt – die Komponente bringt nur den Effekt mit, nicht
@@ -19,6 +23,164 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
  * Bewegung nur über Deckkraft – kein `filter`, damit das `backdrop-filter` der
  * Glasflächen nicht bricht (siehe DESIGN.md).
  */
+
+/**
+ * Wie viele Wörter gleichzeitig übergehen.
+ *
+ * Bei 1 schaltet immer nur ein Wort und der Absatz wirkt abgehackt. Mit vier
+ * überlappenden Wörtern entsteht eine weiche Welle, die durch den Satz läuft.
+ */
+const WELLE = 4;
+
+/**
+ * Das natürliche Scrollfenster eines Absatzes – als Anteil der Fensterhöhe,
+ * gemessen an seiner Position.
+ *
+ * Der Anfang zählt ab der Oberkante, das Ende ab der **Unterkante**: dadurch
+ * braucht ein langer Absatz mehr Weg als ein kurzer, und die Welle wandert
+ * ungefähr im Lesetempo durch den Text.
+ */
+const START_BEI = 0.85;
+const ENDE_BEI = 0.55;
+/** Mindestweg, damit einzeilige Absätze nicht schlagartig umschlagen. */
+const MINDESTWEG = 0.3;
+/**
+ * Weg für Absätze, die beim Laden schon im Bild stehen. Kurz gehalten: der User
+ * hat sie ohnehin vor sich, und die Überschrift darüber soll währenddessen noch
+ * frei unter der Navbar stehen.
+ */
+const SICHTBARER_WEG = 0.2;
+/** Notreserve, falls die Kette einen Absatz überholt hat. */
+const KETTEN_WEG = 0.1;
+/** Ab wie viel senkrechter Überlappung (px) zwei Absätze als eine Reihe gelten. */
+const REIHEN_TOLERANZ = 20;
+
+type Mass = { top: number; bottom: number };
+type Fenster = [number, number];
+
+/**
+ * Rechnet aus den Positionen aller Absätze ihre Scrollfenster aus.
+ *
+ * Zwei Regeln bestimmen das Ergebnis:
+ *
+ * 1. **Nebeneinander ist eine Reihe.** Absätze, deren senkrechte Ausdehnung sich
+ *    überlappt (ein Kartenraster), leuchten gemeinsam auf – sie gehören optisch
+ *    zusammen und würden nacheinander unruhig wirken.
+ * 2. **Reihen laufen nacheinander.** Keine Reihe beginnt, bevor die darüber
+ *    fertig ist. Das Ende bleibt dabei an der natürlichen Position verankert,
+ *    die Reihe wird also gestaucht statt nach hinten geschoben – sonst würde
+ *    sich der Rückstand über eine lange Seite immer weiter aufsummieren und der
+ *    Text noch dunkel dastehen, wenn er längst vorbeigescrollt ist.
+ */
+function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
+  const sortiert = masse
+    .map((m, i) => ({ ...m, i }))
+    .sort((a, b) => a.top - b.top || a.bottom - b.bottom);
+
+  const reihen: { top: number; bottom: number; indizes: number[] }[] = [];
+  for (const eintrag of sortiert) {
+    const letzte = reihen[reihen.length - 1];
+    if (letzte && eintrag.top < letzte.bottom - REIHEN_TOLERANZ) {
+      letzte.top = Math.min(letzte.top, eintrag.top);
+      letzte.bottom = Math.max(letzte.bottom, eintrag.bottom);
+      letzte.indizes.push(eintrag.i);
+    } else {
+      reihen.push({ top: eintrag.top, bottom: eintrag.bottom, indizes: [eintrag.i] });
+    }
+  }
+
+  const fenster: Fenster[] = new Array(masse.length);
+  let vorherEnde = Number.NEGATIVE_INFINITY;
+
+  for (const reihe of reihen) {
+    let start = reihe.top - vh * START_BEI;
+    let ende = reihe.bottom - vh * ENDE_BEI;
+    if (ende - start < vh * MINDESTWEG) ende = start + vh * MINDESTWEG;
+
+    // Steht die Reihe beim Laden schon im Bild, läge ihr Fenster in der
+    // Vergangenheit – sie wäre ohne Zutun des Users bereits aufgeleuchtet.
+    // Deshalb ans obere Seitenende schieben, mit kurzem Weg.
+    if (start < 0) {
+      ende = Math.min(ende - start, vh * SICHTBARER_WEG);
+      start = 0;
+    }
+
+    start = Math.max(start, vorherEnde);
+    ende = Math.max(ende, start + vh * KETTEN_WEG);
+
+    for (const i of reihe.indizes) fenster[i] = [start, ende];
+    vorherEnde = ende;
+  }
+
+  return fenster;
+}
+
+type Eintrag = { el: HTMLElement; setzen: (f: Fenster) => void };
+
+const SequenzContext = createContext<((eintrag: Eintrag) => () => void) | null>(null);
+
+/**
+ * Klammer um den Seiteninhalt: sammelt alle `MagicText` einer Seite ein und
+ * verteilt ihre Scrollfenster, damit sie nacheinander aufleuchten.
+ *
+ * Liegt in `app/template.tsx` – das wird bei jeder Navigation neu gemountet,
+ * die Sammlung startet also pro Seite frisch.
+ */
+export function MagicTextSequenz({ children }: { children: ReactNode }) {
+  const eintraege = useRef<Eintrag[]>([]);
+  const geplant = useRef<number | null>(null);
+
+  const berechnen = useCallback(() => {
+    const liste = eintraege.current;
+    if (!liste.length) return;
+    const masse = liste.map(({ el }) => {
+      const r = el.getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      return { top, bottom: top + r.height };
+    });
+    const fenster = fensterBerechnen(masse, window.innerHeight);
+    liste.forEach((eintrag, i) => eintrag.setzen(fenster[i]));
+  }, []);
+
+  // Alle Absätze melden sich einzeln an; gerechnet wird gebündelt im nächsten
+  // Frame, sonst liefe die Verteilung bei jedem einzelnen Mount neu.
+  const planen = useCallback(() => {
+    if (geplant.current !== null) return;
+    geplant.current = requestAnimationFrame(() => {
+      geplant.current = null;
+      berechnen();
+    });
+  }, [berechnen]);
+
+  const anmelden = useCallback(
+    (eintrag: Eintrag) => {
+      eintraege.current.push(eintrag);
+      planen();
+      return () => {
+        eintraege.current = eintraege.current.filter((e) => e !== eintrag);
+        planen();
+      };
+    },
+    [planen],
+  );
+
+  useEffect(() => {
+    const beobachter = new ResizeObserver(planen);
+    beobachter.observe(document.body);
+    window.addEventListener("resize", planen);
+    // `Reveal` schiebt die Absätze beim Einblenden noch um 20 px – danach einmal
+    // nachmessen, sonst sitzt jedes Fenster leicht daneben.
+    const nachmessen = window.setTimeout(planen, 900);
+    return () => {
+      beobachter.disconnect();
+      window.removeEventListener("resize", planen);
+      window.clearTimeout(nachmessen);
+      if (geplant.current !== null) cancelAnimationFrame(geplant.current);
+    };
+  }, [planen]);
+
+  return <SequenzContext.Provider value={anmelden}>{children}</SequenzContext.Provider>;
+}
 
 export interface MagicTextProps {
   text: string;
@@ -35,27 +197,6 @@ export interface MagicTextProps {
   /** Deckkraft des noch nicht aufgeleuchteten Textes. */
   ghostOpacity?: number;
 }
-
-/**
- * Wie viele Wörter gleichzeitig übergehen.
- *
- * Bei 1 schaltet immer nur ein Wort und der Absatz wirkt abgehackt. Mit vier
- * überlappenden Wörtern entsteht eine weiche Welle, die durch den Satz läuft.
- */
-const WELLE = 4;
-
-/**
- * Das Scrollfenster, über das ein Absatz aufleuchtet – als Anteil der
- * Fensterhöhe, gemessen an der Absatzposition.
- *
- * Der Anfang zählt ab der Oberkante, das Ende ab der **Unterkante**: dadurch
- * braucht ein langer Absatz mehr Weg als ein kurzer, und die Welle wandert
- * ungefähr im Lesetempo durch den Text.
- */
-const START_BEI = 0.85;
-const ENDE_BEI = 0.55;
-/** Mindestweg, damit einzeilige Texte nicht schlagartig umschlagen. */
-const MINDESTWEG = 0.3;
 
 function Word({
   children,
@@ -96,6 +237,7 @@ export function MagicText({
   const container = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
+  const anmelden = useContext(SequenzContext);
 
   /**
    * Das Scrollfenster in Pixeln, in dem dieser Absatz aufleuchtet.
@@ -103,45 +245,30 @@ export function MagicText({
    * Bis zur ersten Messung liegt das Ende unerreichbar weit unten – der Absatz
    * startet dadurch garantiert ruhend statt halb aufgeleuchtet.
    */
-  const [fenster, setFenster] = useState<[number, number]>([0, 1e6]);
+  const [fenster, setFenster] = useState<Fenster>([0, 1e6]);
 
   useEffect(() => {
     const el = container.current;
     if (!el) return;
 
+    // Im Verbund bestimmt die Sequenz das Fenster.
+    if (anmelden) return anmelden({ el, setzen: setFenster });
+
+    // Ohne Sequenz (Komponente allein genutzt) misst sich der Absatz selbst.
     const messen = () => {
-      const rect = el.getBoundingClientRect();
-      const oben = rect.top + window.scrollY;
-      const unten = oben + rect.height;
-      const vh = window.innerHeight;
-
-      let start = oben - vh * START_BEI;
-      let ende = unten - vh * ENDE_BEI;
-      if (ende - start < vh * MINDESTWEG) ende = start + vh * MINDESTWEG;
-
-      // Steht der Absatz beim Laden schon im Bild, läge sein Fenster in der
-      // Vergangenheit – er wäre ohne Zutun des Users bereits aufgeleuchtet.
-      // Deshalb ans obere Seitenende schieben; die Länge bleibt gleich.
-      if (start < 0) {
-        ende -= start;
-        start = 0;
-      }
-
-      setFenster([start, ende]);
+      const r = el.getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      setFenster(fensterBerechnen([{ top, bottom: top + r.height }], window.innerHeight)[0]);
     };
-
     messen();
-    // Fängt auch nachgeladene Schriften und Bilder ab, die den Absatz
-    // verschieben, nachdem er zum ersten Mal gemessen wurde.
     const beobachter = new ResizeObserver(messen);
     beobachter.observe(el);
-    beobachter.observe(document.body);
     window.addEventListener("resize", messen);
     return () => {
       beobachter.disconnect();
       window.removeEventListener("resize", messen);
     };
-  }, [text]);
+  }, [anmelden, text]);
 
   const fortschritt = useTransform(scrollY, fenster, [0, 1]);
 
