@@ -107,6 +107,11 @@ position: relative; overflow: hidden;
 - **`BlurText`** (`blur-text.tsx`): Wort-für-Wort-Blur-In der Headlines (Stagger pro Wort).
 - **`Reveal` / `StaggerGroup` / `StaggerItem`** (`motion-primitives.tsx`): Scroll-Reveal & Staffelung
   (`whileInView`, `once`).
+- **Kennzahlen (`home-kennzahlen`)**: vier Karten, die einzeln nacheinander in `#f5b301` aufleuchten
+  (`gruppe` je Karte, `festeLaenge={0.12}`). **Nur die Zahl ist fett**, die Beschriftung bleibt im
+  Grundgewicht. Abstand nach oben `pt-28 md:pt-36` (vorher `py-10 md:py-12`) – die vier Stufen
+  brauchen zusammen rund 400 px Scrollweg, und die Karten müssen dabei frei unter der Navbar stehen
+  bleiben (gemessen 312 px beim Abschluss der letzten Karte).
 - **`PageHero`-Kopfabstand `pt-60 md:pt-64`** (vorher `pt-36 md:pt-44`): Der Intro-Absatz leuchtet über
   die ersten ~180 px Scroll auf. Mit dem alten Abstand lag die Überschrift zu diesem Zeitpunkt bereits
   hinter der Navbar und ließ sich nie fertig lesen. Gemessen steht sie jetzt bei 125–127 px, die Navbar
@@ -116,9 +121,9 @@ position: relative; overflow: hidden;
   die `motion`-Instanzen wieder → Einblendungen laufen uneinheitlich. Dadurch erscheinen die Elemente
   auf allen Unterseiten bei jedem Aufruf sauber neu – wie auf der Startseite. (Navbar/Footer im Layout
   bleiben unberührt; Scroll-Reveal unterhalb des Folds bleibt erhalten.)
-- **`ui/cascade-text` (`TextReveal`)**: Zeichen-Kaskade **beim Hover** – jedes Zeichen rollt versetzt
-  nach oben (Zweitzeichen per `text-shadow`), gleichzeitig Farbwechsel auf `hoverColor`.
-  Genutzt für die Kennzahlen (`hoverColor="#f5b301"`). Ein früheres Count-up gibt es **nicht** mehr.
+- **`ui/cascade-text` (`TextReveal`) wurde entfernt** (09.08.2026). Die Zeichen-Kaskade beim Hover lag
+  nur noch auf den Kennzahlen; die haben jetzt **keinen Hover-Effekt** mehr, sondern leuchten beim
+  Scrollen auf. Ein noch früheres Count-up gab es schon davor nicht mehr. **Nicht wieder einführen.**
 - **`ui/magic-text` (`MagicText`)**: Fließtext leuchtet **beim Scrollen** wortweise auf – jedes Wort
   liegt doppelt übereinander (ruhende Kopie bei 20 % Deckkraft, darüber eine, deren `opacity` am
   Scrollfortschritt hängt). Vorlage: `Magic-Text.md` im Projektordner.
@@ -145,7 +150,15 @@ position: relative; overflow: hidden;
   - **`MagicTextSequenz`** (in `app/template.tsx`) sammelt alle `MagicText` der Seite ein und reiht
     ihre Fenster aneinander, damit die Absätze **nacheinander** aufleuchten. Absätze, deren senkrechte
     Ausdehnung sich überlappt (Kartenraster), bilden eine Reihe und leuchten gemeinsam auf; Reihen
-    laufen nacheinander. Beim Anketten wird die Reihe **gestaucht**, nicht verschoben
+    laufen nacheinander.
+  - **`gruppe`** sticht das: gleiche Gruppennamen bilden **eine** Stufe, die mit keiner anderen
+    verschmilzt – so kommen nebeneinanderliegende Karten einzeln nacheinander an die Reihe
+    (Kennzahlen: eine Gruppe je Karte, Zahl und Beschriftung gemeinsam). Dazu **`festeLaenge`** als
+    Anteil der Fensterhöhe, damit mehrere kurze Stufen zusammen ins Sichtfeld passen.
+  - **Die Reihenfolge kommt aus der Geometrie**: Reihen werden in Bänder auf gleicher Höhe gebündelt
+    und darin von **links nach rechts** geordnet. Weder die Anmeldereihenfolge (steht nach einem
+    Neu-Anmelden nicht mehr fest) noch ein reines Sortieren nach Oberkante (senkrecht zentrierte
+    Karten setzen ihren Text je nach Zeilenumbruch unterschiedlich hoch an) tragen hier. Beim Anketten wird die Reihe **gestaucht**, nicht verschoben
     (`ende = max(natürlichesEnde, start + 0,1 vh)`) – sonst summiert sich auf dicht gestapeltem Text
     ein Rückstand auf und Absätze stehen noch dunkel da, wenn sie längst vorbeigescrollt sind.
   - Ein Absatz, der beim Laden schon im Bild steht, bekommt sein Fenster auf `scrollY = 0` geschoben
@@ -323,7 +336,7 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 ```
 home-hero · page-hero · blur-text · motion-primitives (Reveal, StaggerGroup, StaggerItem)
 site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
-testimonials (Spalten-Marquee) · ui/cascade-text (TextReveal, Kennzahlen-Hover)
+testimonials (Spalten-Marquee)
 ui/magic-text (MagicText, Fließtext leuchtet beim Scrollen wortweise auf)
 ui/pfeil (Pfeil, ArrowUpRight mit Hover-Aufleuchten – überall statt eigener Icons)
 ansprechpartner-karten (Kontakt-Personen + Pop-up)

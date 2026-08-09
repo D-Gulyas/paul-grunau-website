@@ -92,7 +92,7 @@ const LISTEN_VERSATZ = 14;
  */
 const LISTEN_SCHRITT = 0.05;
 
-type Mass = { top: number; bottom: number; laenge?: number };
+type Mass = { top: number; bottom: number; left: number; laenge?: number; gruppe?: string };
 type Fenster = [number, number];
 
 /**
@@ -108,35 +108,108 @@ type Fenster = [number, number];
  *    die Reihe wird also gestaucht statt nach hinten geschoben – sonst würde
  *    sich der Rückstand über eine lange Seite immer weiter aufsummieren und der
  *    Text noch dunkel dastehen, wenn er längst vorbeigescrollt ist.
+ *
+ * Eine ausdrückliche `gruppe` sticht Regel 1: Alle Einträge mit demselben
+ * Gruppennamen bilden **eine** Stufe, und diese Stufe verschmilzt mit nichts
+ * anderem. Damit lassen sich nebeneinanderliegende Karten einzeln nacheinander
+ * ansteuern (Kennzahlen), statt gemeinsam aufzuleuchten.
  */
+type Reihe = {
+  top: number;
+  bottom: number;
+  left: number;
+  laengen: (number | undefined)[];
+  indizes: number[];
+  gruppe?: string;
+};
+
 function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
+  // Gleiche Oberkante (Kartenraster) → die linke Kante entscheidet, also links
+  // vor rechts. Bewusst **nicht** die Anmeldereihenfolge: Die Absätze melden
+  // sich beim Mounten an, und nach einem Neu-Anmelden (Größenänderung, neue
+  // Seite) steht ihre Reihenfolge in der Liste nicht mehr fest.
   const sortiert = masse
     .map((m, i) => ({ ...m, i }))
-    .sort((a, b) => a.top - b.top || a.bottom - b.bottom);
+    .sort((a, b) => a.top - b.top || a.left - b.left || a.i - b.i);
 
-  const reihen: { top: number; bottom: number; laengen: (number | undefined)[]; indizes: number[] }[] =
-    [];
+  const reihen: Reihe[] = [];
+  const nachGruppe = new Map<string, Reihe>();
+
   for (const eintrag of sortiert) {
+    if (eintrag.gruppe != null) {
+      const vorhanden = nachGruppe.get(eintrag.gruppe);
+      if (vorhanden) {
+        vorhanden.top = Math.min(vorhanden.top, eintrag.top);
+        vorhanden.bottom = Math.max(vorhanden.bottom, eintrag.bottom);
+        vorhanden.left = Math.min(vorhanden.left, eintrag.left);
+        vorhanden.laengen.push(eintrag.laenge);
+        vorhanden.indizes.push(eintrag.i);
+      } else {
+        const neu: Reihe = {
+          top: eintrag.top,
+          bottom: eintrag.bottom,
+          left: eintrag.left,
+          laengen: [eintrag.laenge],
+          indizes: [eintrag.i],
+          gruppe: eintrag.gruppe,
+        };
+        nachGruppe.set(eintrag.gruppe, neu);
+        reihen.push(neu);
+      }
+      continue;
+    }
+
     const letzte = reihen[reihen.length - 1];
-    if (letzte && eintrag.top < letzte.bottom - REIHEN_TOLERANZ) {
+    // Eine ausdrückliche Gruppe nimmt keine fremden Einträge auf.
+    if (letzte && letzte.gruppe == null && eintrag.top < letzte.bottom - REIHEN_TOLERANZ) {
       letzte.top = Math.min(letzte.top, eintrag.top);
       letzte.bottom = Math.max(letzte.bottom, eintrag.bottom);
+      letzte.left = Math.min(letzte.left, eintrag.left);
       letzte.laengen.push(eintrag.laenge);
       letzte.indizes.push(eintrag.i);
     } else {
       reihen.push({
         top: eintrag.top,
         bottom: eintrag.bottom,
+        left: eintrag.left,
         laengen: [eintrag.laenge],
         indizes: [eintrag.i],
       });
     }
   }
 
+  // Reihen in Lesereihenfolge bringen: erst in Bänder auf gleicher Höhe, darin
+  // von links nach rechts.
+  //
+  // Ein reines Sortieren nach Oberkante genügt nicht: Nebeneinanderliegende
+  // Karten zentrieren ihren Inhalt senkrecht, und wo die Beschriftung zweizeilig
+  // umbricht, sitzt die Zahl darüber höher. Danach sortiert liefe die dritte
+  // Karte vor der ersten. Die Anmeldereihenfolge taugt als Ersatz ebenfalls
+  // nicht – sie steht nach einem Neu-Anmelden nicht mehr fest.
+  reihen.sort((a, b) => a.top - b.top);
+
+  const geordnet: Reihe[] = [];
+  let band: Reihe[] = [];
+  let bandUnten = Number.NEGATIVE_INFINITY;
+  const bandAbschliessen = () => {
+    if (band.length) geordnet.push(...band.sort((a, b) => a.left - b.left));
+  };
+  for (const reihe of reihen) {
+    if (band.length && reihe.top < bandUnten - REIHEN_TOLERANZ) {
+      band.push(reihe);
+      bandUnten = Math.max(bandUnten, reihe.bottom);
+    } else {
+      bandAbschliessen();
+      band = [reihe];
+      bandUnten = reihe.bottom;
+    }
+  }
+  bandAbschliessen();
+
   const fenster: Fenster[] = new Array(masse.length);
   let vorherEnde = Number.NEGATIVE_INFINITY;
 
-  for (const reihe of reihen) {
+  for (const reihe of geordnet) {
     // Nur wenn jedes Mitglied der Reihe eine feste Länge mitbringt (Listen),
     // läuft die Reihe nach fester Länge statt nach ihrer Ausdehnung.
     const festeLaenge = reihe.laengen.every((l) => l != null)
@@ -178,6 +251,8 @@ type Eintrag = {
   setzen: (f: Fenster) => void;
   /** Feste Fensterlänge statt einer aus der Ausdehnung abgeleiteten (Listen). */
   laenge?: (vh: number) => number;
+  /** Name einer ausdrücklichen Stufe – gleiche Namen laufen gemeinsam. */
+  gruppe?: string;
 };
 
 const SequenzContext = createContext<((eintrag: Eintrag) => () => void) | null>(null);
@@ -197,10 +272,10 @@ export function MagicTextSequenz({ children }: { children: ReactNode }) {
     const liste = eintraege.current;
     if (!liste.length) return;
     const vh = window.innerHeight;
-    const masse = liste.map(({ el, laenge }) => {
+    const masse = liste.map(({ el, laenge, gruppe }) => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY;
-      return { top, bottom: top + r.height, laenge: laenge?.(vh) };
+      return { top, bottom: top + r.height, left: r.left, laenge: laenge?.(vh), gruppe };
     });
     const fenster = fensterBerechnen(masse, vh);
     liste.forEach((eintrag, i) => eintrag.setzen(fenster[i]));
@@ -257,6 +332,7 @@ function useSequenzFortschritt(
   container: React.RefObject<HTMLElement | null>,
   schluessel: unknown,
   laenge?: (vh: number) => number,
+  gruppe?: string,
 ) {
   const { scrollY } = useScroll();
   const anmelden = useContext(SequenzContext);
@@ -282,14 +358,16 @@ function useSequenzFortschritt(
     const festeLaenge = laengeRef.current ? (vh: number) => laengeRef.current!(vh) : undefined;
 
     // Im Verbund bestimmt die Sequenz das Fenster.
-    if (anmelden) return anmelden({ el, setzen: setFenster, laenge: festeLaenge });
+    if (anmelden) return anmelden({ el, setzen: setFenster, laenge: festeLaenge, gruppe });
 
     // Ohne Sequenz (Komponente allein genutzt) misst sich das Element selbst.
     const messen = () => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY;
       const vh = window.innerHeight;
-      setFenster(fensterBerechnen([{ top, bottom: top + r.height, laenge: festeLaenge?.(vh) }], vh)[0]);
+      setFenster(
+        fensterBerechnen([{ top, bottom: top + r.height, left: r.left, laenge: festeLaenge?.(vh) }], vh)[0],
+      );
     };
     messen();
     const beobachter = new ResizeObserver(messen);
@@ -300,7 +378,7 @@ function useSequenzFortschritt(
       window.removeEventListener("resize", messen);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anmelden, schluessel]);
+  }, [anmelden, schluessel, gruppe]);
 
   return useTransform(scrollY, fenster, [0, 1]);
 }
@@ -319,6 +397,21 @@ export interface MagicTextProps {
   revealColor?: string;
   /** Deckkraft des noch nicht aufgeleuchteten Textes. */
   ghostOpacity?: number;
+  /**
+   * Name einer ausdrücklichen Stufe in der Sequenz.
+   *
+   * Alle `MagicText` mit demselben Namen leuchten gemeinsam auf, und die Stufe
+   * verschmilzt mit keiner anderen. Gedacht für nebeneinanderliegende Karten,
+   * die einzeln nacheinander an die Reihe kommen sollen – ohne das würden sie
+   * als eine Reihe erkannt und gemeinsam aufleuchten.
+   */
+  gruppe?: string;
+  /**
+   * Feste Fensterlänge als Anteil der Fensterhöhe, statt einer aus Höhe und
+   * Position abgeleiteten. Sinnvoll, wenn mehrere kurze Stufen hintereinander
+   * laufen und zusammen in das Sichtfeld passen müssen.
+   */
+  festeLaenge?: number;
 }
 
 function Word({
@@ -356,10 +449,21 @@ export function MagicText({
   className,
   revealColor,
   ghostOpacity = 0.2,
+  gruppe,
+  festeLaenge,
 }: MagicTextProps) {
   const container = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const fortschritt = useSequenzFortschritt(container, text);
+  const laenge = useCallback(
+    (vh: number) => vh * (festeLaenge as number),
+    [festeLaenge],
+  );
+  const fortschritt = useSequenzFortschritt(
+    container,
+    text,
+    festeLaenge != null ? laenge : undefined,
+    gruppe,
+  );
 
   const words = text.split(" ");
 

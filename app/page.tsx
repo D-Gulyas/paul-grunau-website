@@ -3,7 +3,6 @@ import { HomeHero } from "@/components/home-hero";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
-import { TextReveal } from "@/components/ui/cascade-text";
 import { MagicText } from "@/components/ui/magic-text";
 import { Testimonials } from "@/components/testimonials";
 import { stats } from "@/lib/content";
@@ -87,16 +86,33 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Stats – Kennzahlen zählen beim Sichtbarwerden hoch */}
-      <Section area="home-kennzahlen" className="py-10 md:py-12">
+      {/* Kennzahlen – jede Karte leuchtet beim Scrollen einzeln nacheinander im
+          Marken-Gelb auf. Der Abstand nach oben ist bewusst groß: Die vier
+          Stufen brauchen Scrollweg, und die Karten müssen dabei frei unter der
+          Navbar stehen bleiben, sonst laufen sie hinter ihr fertig. */}
+      <Section area="home-kennzahlen" className="pb-10 pt-28 md:pb-12 md:pt-36">
         <StaggerGroup className="grid auto-rows-fr grid-cols-2 gap-4 md:grid-cols-4">
           {stats.map((s) => (
             <StaggerItem key={s.label} className="h-full">
               <div className="glass flex h-full flex-col items-center justify-center rounded-3xl px-6 py-8 text-center">
-                <div className="font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl">
-                  <TextReveal as="span" text={s.value} fontSize="inherit" hoverColor="#f5b301" />
-                </div>
-                <MagicText as="div" text={s.label} className="mt-3 font-body text-sm font-light text-white/70" />
+                {/* Zahl und Beschriftung teilen sich eine Stufe (`gruppe`), damit
+                    die Karte als Ganzes aufleuchtet – nur die Zahl steht fett. */}
+                <MagicText
+                  as="div"
+                  gruppe={`kennzahl-${s.label}`}
+                  festeLaenge={0.12}
+                  text={s.value}
+                  revealColor="#f5b301"
+                  className="font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl"
+                />
+                <MagicText
+                  as="div"
+                  gruppe={`kennzahl-${s.label}`}
+                  festeLaenge={0.12}
+                  text={s.label}
+                  revealColor="#f5b301"
+                  className="mt-3 font-body text-sm font-light text-white/70"
+                />
               </div>
             </StaggerItem>
           ))}
