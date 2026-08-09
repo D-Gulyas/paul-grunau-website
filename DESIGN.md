@@ -179,8 +179,8 @@ position: relative; overflow: hidden;
     Blog-Artikel (Tipp-Karte): `text-white/90` + `revealColor="#f5b301"`.
   - Zerlegt einen String in Wörter → nur reiner Text. `PageHero` und `SectionHeading` prüfen deshalb
     `typeof intro === "string"` und fallen sonst auf ein gewöhnliches `<p>` zurück.
-  - **Nicht** im Ansprechpartner-Pop-up: dort ist der Seiten-Scroll gesperrt, der Fortschritt käme nie
-    über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
+  - **Nicht** in den Pop-ups (Ansprechpartner, Benefits): dort ist der Seiten-Scroll gesperrt, der
+    Fortschritt käme nie über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
 - **`MagicListe` / `MagicListePunkt`** (gleiche Datei): Aufzählungen blenden Punkt für Punkt über
   Deckkraft und 14 px Verschiebung ein (`as="ol"` für nummerierte Listen, zwei Punkte gleichzeitig über
   `LISTEN_WELLE`). Sie hängen in **derselben Kette** wie die Absätze und starten dadurch genau dann,
@@ -367,6 +367,35 @@ Kernstück des Looks. Ein Hintergrund-Video (lokal, `public/videos/hero.mp4`), d
 > Verlauf und Inhalt zusätzlich `[@media(hover:none)]:opacity-100` (Touch zeigt alles
 > dauerhaft) und `group-focus-within:` (Tastaturbedienung). Beides ist geprüft:
 > unter `(hover: none)` steht der Inhalt auf Deckkraft 1 und ohne Versatz.
+- **Blog-Artikel-Kopf** (`blogartikel-kopf`): Titelbild randlos über die volle Breite, **Höhe kommt
+  aus dem Bild** (`<img className="block w-full">` ohne Höhenangabe, kein `object-cover`). Vorher
+  stand es in einer Box mit fester vh-Höhe – auf dem Handy passte das zufällig, auf dem Desktop war
+  die Box 2,56:1 gegen ein 3:2-Bild und rund 40 % des Motivs fielen weg. Geprüft: gerendertes
+  Seitenverhältnis = natürliches (1,5) auf 375, 768 und 1440 px.
+  - **`object-contain` wäre der naheliegende Weg und ist bewusst nicht genommen** – es gäbe
+    schwarze Balken links und rechts. Über die Bildhöhe zu gehen zeigt das Motiv vollständig
+    **und** randlos.
+  - Der `<header>` trägt **kein `overflow-hidden`** mehr; es stutzte das Bild sonst wieder auf
+    Texthöhe. Der frühere `pt-28` am Header sitzt jetzt an der Textspalte, sonst begänne das Bild
+    erst unterhalb der Navbar.
+  - **Gestapelt wird erst ab `md`** (`md:grid` + `md:col-start-1 md:row-start-1` an beiden Kindern,
+    Kopfhöhe = die größere von Bild und Text). Auf Handybreite ist ein 3:2-Bild nur rund 250 px
+    hoch; der Text läge dann genau auf der Unterkante, wo der schwarze Verlauf mitten im Übergang
+    ist – der Zurück-Link war dort kaum zu lesen. Auf dem Handy steht der Text deshalb im Fluss
+    **unter** dem Bild.
+  - **Zwei Verläufe statt einem:** oben ein Scrim für Titel, Zurück-Link und Navbar
+    (`from-ink/75 via-ink/30 via-40% to-transparent to-70%`), unten der weiche schwarze Rand
+    (`from-ink via-ink/65 via-20% to-transparent to-50%`), damit das Bild ohne sichtbare Kante in
+    die schwarze Seite ausläuft. Der frühere einzelne Verlauf lag mit `via-ink/85` über der ganzen
+    Höhe – bei einem vollständig gezeigten Bild wäre davon nur der obere Rand zu sehen gewesen.
+- **Karriere-Infoblöcke** (`karriere-infobloecke`): vier Glaskarten, Raster `sm:grid-cols-2
+  lg:grid-cols-4`. Bei `md:grid-cols-3` (bis dahin drei Karten) wäre die vierte allein in einer
+  zweiten Reihe gelandet.
+  - Die vierte ist **`benefits-karte.tsx`** (`data-area="karriere-benefits"`) – die einzige mit
+    Zustand und darum die einzige Client-Insel im Raster; sie sitzt in einem `StaggerItem` und
+    fliegt mit den anderen ein. Optik identisch zu den Nachbarn, dazu „Mehr erfahren" + `Pfeil`
+    wie auf den Ansprechpartner-Karten. `mt-auto` hält die Zeile am unteren Kartenrand, wenn das
+    Raster die Höhen angleicht.
 - **Footer** (`site-footer.tsx`): enthält **`footer-beam.tsx`** – bewegter WebGL-Lichtstrahl (three.js
   Fragment-Shader, „Chrome look" mit minimaler RGB-Aufspaltung; läuft nur im Viewport,
   reduced-motion-fest). Eingebunden über **`footer-beam-lazy.tsx`**: three.js (~460 kB) wird erst
@@ -383,7 +412,8 @@ site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee)
 ui/magic-text (MagicText, Fließtext leuchtet beim Scrollen wortweise auf)
 ui/pfeil (Pfeil, ArrowUpRight mit Hover-Aufleuchten – überall statt eigener Icons)
-ansprechpartner-karten (Kontakt-Personen + Pop-up)
+ansprechpartner-karten (Kontakt-Personen) · benefits-karte (Karriere) – beide über
+ui/glas-dialog (Pop-up-Hülle: Overlay, Panel, Escape, Scroll-Sperre, Portal an document.body)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)
 ui/liquid-metal-button (Shader-Button) · ui/logo-loop (Hersteller-Schleife, .jsx + .css + .d.ts)
 ui/blog-card (Artikelkarte – NUR im Blog) · blog-gallery (Galerie darum, siehe Abschnitt 8)

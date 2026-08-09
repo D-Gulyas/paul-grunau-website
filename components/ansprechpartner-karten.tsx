@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { User, X } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { User } from "lucide-react";
 import { Pfeil } from "@/components/ui/pfeil";
+import { GlasDialog } from "@/components/ui/glas-dialog";
 import { StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { MagicText } from "@/components/ui/magic-text";
 import { asset } from "@/lib/base-path";
@@ -16,8 +16,9 @@ import type { Ansprechpartner } from "@/lib/content";
  * Stelle des Porträts; sobald das Feld in `lib/content.ts` gefüllt wird,
  * erscheint das Foto ohne weitere Änderung.
  *
- * Bewegung nur über Deckkraft und Verschiebung – kein `filter` auf den
- * Glasflächen, sonst bricht deren `backdrop-filter` (siehe DESIGN.md).
+ * Die Hülle des Pop-ups (Overlay, Panel, Escape, Scroll-Sperre) steckt in
+ * `ui/glas-dialog.tsx` und wird mit der Benefits-Karte auf der Karriereseite
+ * geteilt – hier steht nur noch, was **im** Pop-up zu sehen ist.
  */
 
 function Portrait({ person, gross = false }: { person: Ansprechpartner; gross?: boolean }) {
@@ -48,29 +49,12 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
   // zeichnet nach dem Tastendruck seinen Fokusring um die Karte.
   const ausloeser = useRef<HTMLButtonElement | null>(null);
 
-  const schliessen = () => {
+  // `useCallback`, weil der Dialog die Funktion in einer Effekt-Abhängigkeit führt.
+  const schliessen = useCallback(() => {
     setOffen(null);
     ausloeser.current?.blur();
     ausloeser.current = null;
-  };
-
-  // Escape schließt, und der Hintergrund soll nicht mitscrollen.
-  useEffect(() => {
-    if (!offen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setOffen(null);
-      ausloeser.current?.blur();
-      ausloeser.current = null;
-    };
-    document.addEventListener("keydown", onKey);
-    const vorher = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = vorher;
-    };
-  }, [offen]);
+  }, []);
 
   return (
     <>
@@ -103,57 +87,25 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
         ))}
       </StaggerGroup>
 
-      <AnimatePresence>
-        {offen && (
-          <motion.div
-            className="fixed inset-0 z-[60] grid place-items-center px-5 py-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <button
-              type="button"
-              aria-label="Schließen"
-              onClick={schliessen}
-              className="absolute inset-0 cursor-default bg-black/75"
-            />
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label={offen.name}
-              className="liquid-glass-strong relative max-h-full w-full max-w-lg overflow-y-auto rounded-3xl p-7"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 16 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <button
-                type="button"
-                onClick={schliessen}
-                aria-label="Schließen"
-                className="absolute right-5 top-5 grid h-9 w-9 place-items-center rounded-full text-white/70 transition-colors hover:text-[#f5b301]"
-              >
-                <X className="h-5 w-5" />
-              </button>
-
-              <div className="flex items-center gap-5 pr-10">
-                <Portrait person={offen} />
-                <div>
-                  <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{offen.name}</h3>
-                  <p className="font-body text-sm font-normal text-white/70">{offen.role}</p>
-                </div>
+      <GlasDialog inhalt={offen} label={(p) => p.name} onSchliessen={schliessen}>
+        {(person) => (
+          <>
+            <div className="flex items-center gap-5 pr-10">
+              <Portrait person={person} />
+              <div>
+                <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{person.name}</h3>
+                <p className="font-body text-sm font-normal text-white/70">{person.role}</p>
               </div>
+            </div>
 
-              <div className="mt-6 space-y-3 font-body text-sm font-light leading-relaxed text-white/70">
-                {(offen.werdegang?.length ? offen.werdegang : [offen.bio]).map((absatz) => (
-                  <p key={absatz}>{absatz}</p>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
+            <div className="mt-6 space-y-3 font-body text-sm font-light leading-relaxed text-white/70">
+              {(person.werdegang?.length ? person.werdegang : [person.bio]).map((absatz) => (
+                <p key={absatz}>{absatz}</p>
+              ))}
+            </div>
+          </>
         )}
-      </AnimatePresence>
+      </GlasDialog>
     </>
   );
 }

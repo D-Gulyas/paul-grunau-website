@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Building2, GraduationCap, Briefcase } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ApplicationForm } from "@/components/application-form";
+import { BenefitsKarte } from "@/components/benefits-karte";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitives";
 import { Section, SectionHeading } from "@/components/ui";
 import { MagicText } from "@/components/ui/magic-text";
@@ -45,8 +46,11 @@ export default function KarrierePage() {
       />
 
       {/* Infoblöcke */}
+      {/* Infoblöcke – seit der Benefits-Karte sind es vier. Deshalb `sm:grid-cols-2`
+          (2×2) und erst ab `lg` eine Reihe zu viert; bei `md:grid-cols-3` wäre die
+          vierte Karte allein in einer zweiten Reihe gelandet. */}
       <Section area="karriere-infobloecke" className="pt-12">
-        <StaggerGroup className="grid gap-6 md:grid-cols-3">
+        <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {blocks.map((b) => (
             <StaggerItem key={b.title}>
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
@@ -59,6 +63,10 @@ export default function KarrierePage() {
               </div>
             </StaggerItem>
           ))}
+          {/* Einzige Karte mit Zustand (Pop-up) und darum eine Client-Insel. */}
+          <StaggerItem className="h-full">
+            <BenefitsKarte />
+          </StaggerItem>
         </StaggerGroup>
       </Section>
 

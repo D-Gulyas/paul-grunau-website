@@ -109,36 +109,63 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   return (
     <article data-area="blogartikel">
       {/* Header mit Titelbild */}
-      <header data-area="blogartikel-kopf" className="relative overflow-hidden pt-28">
-        <div className="absolute inset-0 -z-10 h-[46vh] sm:h-[54vh] md:h-[62vh]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={asset(post.image)} alt={post.title} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/55" />
-        </div>
-        <div className="mx-auto w-full max-w-3xl px-5 pb-4 pt-24 md:px-8 md:pt-36">
-          <Reveal>
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
-            >
-              <ArrowLeft className="h-4 w-4" /> Zurück zum Blog
-            </Link>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="mt-6 flex items-center gap-3">
-              <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-medium text-black">
-                {post.category}
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-body text-xs text-white/60">
-                <Clock className="h-3.5 w-3.5" /> {post.readingTime} Lesezeit
-              </span>
-            </div>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <h1 className="mt-5 text-balance font-heading text-2xl italic leading-[1.05] tracking-[-1px] text-brand-gradient md:text-3xl">
-              {post.title}
-            </h1>
-          </Reveal>
+      <header data-area="blogartikel-kopf" className="relative">
+        {/* Bild und Text liegen im selben Rasterfeld übereinander (`col-start-1 row-start-1`).
+            Die Kopfhöhe ist damit die größere der beiden Höhen – und die Bildhöhe darf aus
+            dem Bild selbst kommen (`w-full` ganz ohne Höhenangabe).
+
+            Vorher stand das Bild in einer Box mit fester vh-Höhe und `object-cover`. Auf dem
+            Handy passte das zufällig, auf dem Desktop war die Box 2,56:1 gegen ein 3:2-Bild –
+            rund 40 % des Motivs wurden oben und unten weggeschnitten. `object-contain` wäre
+            der naheliegende Weg, gibt aber schwarze Balken an den Seiten; über die Bildhöhe
+            zu gehen zeigt das Motiv vollständig **und** randlos. Aus demselben Grund trägt
+            der `<header>` kein `overflow-hidden` mehr: das stutzte das Bild auf Texthöhe.
+
+            Der Kopfabstand (früher `pt-28` am Header) sitzt jetzt an der Textspalte, sonst
+            begänne das Bild erst unterhalb der Navbar statt am Seitenanfang.
+
+            **Erst ab `md` wird gestapelt.** Ein 3:2-Bild ist auf Handybreite nur rund 250 px
+            hoch – der Text läge dann genau auf der Unterkante des Bildes, wo der schwarze
+            Verlauf mitten im Übergang ist (der Zurück-Link war dort kaum zu lesen). Auf dem
+            Handy steht der Text deshalb im Fluss **unter** dem Bild auf Schwarz. */}
+        <div className="md:grid">
+          <div className="relative md:col-start-1 md:row-start-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={asset(post.image)} alt={post.title} className="block w-full" />
+            {/* Scrim für Titel, Zurück-Link und die Navbar darüber – nur im oberen Bereich,
+                damit das Motiv darunter sichtbar bleibt. */}
+            <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/30 via-40% to-transparent to-70%" />
+            {/* Weicher schwarzer Rand nach unten: das Bild läuft ohne sichtbare Kante in die
+                schwarze Seite aus. Kurz gehalten, damit er den unteren Bildteil nicht zudeckt –
+                deshalb der schnelle Abfall (65 % schon nach einem Fünftel) mit langem Ausläufer. */}
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/65 via-20% to-transparent to-50%" />
+          </div>
+
+          <div className="mx-auto w-full max-w-3xl px-5 pb-4 pt-10 md:col-start-1 md:row-start-1 md:px-8 md:pt-64">
+            <Reveal>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
+              >
+                <ArrowLeft className="h-4 w-4" /> Zurück zum Blog
+              </Link>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <div className="mt-6 flex items-center gap-3">
+                <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-medium text-black">
+                  {post.category}
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-body text-xs text-white/60">
+                  <Clock className="h-3.5 w-3.5" /> {post.readingTime} Lesezeit
+                </span>
+              </div>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <h1 className="mt-5 text-balance font-heading text-2xl italic leading-[1.05] tracking-[-1px] text-brand-gradient md:text-3xl">
+                {post.title}
+              </h1>
+            </Reveal>
+          </div>
         </div>
       </header>
 

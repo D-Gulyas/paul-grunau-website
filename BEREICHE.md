@@ -77,7 +77,8 @@ Inhalt noch Funktion – sie dienen nur der schnellen Verständigung.
 | Name | Bereich |
 |---|---|
 | `karriere-hero` | Kopfbereich |
-| `karriere-infobloecke` | Die 3 Info-Karten |
+| `karriere-infobloecke` | Die 4 Info-Karten |
+| `karriere-benefits` | Die Benefits-Karte darin – einzige mit „Mehr erfahren" + Pop-up |
 | `karriere-bewerbung` | Sektion Bewerbung |
 | `karriere-bewerbungsformular` | Das Formular selbst |
 
