@@ -116,9 +116,8 @@ position: relative; overflow: hidden;
   nach oben (Zweitzeichen per `text-shadow`), gleichzeitig Farbwechsel auf `hoverColor`.
   Genutzt für die Kennzahlen (`hoverColor="#f5b301"`). Ein früheres Count-up gibt es **nicht** mehr.
 - **`ui/magic-text` (`MagicText`)**: Fließtext leuchtet **beim Scrollen** wortweise auf – jedes Wort
-  liegt doppelt übereinander (ruhende Kopie bei 20 % Deckkraft, darüber eine, deren `opacity` per
-  `useScroll`/`useTransform` am Scrollfortschritt des Absatzes hängt, Fenster
-  `["start 0.9", "start 0.25"]`). Vorlage: `Magic-Text.md` im Projektordner.
+  liegt doppelt übereinander (ruhende Kopie bei 20 % Deckkraft, darüber eine, deren `opacity` am
+  Scrollfortschritt hängt). Vorlage: `Magic-Text.md` im Projektordner.
   Gilt für **allen Fließtext**, **nie** für Überschriften (die tragen den Marken-Verlauf) – die
   vollständige Liste der Fundstellen steht im Projekt-Gehirn unter „02 Animationen".
   - **Typografie wird geerbt**, nicht mitgebracht: die Komponente bekommt die Klassen des bisherigen
@@ -127,12 +126,25 @@ position: relative; overflow: hidden;
   - Import aus **`framer-motion`**, nicht aus `motion/react`: dieselbe Bibliothek unter neuem Namen,
     ein zweites Paket würde nur den Bundle aufblähen.
   - Die ruhende Kopie trägt **`aria-hidden`**, sonst steht jeder Satz doppelt im DOM.
+  - **Das Scrollfenster wird in Pixeln selbst gerechnet, nicht über `useScroll({ target, offset })`.**
+    Ein `offset` misst die Position im Fenster – ein Absatz, der beim Laden schon sichtbar ist (jedes
+    Intro unter einer Seiten-Überschrift), stünde damit von Anfang an halb bis ganz aufgeleuchtet da.
+    Stattdessen `useScroll()` auf den Seiten-Scroll plus eigene Messung:
+    `start = Oberkante − 0,85 vh`, `ende = Unterkante − 0,55 vh`; liegt `start` im Negativen, wandert
+    das ganze Fenster auf `scrollY = 0` (Länge bleibt). Neu gemessen per `ResizeObserver` auf Element
+    und `document.body`. **Nicht auf `offset` zurückbauen.**
+  - **Das Ende zählt ab der Unterkante**, damit lange Absätze mehr Scrollweg brauchen als kurze und
+    die Welle ungefähr im Lesetempo durchläuft.
+  - **Vier Wörter gehen gleichzeitig über** (`WELLE`), verteilt über `n + WELLE − 1` Schritte. Die
+    Vorlage gibt jedem Wort exakt `[i/n, (i+1)/n]` – immer nur eins in Bewegung, das schaltet sichtbar
+    durch statt zu fließen.
+  - **`revealColor`**: färbt **nur** die animierte Kopie; die ruhende behält die geerbte Farbe. Ein
+    farbig aufleuchtender Absatz startet dadurch wie normaler Fließtext. Genutzt vom `quote`-Block der
+    Blog-Artikel (Tipp-Karte): `text-white/90` + `revealColor="#f5b301"`.
   - Zerlegt einen String in Wörter → nur reiner Text. `PageHero` und `SectionHeading` prüfen deshalb
     `typeof intro === "string"` und fallen sonst auf ein gewöhnliches `<p>` zurück.
   - **Nicht** im Ansprechpartner-Pop-up: dort ist der Seiten-Scroll gesperrt, der Fortschritt käme nie
     über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
-  - Der `quote`-Block der Blog-Artikel (die Tipp-Karte) nutzt denselben Effekt in
-    `text-brand-yellow` statt `text-white/90`.
 - **Icons:** lucide-Icons sind **statisch** (keine Animation). Gelb (`text-brand-yellow` = `#f5b301`,
   11,33:1 auf Schwarz) sind **nur die Inhalts-Icons**, per Klasse am Icon gesetzt:
   Philosophie-Karten, Leistungs-Blöcke, Team-Karten und Kontaktdaten – dazu die Bewertungssterne, die

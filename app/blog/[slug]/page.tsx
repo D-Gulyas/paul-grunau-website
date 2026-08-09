@@ -54,12 +54,14 @@ function Block({ block }: { block: BlogBlock }) {
           <figcaption className="font-body text-xs font-medium uppercase tracking-[0.16em] text-white/60">
             {block.label}
           </figcaption>
-          {/* Der Tipp leuchtet im Marken-Gelb auf statt in Weiß – er ist die
-              Kernaussage des Artikels und soll sich davon abheben. */}
+          {/* Der Tipp ruht wie jeder andere Fließtext in Weiß und leuchtet erst
+              durch die Animation im Marken-Gelb auf – er ist die Kernaussage
+              des Artikels und soll sich am Ende davon abheben. */}
           <MagicText
             as="blockquote"
             text={`„${block.text}"`}
-            className="mt-3 font-heading text-2xl italic leading-snug text-brand-yellow"
+            className="mt-3 font-heading text-2xl italic leading-snug text-white/90"
+            revealColor="#f5b301"
           />
         </figure>
       );
