@@ -41,7 +41,15 @@ const BENEFITS = [
 /** Der Dialog zeigt immer denselben Inhalt – der Zustand ist nur „offen" oder „zu". */
 const BENEFITS_DIALOG = { titel: "Benefits" };
 
-export function BenefitsKarte() {
+export function BenefitsKarte({
+  /** Eigene Stufe der Magic-Text-Sequenz, damit die Karte nach den drei
+      Nachbarkarten aufleuchtet statt gemeinsam mit ihnen (siehe karriere/page.tsx). */
+  gruppe,
+  festeLaenge,
+}: {
+  gruppe?: string;
+  festeLaenge?: number;
+}) {
   const [offen, setOffen] = useState<typeof BENEFITS_DIALOG | null>(null);
   // Karte, über die geöffnet wurde – sie behält sonst den Fokus und der Browser
   // zeichnet nach dem Tastendruck seinen Fokusring um die Karte.
@@ -69,6 +77,8 @@ export function BenefitsKarte() {
         <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">Benefits</h3>
         <MagicText
           text="Gute Arbeit verdient ein gutes Umfeld. Vom Firmenfahrzeug bis zur flexiblen Zeiteinteilung – bei uns stimmt auch das, was neben der Baustelle zählt."
+          gruppe={gruppe}
+          festeLaenge={festeLaenge}
           className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65"
         />
         {/* `mt-auto` hält das „Mehr erfahren" am unteren Kartenrand, auch wenn die

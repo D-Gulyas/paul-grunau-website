@@ -99,14 +99,19 @@ export default function HomePage() {
             <StaggerItem key={s.label} className="h-full">
               <div className="glass flex h-full flex-col items-center justify-center rounded-3xl px-6 py-8 text-center">
                 {/* Zahl und Beschriftung teilen sich eine Stufe (`gruppe`), damit
-                    die Karte als Ganzes aufleuchtet – nur die Zahl steht fett. */}
+                    die Karte als Ganzes aufleuchtet – nur die Zahl steht fett.
+                    Die Fettung macht `text-fett-kontur`: `font-bold` allein bleibt bei
+                    Instrument Serif wirkungslos (die Schrift hat nur Gewicht 400, der
+                    Browser synthetisiert kein Bold – nachgemessen, Textbreite bei 400 und
+                    700 identisch). Ohne die Kontur standen die Kennzahlen in beiden
+                    Ansichten schlank da. */}
                 <MagicText
                   as="div"
                   gruppe={`kennzahl-${s.label}`}
                   festeLaenge={0.12}
                   text={s.value}
                   revealColor="#f5b301"
-                  className="font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl"
+                  className="text-fett-kontur font-heading text-4xl font-bold italic leading-none tracking-[-1px] text-white md:text-5xl"
                 />
                 <MagicText
                   as="div"

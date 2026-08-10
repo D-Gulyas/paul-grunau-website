@@ -70,14 +70,24 @@
    wurde wieder entfernt: sie verträgt sich nicht mit dem Wort-für-Wort-Blur. Begründung und
    Rückweg stehen in HEADINGS-COLOR-BACKUP.md – bitte nicht erneut anlegen. */
 
-/* Echte Fettung für die Hero-Headline.
+/* Echte Fettung für Instrument-Serif-Text (Hero-Headline, Kennzahlen der Startseite).
    `font-bold` allein bringt dort nichts: Instrument Serif liefert nur Gewicht 400, und der
    Browser synthetisiert bei dieser Schrift kein Bold (nachgemessen – Textbreite bei 400 und
    700 identisch). Die Verdickung kommt deshalb über eine Kontur in der Textfarbe.
    `em`-Maß, damit sie mit der clamp()-Größe der Headline mitwächst; `paint-order` legt die
-   Kontur unter die Füllung, sodass die Buchstabenform sauber bleibt. */
+   Kontur unter die Füllung, sodass die Buchstabenform sauber bleibt.
+
+   Der Mindestwert von 0.85px ist der Mobil-Fix: Die Hero-Headline steht dort bei rund 22 px
+   Schriftgröße, 0.024em wären nur 0.54px. Eine Kontur unter ~0.8px zeichnet der Browser nicht
+   mehr als Verdickung, sondern verteilt sie im Antialiasing – die Headline sah auf dem Handy
+   dünn aus, auf dem Desktop (0.024em = 1.2px und mehr) dagegen fett. Ab etwa 35 px Schrift
+   greift wieder der em-Wert, Desktop bleibt also unverändert.
+
+   Bewusst die Langform statt der Kurzform `-webkit-text-stroke`: In der Kurzform verwirft der
+   Browser die `max()`-Rechnung stillschweigend und es bleibt beim reinen em-Wert (nachgemessen). */
 @utility text-fett-kontur {
-  -webkit-text-stroke: 0.024em currentColor;
+  -webkit-text-stroke-width: max(0.85px, 0.024em);
+  -webkit-text-stroke-color: currentColor;
   paint-order: stroke fill;
 }
 

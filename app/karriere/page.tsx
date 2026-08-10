@@ -56,8 +56,18 @@ export default function KarrierePage() {
               <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
                 <b.icon strokeWidth={1.5} className="h-8 w-8 text-brand-yellow" aria-hidden />
                 <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{b.title}</h3>
+                {/* `gruppe` + `festeLaenge` wie bei den Kennzahlen der Startseite:
+                    Ohne die Angabe erkennt die Sequenz die nebeneinanderliegenden
+                    Karten als **eine** Reihe und lässt sie gemeinsam aufleuchten.
+                    Mit eigener Stufe je Karte kommt erst „Unser Unternehmen", dann
+                    „Ihre Entwicklung", dann „Offene Stellen", dann „Benefits".
+                    Bewusst **ohne** `revealColor`: Die Karten leuchten in ihrer
+                    geerbten weißen Textfarbe auf, das Gelb bleibt den Kennzahlen
+                    vorbehalten. */}
                 <MagicText
                   text={b.text}
+                  gruppe={`karriere-block-${b.title}`}
+                  festeLaenge={0.12}
                   className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65"
                 />
               </div>
@@ -65,7 +75,7 @@ export default function KarrierePage() {
           ))}
           {/* Einzige Karte mit Zustand (Pop-up) und darum eine Client-Insel. */}
           <StaggerItem className="h-full">
-            <BenefitsKarte />
+            <BenefitsKarte gruppe="karriere-block-Benefits" festeLaenge={0.12} />
           </StaggerItem>
         </StaggerGroup>
       </Section>

@@ -78,6 +78,15 @@ const SICHTBARER_WEG = 0.2;
 const KETTEN_WEG = 0.15;
 /** Ab wie viel senkrechter Überlappung (px) zwei Absätze als eine Reihe gelten. */
 const REIHEN_TOLERANZ = 20;
+/**
+ * Zeichenpuffer der ruhenden Geister-Kopie links und rechts.
+ *
+ * Kursive Glyphen ragen seitlich über ihre Box hinaus; ohne den Puffer kappt der
+ * Browser diesen Überhang an der Kante der waagerecht fixierten Kopie. Der Wert
+ * wird zugleich als Innenabstand gesetzt, der Inhaltsbereich bleibt also gleich
+ * breit – siehe Kommentar an der Kopie selbst.
+ */
+const RAND = "0.3em";
 /** Wie viele Listenpunkte gleichzeitig einblenden. */
 const LISTEN_WELLE = 2;
 /** Wie weit ein Listenpunkt beim Einblenden von unten hereinrückt (px). */
@@ -90,9 +99,45 @@ const LISTEN_VERSATZ = 14;
  * Listen der Seite gleich schnell – vorher hing das Tempo an Höhe und Abstand
  * der jeweiligen Liste, und sie wirkten sichtbar unterschiedlich.
  */
-const LISTEN_SCHRITT = 0.05;
+const LISTEN_SCHRITT = 0.04;
+/**
+ * Wo die Unterkante einer Liste spätestens stehen darf, wenn sie fertig
+ * aufgebaut ist – als Anteil der Fensterhöhe, von oben gezählt.
+ *
+ * Ohne diesen Deckel hängt eine Liste allein an der Kette: Sie beginnt erst,
+ * wenn der Absatz darüber fertig aufgeleuchtet ist, und ist dann noch lange am
+ * Aufbauen, während sie längst vollständig im Bild steht. Beim Zurückscrollen
+ * bekommt man dadurch genau das zu sehen, was gemeldet wurde – die Liste löst
+ * sich mitten im Bild auf und lässt einzelne Punkte als Reste stehen.
+ *
+ * Mit dem Deckel ist sie spätestens fertig, wenn ihre Unterkante auf 75 % der
+ * Fensterhöhe angekommen ist; dafür darf das Fenster nach vorne rutschen und in
+ * den Absatz darüber hineinreichen. Beim Hochscrollen ist die Liste damit
+ * restlos leer, bevor sie unten aus dem Bild läuft.
+ */
+const LISTEN_FERTIG_BEI = 0.75;
+/**
+ * Ab welchem Fortschritt der Reihe darüber eine Liste starten darf.
+ *
+ * Für Listen ist die harte Kette (Regel 2, „keine Reihe beginnt, bevor die
+ * darüber fertig ist") zu streng: Ein Absatz ist erst aufgeleuchtet, wenn seine
+ * Unterkante auf 55 % der Fensterhöhe steht – die Liste darunter hätte danach
+ * keinen Scrollweg mehr, um vor dem Deckel fertig zu werden. Mit 0.6 setzt der
+ * erste Listenpunkt ein, während die letzten Wörter des Absatzes noch aufleuchten;
+ * die Lesereihenfolge bleibt erhalten, die Liste überholt den Absatz aber nicht.
+ * Absätze, Kennzahlen und Karten laufen unverändert nach der harten Kette.
+ */
+const LISTEN_ANSCHLUSS = 0.6;
 
-type Mass = { top: number; bottom: number; left: number; laenge?: number; gruppe?: string };
+type Mass = {
+  top: number;
+  bottom: number;
+  left: number;
+  laenge?: number;
+  gruppe?: string;
+  /** Nur Listen: Deckel nach LISTEN_FERTIG_BEI anwenden. */
+  deckel?: boolean;
+};
 type Fenster = [number, number];
 
 /**
@@ -121,6 +166,7 @@ type Reihe = {
   laengen: (number | undefined)[];
   indizes: number[];
   gruppe?: string;
+  deckel?: boolean;
 };
 
 function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
@@ -144,6 +190,7 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
         vorhanden.left = Math.min(vorhanden.left, eintrag.left);
         vorhanden.laengen.push(eintrag.laenge);
         vorhanden.indizes.push(eintrag.i);
+        vorhanden.deckel = vorhanden.deckel || eintrag.deckel;
       } else {
         const neu: Reihe = {
           top: eintrag.top,
@@ -152,6 +199,7 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
           laengen: [eintrag.laenge],
           indizes: [eintrag.i],
           gruppe: eintrag.gruppe,
+          deckel: eintrag.deckel,
         };
         nachGruppe.set(eintrag.gruppe, neu);
         reihen.push(neu);
@@ -167,11 +215,13 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
       letzte.left = Math.min(letzte.left, eintrag.left);
       letzte.laengen.push(eintrag.laenge);
       letzte.indizes.push(eintrag.i);
+      letzte.deckel = letzte.deckel || eintrag.deckel;
     } else {
       reihen.push({
         top: eintrag.top,
         bottom: eintrag.bottom,
         left: eintrag.left,
+        deckel: eintrag.deckel,
         laengen: [eintrag.laenge],
         indizes: [eintrag.i],
       });
@@ -208,6 +258,9 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
 
   const fenster: Fenster[] = new Array(masse.length);
   let vorherEnde = Number.NEGATIVE_INFINITY;
+  // Anfang der zuletzt vergebenen Reihe – nur Listen brauchen ihn, um ihren
+  // Anschluss auf einen Anteil dieser Reihe zu legen (siehe LISTEN_ANSCHLUSS).
+  let vorherStart = Number.NEGATIVE_INFINITY;
 
   for (const reihe of geordnet) {
     // Nur wenn jedes Mitglied der Reihe eine feste Länge mitbringt (Listen),
@@ -221,8 +274,32 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
 
     if (festeLaenge != null) {
       if (start < 0) start = 0;
-      start = Math.max(start, vorherEnde);
+
+      // Listen hängen weicher an der Reihe darüber als der Rest (siehe
+      // LISTEN_ANSCHLUSS); alles andere behält die harte Kette.
+      const fruehestens =
+        reihe.deckel && Number.isFinite(vorherStart)
+          ? vorherStart + (vorherEnde - vorherStart) * LISTEN_ANSCHLUSS
+          : vorherEnde;
+      start = Math.max(start, fruehestens);
       ende = start + festeLaenge;
+
+      // Deckel (siehe LISTEN_FERTIG_BEI): nie noch aufbauen, während die Liste
+      // schon vollständig im Bild steht. Das Fenster wird dafür nach vorne
+      // verschoben, nicht gestaucht – die Punkte behalten also ihr Tempo.
+      //
+      // Nur für Listen: Kennzahlen- und Karten-Stufen arbeiten ebenfalls mit
+      // fester Länge, stehen aber nebeneinander auf gleicher Höhe. Ein an ihrer
+      // Unterkante verankerter Deckel gäbe allen vieren dasselbe Fenster – sie
+      // würden wieder gemeinsam statt nacheinander aufleuchten.
+      const spaetestens = reihe.bottom - vh * LISTEN_FERTIG_BEI;
+      if (reihe.deckel && ende > spaetestens) {
+        // Der Anschluss oben ist die Untergrenze: Lieber später fertig werden,
+        // als die Liste vor den Absatz darüber zu ziehen.
+        start = Math.max(fruehestens, Math.min(start, spaetestens - festeLaenge));
+        if (start < 0) start = 0;
+        ende = start + festeLaenge;
+      }
     } else {
       ende = reihe.bottom - vh * ENDE_BEI;
       if (ende - start < vh * MINDESTWEG) ende = start + vh * MINDESTWEG;
@@ -240,7 +317,10 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
     }
 
     for (const i of reihe.indizes) fenster[i] = [start, ende];
-    vorherEnde = ende;
+    // `Math.max`, weil der Listen-Deckel ein Fenster nach vorne ziehen kann: Sonst
+    // würde die Stufe danach vor der Reihe darüber starten dürfen.
+    vorherEnde = Math.max(vorherEnde, ende);
+    vorherStart = start;
   }
 
   return fenster;
@@ -253,6 +333,8 @@ type Eintrag = {
   laenge?: (vh: number) => number;
   /** Name einer ausdrücklichen Stufe – gleiche Namen laufen gemeinsam. */
   gruppe?: string;
+  /** Nur Listen: Deckel nach LISTEN_FERTIG_BEI anwenden. */
+  deckel?: boolean;
 };
 
 const SequenzContext = createContext<((eintrag: Eintrag) => () => void) | null>(null);
@@ -272,10 +354,10 @@ export function MagicTextSequenz({ children }: { children: ReactNode }) {
     const liste = eintraege.current;
     if (!liste.length) return;
     const vh = window.innerHeight;
-    const masse = liste.map(({ el, laenge, gruppe }) => {
+    const masse = liste.map(({ el, laenge, gruppe, deckel }) => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY;
-      return { top, bottom: top + r.height, left: r.left, laenge: laenge?.(vh), gruppe };
+      return { top, bottom: top + r.height, left: r.left, laenge: laenge?.(vh), gruppe, deckel };
     });
     const fenster = fensterBerechnen(masse, vh);
     liste.forEach((eintrag, i) => eintrag.setzen(fenster[i]));
@@ -333,6 +415,7 @@ function useSequenzFortschritt(
   schluessel: unknown,
   laenge?: (vh: number) => number,
   gruppe?: string,
+  deckel?: boolean,
 ) {
   const { scrollY } = useScroll();
   const anmelden = useContext(SequenzContext);
@@ -358,7 +441,7 @@ function useSequenzFortschritt(
     const festeLaenge = laengeRef.current ? (vh: number) => laengeRef.current!(vh) : undefined;
 
     // Im Verbund bestimmt die Sequenz das Fenster.
-    if (anmelden) return anmelden({ el, setzen: setFenster, laenge: festeLaenge, gruppe });
+    if (anmelden) return anmelden({ el, setzen: setFenster, laenge: festeLaenge, gruppe, deckel });
 
     // Ohne Sequenz (Komponente allein genutzt) misst sich das Element selbst.
     const messen = () => {
@@ -366,7 +449,10 @@ function useSequenzFortschritt(
       const top = r.top + window.scrollY;
       const vh = window.innerHeight;
       setFenster(
-        fensterBerechnen([{ top, bottom: top + r.height, left: r.left, laenge: festeLaenge?.(vh) }], vh)[0],
+        fensterBerechnen(
+          [{ top, bottom: top + r.height, left: r.left, laenge: festeLaenge?.(vh), deckel }],
+          vh,
+        )[0],
       );
     };
     messen();
@@ -378,7 +464,7 @@ function useSequenzFortschritt(
       window.removeEventListener("resize", messen);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anmelden, schluessel, gruppe]);
+  }, [anmelden, schluessel, gruppe, deckel]);
 
   return useTransform(scrollY, fenster, [0, 1]);
 }
@@ -436,13 +522,25 @@ function Word({
           Sie behält immer die geerbte Textfarbe, auch wenn oben drüber in
           einer anderen Farbe aufgeleuchtet wird.
 
-          `inset-0` ist wichtig: Ohne die Angabe schrumpft die Kopie auf ihre
-          eigene Breite und setzt sich an ihre statische Position. Bricht ein
-          Wort in sich um – „Notfall-Erreichbarkeit" tut das am Bindestrich –,
-          werden die beiden Kopien dann unterschiedlich ausgerichtet und der
-          Text steht sichtbar versetzt. Mit `inset-0` übernimmt die Kopie exakt
-          die Box des Wortes und bricht und zentriert genau wie das Original. */}
-      <span className="absolute inset-0" style={{ opacity: ghostOpacity }} aria-hidden>
+          Die senkrechte Verankerung (`top/bottom: 0`) ist wichtig: Ohne sie
+          schrumpft die Kopie auf ihre eigene Breite und setzt sich an ihre
+          statische Position. Bricht ein Wort in sich um – „Notfall-Erreichbarkeit"
+          tut das am Bindestrich –, werden die beiden Kopien dann unterschiedlich
+          ausgerichtet und der Text steht sichtbar versetzt.
+
+          Waagerecht steht die Box bewusst um `RAND` breiter, und dieselbe Strecke
+          kommt als Innenabstand wieder herein. Der Inhaltsbereich ist dadurch exakt
+          so breit wie beim Original (Umbruch und Zentrierung bleiben also gleich),
+          aber die Glyphen haben rechts und links Platz zum Zeichnen. Ohne den Puffer
+          schneidet der Browser bei einer waagerecht fixierten Box (links **und**
+          rechts verankert) den Überhang kursiver Zeichen an der Kante ab – sichtbar
+          an der „7" der Kennzahl „24/7", deren oberer Balken oben rechts gekappt
+          war, während die aufleuchtende Kopie darüber vollständig stand. */}
+      <span
+        className="absolute"
+        style={{ top: 0, bottom: 0, left: `-${RAND}`, right: `-${RAND}`, paddingInline: RAND, opacity: ghostOpacity }}
+        aria-hidden
+      >
         {children}
       </span>
       <motion.span style={{ opacity, color: revealColor }}>{children}</motion.span>
@@ -540,7 +638,8 @@ export function MagicListe({
   // egal wie viele Punkte sie hat und wo sie steht.
   const laenge = useCallback((vh: number) => vh * LISTEN_SCHRITT * (anzahl + LISTEN_WELLE - 1), [anzahl]);
 
-  const fortschritt = useSequenzFortschritt(container, anzahl, laenge);
+  // `deckel`: Nur Listen bekommen den Deckel aus LISTEN_FERTIG_BEI – siehe dort.
+  const fortschritt = useSequenzFortschritt(container, anzahl, laenge, undefined, true);
   const wert = useMemo(() => ({ fortschritt, anzahl }), [fortschritt, anzahl]);
 
   return (

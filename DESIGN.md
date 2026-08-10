@@ -64,9 +64,17 @@ Marken-Farbverlauf (Rot → Orange → Gelb) auf Überschriften. Alles ruhig, ho
 **⚠️ `font-bold` wirkt an Headlines nicht.** Instrument Serif kommt nur mit Gewicht 400 und Chrome
 synthetisiert dafür kein Bold (nachgemessen: „Brandschutz" ist bei `font-weight: 400` und `700`
 exakt gleich breit – 220,42 px bei 48 px). Echte Fettung gibt es über `@utility text-fett-kontur`
-(`globals.css`): Kontur in der Textfarbe, `0.024em`, `paint-order: stroke fill`. Sitzt an beiden
-`BlurText` der Hero-Headline. **Nicht** an `text-brand-gradient`-Überschriften verwenden – deren
-Füllung ist transparent, die Kontur würde daraus leere Umrisse machen.
+(`globals.css`): Kontur in der Textfarbe, `max(0.85px, 0.024em)`, `paint-order: stroke fill`. Sitzt an
+beiden `BlurText` der Hero-Headline **und an den Zahlen der Kennzahlen** (Startseite). **Nicht** an
+`text-brand-gradient`-Überschriften verwenden – deren Füllung ist transparent, die Kontur würde daraus
+leere Umrisse machen.
+
+Der Mindestwert `0.85px` ist der Mobil-Fix: Die Hero-Headline steht auf dem Handy bei rund 22 px
+Schriftgröße, `0.024em` wären dort nur 0.54 px – so dünn zeichnet der Browser die Kontur nicht mehr als
+Verdickung, sondern verteilt sie im Antialiasing (die Headline wirkte mobil dünn, auf dem Desktop fett).
+Ab etwa 35 px Schrift greift wieder der em-Wert, der Desktop bleibt also unverändert. Die Kurzform
+`-webkit-text-stroke: max(…) currentColor` funktioniert **nicht** – der Browser verwirft die
+`max()`-Rechnung darin stillschweigend; deshalb die Langform (`-webkit-text-stroke-width` + `-color`).
 
 ---
 
@@ -122,9 +130,16 @@ position: relative; overflow: hidden;
     Fenster → ein Prozentwert ist die falsche Schwelle.
 - **Kennzahlen (`home-kennzahlen`)**: vier Karten, die einzeln nacheinander in `#f5b301` aufleuchten
   (`gruppe` je Karte, `festeLaenge={0.12}`). **Nur die Zahl ist fett**, die Beschriftung bleibt im
-  Grundgewicht. Abstand nach oben `pt-28 md:pt-36` (vorher `py-10 md:py-12`) – die vier Stufen
-  brauchen zusammen rund 400 px Scrollweg, und die Karten müssen dabei frei unter der Navbar stehen
-  bleiben (gemessen 312 px beim Abschluss der letzten Karte).
+  Grundgewicht. Die Fettung macht `text-fett-kontur` – `font-bold` allein bleibt bei Instrument Serif
+  wirkungslos (s. Abschnitt Typografie). Abstand nach oben `pt-28 md:pt-36` (vorher `py-10 md:py-12`) –
+  die vier Stufen brauchen zusammen rund 400 px Scrollweg, und die Karten müssen dabei frei unter der
+  Navbar stehen bleiben (gemessen 312 px beim Abschluss der letzten Karte).
+- **Karriere-Infoblöcke (`karriere-infobloecke`)**: dieselbe Mechanik wie die Kennzahlen – vier Karten
+  mit eigener `gruppe` und `festeLaenge={0.12}`, sie leuchten also von links nach rechts einzeln
+  nacheinander auf (ohne `gruppe` erkennt die Sequenz die nebeneinanderliegenden Karten als **eine**
+  Reihe und lässt sie gemeinsam aufleuchten). Bewusst **ohne `revealColor`**: Die Karten leuchten in
+  ihrer geerbten weißen Textfarbe auf, das Gelb bleibt den Kennzahlen vorbehalten. Die vierte Karte
+  (`BenefitsKarte`) ist eine Client-Insel und bekommt `gruppe`/`festeLaenge` als Props durchgereicht.
 - **`PageHero`-Kopfabstand `pt-60 md:pt-64`** (vorher `pt-36 md:pt-44`): Der Intro-Absatz leuchtet über
   die ersten ~180 px Scroll auf. Mit dem alten Abstand lag die Überschrift zu diesem Zeitpunkt bereits
   hinter der Navbar und ließ sich nie fertig lesen. Gemessen steht sie jetzt bei 125–127 px, die Navbar
@@ -148,10 +163,18 @@ position: relative; overflow: hidden;
   - Import aus **`framer-motion`**, nicht aus `motion/react`: dieselbe Bibliothek unter neuem Namen,
     ein zweites Paket würde nur den Bundle aufblähen.
   - Die ruhende Kopie trägt **`aria-hidden`**, sonst steht jeder Satz doppelt im DOM.
-  - Die ruhende Kopie braucht **`inset-0`** (nicht nur `absolute` wie in der Vorlage). Sonst schrumpft
-    sie auf ihre eigene Breite und sitzt an ihrer statischen Position – das passt zufällig, solange
-    jedes Wort in eine Zeile passt. Bricht ein Wort in sich um (`Notfall-Erreichbarkeit` am
-    Bindestrich), stehen die Kopien sichtbar versetzt. **Nicht wegoptimieren.**
+  - Die ruhende Kopie braucht **senkrechte Verankerung** (`top/bottom: 0`, nicht nur `absolute` wie in
+    der Vorlage). Sonst schrumpft sie auf ihre eigene Breite und sitzt an ihrer statischen Position –
+    das passt zufällig, solange jedes Wort in eine Zeile passt. Bricht ein Wort in sich um
+    (`Notfall-Erreichbarkeit` am Bindestrich), stehen die Kopien sichtbar versetzt. **Nicht
+    wegoptimieren.**
+  - **Waagerecht steht die Kopie um `RAND` (0,3 em) breiter, und dieselbe Strecke kommt als
+    `padding-inline` wieder herein.** Der Inhaltsbereich ist dadurch exakt so breit wie beim Original
+    (Umbruch und Zentrierung bleiben gleich), die Glyphen haben aber Platz zum Zeichnen. Ohne den
+    Puffer kappt der Browser bei einer waagerecht fixierten Box (links **und** rechts verankert) den
+    seitlichen Überhang kursiver Zeichen an der Kante – sichtbar an der Kennzahl „24/7", deren „7" oben
+    rechts abgeschnitten war, während die aufleuchtende Kopie darüber vollständig stand. Nicht auf
+    reines `inset-0` zurückbauen.
   - **Das Scrollfenster wird in Pixeln selbst gerechnet, nicht über `useScroll({ target, offset })`.**
     Ein `offset` misst die Position im Fenster – ein Absatz, der beim Laden schon sichtbar ist (jedes
     Intro unter einer Seiten-Überschrift), stünde damit von Anfang an halb bis ganz aufgeleuchtet da.
@@ -189,14 +212,28 @@ position: relative; overflow: hidden;
     Fortschritt käme nie über den Startwert hinaus und der Text bliebe dauerhaft bei 20 %.
 - **`MagicListe` / `MagicListePunkt`** (gleiche Datei): Aufzählungen blenden Punkt für Punkt über
   Deckkraft und 14 px Verschiebung ein (`as="ol"` für nummerierte Listen, zwei Punkte gleichzeitig über
-  `LISTEN_WELLE`). Sie hängen in **derselben Kette** wie die Absätze und starten dadurch genau dann,
-  wenn der Fließtext darüber fertig aufgeleuchtet ist – Leistungen (Häkchen-Listen) und Blog-Artikel.
-  Wer eine weitere Bewegung anhängen will, meldet sie ebenfalls bei der Sequenz an, statt Timings von
-  Hand abzustimmen.
-  - **Feste Fensterlänge** (`Schritte × LISTEN_SCHRITT × vh`), gemeldet über `laenge` an die Sequenz –
-    **nicht** aus der Ausdehnung abgeleitet wie beim Fließtext. Nur so sind Abstand und Dauer eines
-    Punktes in jeder Liste gleich; aus Höhe und Position abgeleitet liefen die Listen sichtbar
+  `LISTEN_WELLE`). Sie hängen in derselben Kette wie die Absätze – Leistungen (Häkchen-Listen) und
+  Blog-Artikel. Wer eine weitere Bewegung anhängen will, meldet sie ebenfalls bei der Sequenz an, statt
+  Timings von Hand abzustimmen.
+  - **Feste Fensterlänge** (`Schritte × LISTEN_SCHRITT × vh`, 0.04), gemeldet über `laenge` an die
+    Sequenz – **nicht** aus der Ausdehnung abgeleitet wie beim Fließtext. Nur so sind Abstand und Dauer
+    eines Punktes in jeder Liste gleich; aus Höhe und Position abgeleitet liefen die Listen sichtbar
     unterschiedlich schnell.
+  - **Listen hängen weicher an der Reihe darüber als der Rest** (`LISTEN_ANSCHLUSS = 0.6`): Der erste
+    Punkt setzt ein, während die letzten Wörter des Absatzes noch aufleuchten. Mit der harten Kette
+    (Start erst, wenn der Absatz fertig ist) bliebe kein Scrollweg mehr, um vor dem Deckel unten fertig
+    zu werden – der Absatz ist ja erst aufgeleuchtet, wenn seine Unterkante auf 55 % der Fensterhöhe
+    steht. Die Lesereihenfolge bleibt gewahrt, die Liste überholt den Absatz nicht.
+  - **Deckel `LISTEN_FERTIG_BEI = 0.75`** (nur Listen, über das Flag `deckel` angemeldet): Eine Liste ist
+    spätestens fertig, wenn ihre Unterkante auf 75 % der Fensterhöhe angekommen ist; das Fenster wird
+    dafür nach vorne verschoben, nicht gestaucht. Ohne den Deckel baute sich eine Liste noch auf,
+    während sie längst vollständig im Bild stand – beim Zurückscrollen löste sie sich mitten im Bild auf
+    und ließ einzelne Punkte als Reste stehen (gemeldet 10.08.2026). Jetzt gilt: Solange die Liste
+    im Bild steht, ist sie vollständig; leer wird sie erst, wenn sie unten aus dem Bild läuft
+    (nachgemessen Desktop **und** Mobil, alle Punkte erreichen exakt `opacity: 0`).
+    **Wichtig:** Der Deckel darf **nicht** für Kennzahlen und Karten gelten. Die arbeiten ebenfalls mit
+    `festeLaenge`, stehen aber nebeneinander auf gleicher Höhe – ein an ihrer Unterkante verankerter
+    Deckel gäbe allen dasselbe Fenster, sie würden wieder gemeinsam statt nacheinander aufleuchten.
 - **Der `quote`-Block ist der letzte animierte Block eines Blog-Artikels.** Der Text der Mini-CTA
   darunter ist bewusst ein gewöhnliches `<p>` – nach dem Tipp soll nichts mehr aufleuchten.
 - **`ui/pfeil` (`Pfeil`)**: der Pfeil an Links, Buttons und Karten – **kein eigener `ArrowUpRight` mehr
