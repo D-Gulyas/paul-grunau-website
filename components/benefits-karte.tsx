@@ -92,13 +92,11 @@ export function BenefitsKarte({
       <GlasDialog inhalt={offen} label={(b) => b.titel} onSchliessen={schliessen}>
         {(b) => (
           <>
-            <div className="flex items-center gap-5 pr-10">
-              <span
-                className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-white/5 ring-1 ring-white/10"
-                aria-hidden
-              >
-                <Gift strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" />
-              </span>
+            {/* Das Icon steht frei – wie auf der Karte selbst. Ein Kreis mit
+                Fläche dahinter wäre hier ein Foto-Platzhalter, und ein Foto gibt
+                es zu den Benefits nicht (anders als bei den Ansprechpartnern). */}
+            <div className="flex items-center gap-4 pr-10">
+              <Gift strokeWidth={1.5} className="h-9 w-9 shrink-0 text-brand-yellow" aria-hidden />
               <div>
                 <h3 className="font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{b.titel}</h3>
                 <p className="font-body text-sm font-normal text-white/70">Was wir unserem Team mitgeben</p>

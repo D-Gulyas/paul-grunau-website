@@ -269,6 +269,17 @@ position: relative; overflow: hidden;
   - Die fünf Karten unter **„Direkt erreichbar"** (Adresse · Telefon · Mobil · E-Mail ·
     Öffnungszeiten) standen als Einzige im Button-Grau `#e6e6e6` und tragen jetzt ebenfalls
     `text-brand-yellow`. Die **Footer**-Kontaktsymbole bleiben davon unberührt und weiterhin weiß.
+  - **Icons stehen frei – der runde Kreis dahinter ist ein Foto-Platzhalter, kein Icon-Rahmen.**
+    `grid h-20 w-20 place-items-center rounded-full bg-white/5 ring-1 ring-white/10` markiert die
+    Stelle, an der später ein Porträt steht, und gehört darum **nur** in das Pop-up der
+    Ansprechpartner (`components/ansprechpartner-karten.tsx`), solange `image` in `lib/content.ts`
+    noch `undefined` ist. Überall sonst: `h-9 w-9 text-brand-yellow`, `strokeWidth={1.5}`, ohne
+    Fläche und ohne Ring. Am 10.08.2026 auf Kundenwunsch aus dem **Benefits-Pop-up** (Karriere) und
+    von den **Ansprechpartner-Karten** (Kontakt) entfernt; die Karten sehen dadurch aus wie die
+    Fachbereichs-Karten direkt darunter (36 px Icon, `mt-5` an der Überschrift).
+    Steuerung: `platzhalterKreis` an `Portrait` (Standard `true`, die Karte im Raster gibt `false`).
+    Der Schalter greift **nur für den Platzhalter** – mit hinterlegtem `image` wird an beiden
+    Stellen unverändert das runde Foto gezeichnet.
   - Die frühere `TracedIcon`-Komponente (wandernder Licht-Sweep über die Kontur) wurde **entfernt** – sie
     lief pro Icon als Endlos-Animation mit zwei `drop-shadow`-Filtern und machte auf dem Handy Probleme.
     **Nicht wieder einführen.**

@@ -21,7 +21,25 @@ import type { Ansprechpartner } from "@/lib/content";
  * geteilt – hier steht nur noch, was **im** Pop-up zu sehen ist.
  */
 
-function Portrait({ person, gross = false }: { person: Ansprechpartner; gross?: boolean }) {
+/**
+ * Porträt oder – solange kein `image` gesetzt ist – ein Platzhalter.
+ *
+ * `platzhalterKreis` steuert nur den Platzhalter: Im Pop-up bleibt der Kreis mit
+ * Fläche stehen, weil er die Stelle des späteren Fotos zeigt. Auf der Karte im
+ * Raster steht das Icon dagegen frei – dort soll es genauso aussehen wie die
+ * Icons der übrigen Karten (Fachbereiche, Benefits) und nicht wie ein leerer
+ * Bilderrahmen. Sobald ein Foto hinterlegt ist, greift dieser Schalter nicht
+ * mehr: Das `img` wird an beiden Stellen gleich dargestellt.
+ */
+function Portrait({
+  person,
+  gross = false,
+  platzhalterKreis = true,
+}: {
+  person: Ansprechpartner;
+  gross?: boolean;
+  platzhalterKreis?: boolean;
+}) {
   const groesse = gross ? "h-24 w-24" : "h-20 w-20";
   if (person.image) {
     return (
@@ -32,6 +50,9 @@ function Portrait({ person, gross = false }: { person: Ansprechpartner; gross?: 
         className={`${groesse} shrink-0 rounded-full object-cover ring-1 ring-white/15`}
       />
     );
+  }
+  if (!platzhalterKreis) {
+    return <User strokeWidth={1.5} className="h-9 w-9 shrink-0 text-brand-yellow" aria-hidden />;
   }
   return (
     <span
@@ -73,7 +94,7 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
               aria-haspopup="dialog"
               className="glass glass-glow group flex h-full w-full flex-col items-start rounded-3xl p-7 text-left"
             >
-              <Portrait person={p} gross />
+              <Portrait person={p} gross platzhalterKreis={false} />
               <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{p.name}</h3>
               {/* Eine kurze Stufe je Karte: Sonst zieht die Kette den Textabschluss
                   so weit nach hinten, dass die Karte dabei schon halb hinter der
