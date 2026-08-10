@@ -204,6 +204,22 @@ position: relative; overflow: hidden;
   nach oben rechts. Braucht ein Elternteil mit `group`. `aufHell` für weiße Flächen (leuchtet dann nach
   Schwarz). Der `LiquidMetalButton` bringt dasselbe Verhalten inline mit, dort über die Deckkraft,
   damit sein `#e6e6e6` erhalten bleibt.
+- **`kontakt-lichtspur` (`KontaktLichtspur`)**: glühende Spur durch „Ihre Ansprechpartner". Zeichnet
+  sich beim Scrollen von der Überschrift nach unten, teilt sich auf die beiden Ansprechpartner-Karten,
+  umschließt deren Rand, führt zusammen und wandert weiter zu den Fachbereichs-Karten; bei der letzten
+  wechselt sie auf `#e11d2a`. Technik: SVG-Pfade mit `pathLength={1}`, deren `strokeDashoffset` per
+  `useScroll`/`useTransform` von 1 auf 0 läuft – dieselbe Mechanik wie `MagicText`. **Kein three.js.**
+  - Geometrie wird aus dem DOM gemessen (`data-spur="start"` / `data-spur="karte"`, `ResizeObserver`),
+    nicht fest verdrahtet – auf dem Handy stehen die Karten untereinander und die Spur wird zur Kette.
+  - Verteilpunkte werden in den verfügbaren Zwischenraum geklammert, sonst läuft der Abzweig in eine
+    Karte hinein. Deshalb `mt-24` an der Fachbereichs-Gruppe.
+  - `MINDESTGEWICHT` hebt kurze Schritte an: Ein Kartenrand misst über 1000 Pfad-Pixel, ein Abzweig
+    keine 100 – rein proportional wäre der Abzweig nach wenigen Scrollpixeln vorbei.
+  - Das Overlay liegt **neben** den Glasflächen (`pointer-events-none`, `z-10`), nie um sie herum.
+- **Kontakt-Karten mit eigener Stufe**: Ansprechpartner- und Fachbereichs-Karten bekommen je Karte
+  `gruppe` + `festeLaenge={0.12}`. Grund: Ohne das zog die Kette den Textabschluss so weit nach hinten,
+  dass die Karte dabei schon halb hinter der Navbar lag. **Mehr Abstand hilft dagegen nicht** – das
+  Fenster wird aus der Position gerechnet, Anfang und Ende verschieben sich gleich weit.
 - **Zweispalter mit Überschrift** („Unsere Philosophie"): Die Überschrift steht **über** beiden Spalten,
   damit Fließtext und Karten auf derselben Höhe beginnen. Kein `items-start` + Versatz an der rechten
   Spalte – die Höhe der Überschrift ändert sich mit Breakpoint und geladener Schrift.
@@ -407,6 +423,7 @@ site-navbar · site-footer · footer-beam (WebGL) + footer-beam-lazy (Nachladen)
 testimonials (Spalten-Marquee)
 ui/magic-text (MagicText, Fließtext leuchtet beim Scrollen wortweise auf)
 ui/pfeil (Pfeil, ArrowUpRight mit Hover-Aufleuchten – überall statt eigener Icons)
+kontakt-lichtspur (glühende Scroll-Spur um die vier Kontakt-Karten)
 ansprechpartner-karten (Kontakt-Personen) · benefits-karte (Karriere) – beide über
 ui/glas-dialog (Pop-up-Hülle: Overlay, Panel, Escape, Scroll-Sperre, Portal an document.body)
 brand-logo · ui (Section, SectionHeading, ButtonLink, Eyebrow, cx)

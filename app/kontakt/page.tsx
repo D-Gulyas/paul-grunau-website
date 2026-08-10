@@ -6,6 +6,7 @@ import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion-primitive
 import { Section, SectionHeading } from "@/components/ui";
 import { MagicText } from "@/components/ui/magic-text";
 import { AnsprechpartnerKarten } from "@/components/ansprechpartner-karten";
+import { KontaktLichtspur } from "@/components/kontakt-lichtspur";
 import { ansprechpartner, fachbereiche } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -36,29 +37,49 @@ export default function KontaktPage() {
         intro="Egal, ob Sie eine Brandschutzlösung benötigen, eine Elektroinstallation planen oder eine Wartung anfragen möchten – wir sind für Sie da."
       />
 
-      {/* Team – zwei Ebenen: oben die persönlichen Ansprechpartner, darunter die Fachbereiche */}
+      {/* Team – zwei Ebenen: oben die persönlichen Ansprechpartner, darunter die
+          Fachbereiche. Die Lichtspur verbindet beide beim Scrollen; sie misst
+          ihre Geometrie über die `data-spur`-Marken. */}
       <Section area="kontakt-team" className="pt-12">
-        <Reveal>
-          <SectionHeading eyebrow="Ihre Ansprechpartner" title="Persönlicher Kontakt steht bei uns im Mittelpunkt" />
-        </Reveal>
+        <KontaktLichtspur>
+          <Reveal>
+            <div data-spur="start">
+              <SectionHeading
+                eyebrow="Ihre Ansprechpartner"
+                title="Persönlicher Kontakt steht bei uns im Mittelpunkt"
+              />
+            </div>
+          </Reveal>
 
-        <AnsprechpartnerKarten personen={ansprechpartner} />
+          <AnsprechpartnerKarten personen={ansprechpartner} />
 
-        <StaggerGroup area="kontakt-fachbereiche" className="mt-6 grid gap-6 md:grid-cols-2">
-          {fachbereiche.map((f) => (
-            <StaggerItem key={f.name} className="h-full">
-              <div className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
-                <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
-                <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{f.name}</h3>
-                <MagicText text={f.role} className="font-body text-sm font-normal text-white/70" />
-                <MagicText
-                  text={f.bio}
-                  className="mt-3 font-body text-sm font-light leading-relaxed text-white/65"
-                />
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
+          {/* Der große Zwischenraum gehört zur Lichtspur: Sie führt hier von den
+              beiden Ansprechpartner-Karten wieder zusammen und braucht dafür Platz. */}
+          <StaggerGroup area="kontakt-fachbereiche" className="mt-24 grid gap-6 md:grid-cols-2">
+            {fachbereiche.map((f) => (
+              <StaggerItem key={f.name} className="h-full">
+                <div data-spur="karte" className="glass glass-glow flex h-full flex-col rounded-3xl p-7">
+                  <User strokeWidth={1.5} className="h-9 w-9 text-brand-yellow" aria-hidden />
+                  <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">
+                    {f.name}
+                  </h3>
+                  <MagicText
+                    text={f.role}
+                    gruppe={`fachbereich-${f.name}`}
+                    festeLaenge={0.12}
+                    className="font-body text-sm font-normal text-white/70"
+                  />
+                  <MagicText
+                    text={f.bio}
+                    gruppe={`fachbereich-${f.name}`}
+                    festeLaenge={0.12}
+                    className="mt-3 font-body text-sm font-light leading-relaxed text-white/65"
+                  />
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </KontaktLichtspur>
       </Section>
 
       {/* Kontaktinfos + Formular */}

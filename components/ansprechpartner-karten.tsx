@@ -58,8 +58,12 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
 
   return (
     <>
-      {/* Erste Ebene: die persönlichen Ansprechpartner, gleichrangig nebeneinander */}
-      <StaggerGroup area="kontakt-ansprechpartner" className="mt-12 grid gap-6 md:grid-cols-2">
+      {/* Erste Ebene: die persönlichen Ansprechpartner, gleichrangig nebeneinander.
+          Der große Abstand nach oben ist zweifach begründet: Die Karten liefen
+          sonst hinter der Navbar fertig, während ihr Text noch aufleuchtete –
+          und die Lichtspur braucht zwischen Überschrift und Karten Platz für
+          ihren Stamm. */}
+      <StaggerGroup area="kontakt-ansprechpartner" className="mt-28 grid gap-6 md:mt-32 md:grid-cols-2">
         {personen.map((p) => (
           <StaggerItem key={p.name} className="h-full">
             <button
@@ -69,12 +73,27 @@ export function AnsprechpartnerKarten({ personen }: { personen: Ansprechpartner[
                 setOffen(p);
               }}
               aria-haspopup="dialog"
+              data-spur="karte"
               className="glass glass-glow group flex h-full w-full flex-col items-start rounded-3xl p-7 text-left"
             >
               <Portrait person={p} gross />
               <h3 className="mt-5 font-heading text-2xl italic tracking-[-0.5px] text-brand-gradient">{p.name}</h3>
-              <MagicText text={p.role} className="font-body text-sm font-normal text-white/70" />
-              <MagicText text={p.bio} className="mt-3 font-body text-sm font-light leading-relaxed text-white/65" />
+              {/* Eine kurze Stufe je Karte: Sonst zieht die Kette den Textabschluss
+                  so weit nach hinten, dass die Karte dabei schon halb hinter der
+                  Navbar liegt. Nebeneffekt, der hier passt – die Karten leuchten
+                  nacheinander auf, im Gleichklang mit der Lichtspur. */}
+              <MagicText
+                text={p.role}
+                gruppe={`ansprechpartner-${p.name}`}
+                festeLaenge={0.12}
+                className="font-body text-sm font-normal text-white/70"
+              />
+              <MagicText
+                text={p.bio}
+                gruppe={`ansprechpartner-${p.name}`}
+                festeLaenge={0.12}
+                className="mt-3 font-body text-sm font-light leading-relaxed text-white/65"
+              />
               {/* Im Pop-up bleibt der Text unverändert: dort ist der Seiten-Scroll
                   gesperrt, der Effekt käme nie über seinen Startzustand hinaus. */}
               {/* Gleiche Optik wie „Artikel lesen“ auf den Blog-Karten */}
