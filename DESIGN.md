@@ -135,11 +135,22 @@ position: relative; overflow: hidden;
   die vier Stufen brauchen zusammen rund 400 px Scrollweg, und die Karten müssen dabei frei unter der
   Navbar stehen bleiben (gemessen 312 px beim Abschluss der letzten Karte).
 - **Karriere-Infoblöcke (`karriere-infobloecke`)**: dieselbe Mechanik wie die Kennzahlen – vier Karten
-  mit eigener `gruppe` und `festeLaenge={0.12}`, sie leuchten also von links nach rechts einzeln
-  nacheinander auf (ohne `gruppe` erkennt die Sequenz die nebeneinanderliegenden Karten als **eine**
-  Reihe und lässt sie gemeinsam aufleuchten). Bewusst **ohne `revealColor`**: Die Karten leuchten in
-  ihrer geerbten weißen Textfarbe auf, das Gelb bleibt den Kennzahlen vorbehalten. Die vierte Karte
-  (`BenefitsKarte`) ist eine Client-Insel und bekommt `gruppe`/`festeLaenge` als Props durchgereicht.
+  mit eigener `gruppe`, sie leuchten also von links nach rechts einzeln nacheinander auf (ohne `gruppe`
+  erkennt die Sequenz die nebeneinanderliegenden Karten als **eine** Reihe und lässt sie gemeinsam
+  aufleuchten). Bewusst **ohne `revealColor`**: Die Karten leuchten in ihrer geerbten weißen Textfarbe
+  auf, das Gelb bleibt den Kennzahlen vorbehalten. Die vierte Karte (`BenefitsKarte`) ist eine
+  Client-Insel und bekommt `gruppe`/`festeLaenge` als Props durchgereicht.
+  - **`festeLaenge={0.09}` statt der 0.12 der Kennzahlen, und `pt-12 sm:pt-28 lg:pt-52` statt `pt-12`** –
+    beides gegen die Navbar gerechnet. Die Sequenz ist am **Absatz in der Karte** verankert, und der
+    sitzt hier rund 122 px unter der Kartenoberkante (Icon + Überschrift darüber), bei den Kennzahlen
+    nur etwa 30 px. Beim Abschluss der letzten Stufe steht die Kartenreihe deshalb um diesen Betrag
+    höher. Die Rechnung: `Oberkante = 0,85 vh − 4 × festeLaenge × vh − 122 px`. Mit 0.12 waren das auf
+    einem 800 px hohen Fenster nur 173 px (Navbar endet bei 96 px) und auf einem flachen Laptop-Fenster
+    von 620 px sogar 107 px – die Reihe lief also fast in die Navbar. Mit 0.09 sind es 253 px
+    (800 px Fenster) bzw. 173 px (620 px Fenster). **Mehr Abstand allein hilft nicht**: Sobald der
+    natürliche Anker greift, verschieben sich Karten und Fenster gleich weit; die Padding-Erhöhung
+    sorgt nur dafür, dass er auch wirklich greift (statt der Kette des Intro-Absatzes) und gibt
+    optisch Luft.
 - **`PageHero`-Kopfabstand `pt-60 md:pt-64`** (vorher `pt-36 md:pt-44`): Der Intro-Absatz leuchtet über
   die ersten ~180 px Scroll auf. Mit dem alten Abstand lag die Überschrift zu diesem Zeitpunkt bereits
   hinter der Navbar und ließ sich nie fertig lesen. Gemessen steht sie jetzt bei 125–127 px, die Navbar
@@ -219,18 +230,18 @@ position: relative; overflow: hidden;
     Sequenz – **nicht** aus der Ausdehnung abgeleitet wie beim Fließtext. Nur so sind Abstand und Dauer
     eines Punktes in jeder Liste gleich; aus Höhe und Position abgeleitet liefen die Listen sichtbar
     unterschiedlich schnell.
-  - **Listen hängen weicher an der Reihe darüber als der Rest** (`LISTEN_ANSCHLUSS = 0.6`): Der erste
-    Punkt setzt ein, während die letzten Wörter des Absatzes noch aufleuchten. Mit der harten Kette
-    (Start erst, wenn der Absatz fertig ist) bliebe kein Scrollweg mehr, um vor dem Deckel unten fertig
-    zu werden – der Absatz ist ja erst aufgeleuchtet, wenn seine Unterkante auf 55 % der Fensterhöhe
-    steht. Die Lesereihenfolge bleibt gewahrt, die Liste überholt den Absatz nicht.
+  - **Die Kette ist bei Listen unantastbar.** Runter: Der erste Listenpunkt blendet erst ein, wenn der
+    Absatz darüber **vollständig** aufgeleuchtet ist. Hoch: Erst leert sich die Liste restlos, dann
+    dimmt der Absatz ab. Ein Zwischenstand, in dem die Liste schon einblendete, während der Absatz noch
+    lief (`LISTEN_ANSCHLUSS = 0.6`), war kurz da und wurde am 10.08.2026 ausdrücklich abgelehnt –
+    **nicht wieder einbauen.** Nachgemessen auf Leistungen (alle drei Blöcke, Desktop und Mobil, Schritte
+    von 20 px in beide Richtungen): kein einziger Scrollwert, bei dem beide gleichzeitig in Bewegung sind.
   - **Deckel `LISTEN_FERTIG_BEI = 0.75`** (nur Listen, über das Flag `deckel` angemeldet): Eine Liste ist
     spätestens fertig, wenn ihre Unterkante auf 75 % der Fensterhöhe angekommen ist; das Fenster wird
-    dafür nach vorne verschoben, nicht gestaucht. Ohne den Deckel baute sich eine Liste noch auf,
-    während sie längst vollständig im Bild stand – beim Zurückscrollen löste sie sich mitten im Bild auf
-    und ließ einzelne Punkte als Reste stehen (gemeldet 10.08.2026). Jetzt gilt: Solange die Liste
-    im Bild steht, ist sie vollständig; leer wird sie erst, wenn sie unten aus dem Bild läuft
-    (nachgemessen Desktop **und** Mobil, alle Punkte erreichen exakt `opacity: 0`).
+    dafür nach vorne verschoben, nicht gestaucht – **aber nie weiter nach vorne als bis zum Ende der
+    Reihe darüber**. Der Deckel greift dadurch nur bei Listen, die ohnehin frei unter ihrem Absatz
+    stehen. Ohne ihn baute sich so eine Liste noch auf, während sie längst vollständig im Bild stand –
+    beim Zurückscrollen löste sie sich mitten im Bild auf und ließ einzelne Punkte als Reste stehen.
     **Wichtig:** Der Deckel darf **nicht** für Kennzahlen und Karten gelten. Die arbeiten ebenfalls mit
     `festeLaenge`, stehen aber nebeneinander auf gleicher Höhe – ein an ihrer Unterkante verankerter
     Deckel gäbe allen dasselbe Fenster, sie würden wieder gemeinsam statt nacheinander aufleuchten.

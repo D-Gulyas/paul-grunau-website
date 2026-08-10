@@ -49,7 +49,15 @@ export default function KarrierePage() {
       {/* Infoblöcke – seit der Benefits-Karte sind es vier. Deshalb `sm:grid-cols-2`
           (2×2) und erst ab `lg` eine Reihe zu viert; bei `md:grid-cols-3` wäre die
           vierte Karte allein in einer zweiten Reihe gelandet. */}
-      <Section area="karriere-infobloecke" className="pt-12">
+      {/* Der große Abstand nach oben gehört zur Animation – gleiche Begründung wie bei den
+          Kennzahlen der Startseite. Die vier Karten leuchten einzeln nacheinander auf und
+          brauchen dafür zusammen rund 400 px Scrollweg. Mit dem alten `pt-12` hing das
+          Kartenraster an der Kette des Intro-Absatzes: Das Fenster war am Absatz verankert,
+          nicht an den Karten, und die vierte Karte wurde erst fertig, als die Reihe schon
+          knapp unter der Navbar stand (gemessen 137 px bei 96 px Navbar-Unterkante).
+          Ab `lg` liegen die vier Karten nebeneinander – dort fällt das am stärksten auf,
+          deshalb steigt der Abstand mit der Breite. */}
+      <Section area="karriere-infobloecke" className="pt-12 sm:pt-28 lg:pt-52">
         <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {blocks.map((b) => (
             <StaggerItem key={b.title}>
@@ -63,11 +71,22 @@ export default function KarrierePage() {
                     „Ihre Entwicklung", dann „Offene Stellen", dann „Benefits".
                     Bewusst **ohne** `revealColor`: Die Karten leuchten in ihrer
                     geerbten weißen Textfarbe auf, das Gelb bleibt den Kennzahlen
-                    vorbehalten. */}
+                    vorbehalten.
+
+                    `festeLaenge` ist mit 0.09 kürzer als die 0.12 der Kennzahlen –
+                    das ist kein Zufall, sondern gegen die Navbar gerechnet: Die
+                    Sequenz ist am **Absatz in der Karte** verankert, und der sitzt
+                    hier 122 px unter der Kartenoberkante (Icon + Überschrift darüber),
+                    bei den Kennzahlen nur rund 30 px. Die Karte steht beim Abschluss
+                    der letzten Stufe also um diesen Betrag höher. Vier Stufen zu 0.12
+                    schoben die Reihe auf einem 800 px hohen Fenster bis auf 173 px
+                    hoch (Navbar endet bei 96 px) und auf flachen Laptop-Fenstern bis
+                    unter die Navbar. Mit 0.09 bleibt sie frei darunter stehen.
+                    Der gestaffelte Ablauf ändert sich dadurch nicht. */}
                 <MagicText
                   text={b.text}
                   gruppe={`karriere-block-${b.title}`}
-                  festeLaenge={0.12}
+                  festeLaenge={0.09}
                   className="mt-2.5 font-body text-sm font-light leading-relaxed text-white/65"
                 />
               </div>
@@ -75,7 +94,7 @@ export default function KarrierePage() {
           ))}
           {/* Einzige Karte mit Zustand (Pop-up) und darum eine Client-Insel. */}
           <StaggerItem className="h-full">
-            <BenefitsKarte gruppe="karriere-block-Benefits" festeLaenge={0.12} />
+            <BenefitsKarte gruppe="karriere-block-Benefits" festeLaenge={0.09} />
           </StaggerItem>
         </StaggerGroup>
       </Section>

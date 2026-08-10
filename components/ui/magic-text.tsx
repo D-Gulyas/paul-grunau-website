@@ -104,30 +104,21 @@ const LISTEN_SCHRITT = 0.04;
  * Wo die Unterkante einer Liste spätestens stehen darf, wenn sie fertig
  * aufgebaut ist – als Anteil der Fensterhöhe, von oben gezählt.
  *
- * Ohne diesen Deckel hängt eine Liste allein an der Kette: Sie beginnt erst,
- * wenn der Absatz darüber fertig aufgeleuchtet ist, und ist dann noch lange am
- * Aufbauen, während sie längst vollständig im Bild steht. Beim Zurückscrollen
- * bekommt man dadurch genau das zu sehen, was gemeldet wurde – die Liste löst
- * sich mitten im Bild auf und lässt einzelne Punkte als Reste stehen.
+ * Eine Liste, die weit unter dem Absatz darüber steht, bekommt ihr Fenster sonst
+ * erst spät und baut sich noch auf, während sie längst vollständig im Bild steht.
+ * Beim Zurückscrollen löst sie sich dann mitten im Bild auf und lässt einzelne
+ * Punkte als Reste stehen.
  *
  * Mit dem Deckel ist sie spätestens fertig, wenn ihre Unterkante auf 75 % der
- * Fensterhöhe angekommen ist; dafür darf das Fenster nach vorne rutschen und in
- * den Absatz darüber hineinreichen. Beim Hochscrollen ist die Liste damit
- * restlos leer, bevor sie unten aus dem Bild läuft.
+ * Fensterhöhe angekommen ist; das Fenster rutscht dafür nach vorne.
+ *
+ * **Die Kette bleibt dabei unantastbar:** Weiter nach vorne als bis zum Ende der
+ * Reihe darüber darf der Deckel nie ziehen. Ein Zwischenstand, in dem die Liste
+ * schon einblendete, während der Absatz darüber noch aufleuchtete, wurde
+ * ausdrücklich abgelehnt (10.08.2026) – erst der Fließtext, dann die Liste; beim
+ * Hochscrollen erst die Liste, dann der Fließtext.
  */
 const LISTEN_FERTIG_BEI = 0.75;
-/**
- * Ab welchem Fortschritt der Reihe darüber eine Liste starten darf.
- *
- * Für Listen ist die harte Kette (Regel 2, „keine Reihe beginnt, bevor die
- * darüber fertig ist") zu streng: Ein Absatz ist erst aufgeleuchtet, wenn seine
- * Unterkante auf 55 % der Fensterhöhe steht – die Liste darunter hätte danach
- * keinen Scrollweg mehr, um vor dem Deckel fertig zu werden. Mit 0.6 setzt der
- * erste Listenpunkt ein, während die letzten Wörter des Absatzes noch aufleuchten;
- * die Lesereihenfolge bleibt erhalten, die Liste überholt den Absatz aber nicht.
- * Absätze, Kennzahlen und Karten laufen unverändert nach der harten Kette.
- */
-const LISTEN_ANSCHLUSS = 0.6;
 
 type Mass = {
   top: number;
@@ -258,9 +249,6 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
 
   const fenster: Fenster[] = new Array(masse.length);
   let vorherEnde = Number.NEGATIVE_INFINITY;
-  // Anfang der zuletzt vergebenen Reihe – nur Listen brauchen ihn, um ihren
-  // Anschluss auf einen Anteil dieser Reihe zu legen (siehe LISTEN_ANSCHLUSS).
-  let vorherStart = Number.NEGATIVE_INFINITY;
 
   for (const reihe of geordnet) {
     // Nur wenn jedes Mitglied der Reihe eine feste Länge mitbringt (Listen),
@@ -275,13 +263,7 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
     if (festeLaenge != null) {
       if (start < 0) start = 0;
 
-      // Listen hängen weicher an der Reihe darüber als der Rest (siehe
-      // LISTEN_ANSCHLUSS); alles andere behält die harte Kette.
-      const fruehestens =
-        reihe.deckel && Number.isFinite(vorherStart)
-          ? vorherStart + (vorherEnde - vorherStart) * LISTEN_ANSCHLUSS
-          : vorherEnde;
-      start = Math.max(start, fruehestens);
+      start = Math.max(start, vorherEnde);
       ende = start + festeLaenge;
 
       // Deckel (siehe LISTEN_FERTIG_BEI): nie noch aufbauen, während die Liste
@@ -294,9 +276,10 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
       // würden wieder gemeinsam statt nacheinander aufleuchten.
       const spaetestens = reihe.bottom - vh * LISTEN_FERTIG_BEI;
       if (reihe.deckel && ende > spaetestens) {
-        // Der Anschluss oben ist die Untergrenze: Lieber später fertig werden,
-        // als die Liste vor den Absatz darüber zu ziehen.
-        start = Math.max(fruehestens, Math.min(start, spaetestens - festeLaenge));
+        // Die Kette ist die Untergrenze: Lieber später fertig werden, als die
+        // Liste vor die Reihe darüber zu ziehen. Der Deckel greift dadurch nur
+        // bei Listen, die ohnehin frei unter ihrem Absatz stehen.
+        start = Math.max(vorherEnde, Math.min(start, spaetestens - festeLaenge));
         if (start < 0) start = 0;
         ende = start + festeLaenge;
       }
@@ -320,7 +303,6 @@ function fensterBerechnen(masse: Mass[], vh: number): Fenster[] {
     // `Math.max`, weil der Listen-Deckel ein Fenster nach vorne ziehen kann: Sonst
     // würde die Stufe danach vor der Reihe darüber starten dürfen.
     vorherEnde = Math.max(vorherEnde, ende);
-    vorherStart = start;
   }
 
   return fenster;
